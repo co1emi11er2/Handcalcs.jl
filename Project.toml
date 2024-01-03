@@ -3,6 +3,11 @@ uuid = "e8a07092-c156-4455-ab8e-ed8bc81edefb"
 authors = ["Cole Miller"]
 version = "1.0.0-DEV"
 
+[deps]
+LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
+Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
+MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
+
 [compat]
 julia = "1.10"
 
