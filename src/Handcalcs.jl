@@ -1,10 +1,16 @@
 module Handcalcs
 
 # Write your package code here.
-using Latexify
+using Latexify: latexify
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
+
+export @handcalc, @handcalcs, latexify
+
+function hello()
+    println("hello world")
+end
 
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
@@ -58,7 +64,7 @@ macro handcalcs(expr, kwargs...)
     exprs = []
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = LaTeXString("\text{", arg, "}")
+            comment = latexstring("\text{", arg, "}")
             println(comment)
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
