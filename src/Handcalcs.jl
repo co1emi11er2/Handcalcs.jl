@@ -65,15 +65,14 @@ macro handcalcs(expr, kwargs...)
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
             comment = latexstring("\text{", arg, "}")
-            println(comment)
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
-            push!(exprs, false)
+            push!(exprs, :(@handcalc $(arg)))
 		else
 			error("Code pieces should be of type string or expression")
         end
     end
-    return exprs
+    return Expr(:block, esc(expr), esc(Expr(:call, :latexstring, exprs...)))
 end
 
 end
