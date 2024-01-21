@@ -6,7 +6,7 @@ using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
 
-export @handcalc, @handcalcs, latexify
+export @handcalc, @handcalcs, latexify, multiline_latex
 
 function hello()
     println("hello world")
@@ -72,7 +72,18 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(expr), esc(Expr(:call, :latexstring, exprs...)))
+    return Expr(:block, esc(expr), esc(Expr(:call, :multiline_latex, exprs...)))
+end
+
+function multiline_latex(exprs...)
+    multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
+    for expr in exprs
+        # println(expr)
+        multi_latex *= expr[2:end-1] * "\\\\" # remove the $ from end and beginning of string
+        # multi_latex = latexstring(multi_latex, expr)
+    end
+    multi_latex *= L"\end{align}"[2:end] # remove the $ from beginning of string
+    return latexstring(multi_latex)
 end
 
 end
