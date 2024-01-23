@@ -64,7 +64,7 @@ macro handcalcs(expr, kwargs...)
     exprs = []
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = latexstring("\text{", arg, "}")
+            comment = latexstring("(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
             push!(exprs, :(@handcalc $(arg)))
@@ -78,9 +78,11 @@ end
 function multiline_latex(exprs...)
     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
     for expr in exprs
-        # println(expr)
-        multi_latex *= expr[2:end-1] * "\\\\" # remove the $ from end and beginning of string
-        # multi_latex = latexstring(multi_latex, expr)
+        if occursin("text", expr)
+            multi_latex *= "\\text{  }" * expr[2:end-1] # remove the $ from end and beginning of string
+        else
+            multi_latex *=  "\\\\" * expr[2:end-1] # remove the $ from end and beginning of string
+        end
     end
     multi_latex *= L"\end{align}"[2:end] # remove the $ from beginning of string
     return latexstring(multi_latex)

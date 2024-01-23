@@ -51,7 +51,7 @@ md"""
 """
 
 # ╔═╡ 7ade629c-5382-48b0-a70e-b5482f21a89d
-@handcalc begin x = (-b + sqrt(b^2 - 4*a*c))/(2*a) end
+@handcalc begin x = (-b - sqrt(b^2 - 4*a*c))/(2*a) end
 
 # ╔═╡ f4c40265-adf0-4257-a953-73b2bee8974c
 begin
@@ -95,7 +95,7 @@ calc_Ix(b, h) = b*h^3/12;
 # ╔═╡ fb872702-2762-4542-9ac5-0b8809f5ebfd
 @handcalcs begin
 	IIy = h*b^3/12; "moment of inertia";
-	IIIx = b*h^3/12
+	IIIx = b*h^3/12; "AASHTO 5.6.2";
 end
 
 # ╔═╡ defc22d4-4de6-4c6a-b60c-9ae937999c15
@@ -133,6 +133,12 @@ begin
 	fig
 end
 
+# ╔═╡ 998a6b3c-fb16-4f67-8666-a1112bd3b5e3
+arg = "AASHTO 5.6.2"
+
+# ╔═╡ 54c0b498-7a10-4baf-aa13-881407826b5c
+
+
 # ╔═╡ Cell order:
 # ╟─ab72ba8c-b356-11ee-0a39-0d1b38e5f4ca
 # ╟─ce5b3335-daca-45cc-82bb-6a05ec02e9a5
@@ -164,3 +170,5 @@ end
 # ╠═b60b54c6-9a6f-4da5-9235-9e7c80c5f6af
 # ╟─bde76f18-f5a5-4e05-8e8c-ac931c231743
 # ╟─04f5fe71-fff8-4cc8-80c3-c978977eca05
+# ╠═998a6b3c-fb16-4f67-8666-a1112bd3b5e3
+# ╠═54c0b498-7a10-4baf-aa13-881407826b5c
