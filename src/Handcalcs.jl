@@ -5,8 +5,9 @@ using Latexify: latexify
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
+# using CodeTracking, Revise
 
-export @handcalc, @handcalcs, latexify, multiline_latex
+export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
 
 function hello()
     println("hello world")
@@ -15,7 +16,8 @@ end
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    expr_numeric = postwalk(x -> x isa Symbol ? numeric_sub(x) : x, expr.args[2:end]...)
+    math_syms = [:*, :/, :^, :+, :-, :%]
+    expr_numeric = postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr.args[2:end]...)
     params = _extractparam.(kwargs)
     post = :identity
     for param in params
@@ -28,7 +30,6 @@ macro handcalc(expr, kwargs...)
             break
         end
     end
-
     return esc(
         Expr(
             :call,
@@ -86,6 +87,18 @@ function multiline_latex(exprs...)
     end
     multi_latex *= L"\end{align}"[2:end] # remove the $ from beginning of string
     return latexstring(multi_latex)
+end
+
+function calc_Ix(b, h) 
+	return b*h^3/12;
+end
+
+macro handfunc(expr, kwargs...)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    exprs = []
+    println(expr)
+    # @show($(expr.args[2]))
 end
 
 end
