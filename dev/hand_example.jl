@@ -5,13 +5,14 @@ using Markdown
 using InteractiveUtils
 
 # ╔═╡ ab72ba8c-b356-11ee-0a39-0d1b38e5f4ca
+# ╠═╡ show_logs = false
 begin
 	using Revise, Pkg
 	Pkg.activate();
 end
 
 # ╔═╡ ce5b3335-daca-45cc-82bb-6a05ec02e9a5
-using Handcalcs, Latexify, LaTeXStrings
+using Handcalcs, Latexify, LaTeXStrings, CodeTracking
 
 # ╔═╡ 02f3158c-59a5-4282-88d4-35c4551c0033
 using Unitful, UnitfulLatexify, DataFrames
@@ -84,10 +85,18 @@ begin @latexdefine e = ($a + $b) * $c end
 @latexdefine begin f = (-$b + sqrt($b^2 - 4*$a*$c))/(2*$a) end
 
 # ╔═╡ 420da70b-6e19-4298-b633-2e55393299b7
-calc_Ix(b, h) = b*h^3/12;
+# function calc_Ix(b, h) 
+# 	return b*h^3/12;
+# end
 
 # ╔═╡ d35d01cd-7a80-4b3b-a64c-8dab2231d82b
 @handcalc begin Ix = calc_Ix(b, h) end
+
+# ╔═╡ c53d154d-0d97-4aba-aeb4-a4cb6456c0be
+calc = @code_expr calc_Ix(b, h)
+
+# ╔═╡ 5ba6f0f3-3826-462e-80d2-6949dcf358cc
+calc.args[2].args[3].args[1]
 
 # ╔═╡ 2ce0e082-7235-4bb0-99ef-fd32b29782e6
 @handcalc begin IIx = b*h^3/12 end
@@ -97,6 +106,9 @@ calc_Ix(b, h) = b*h^3/12;
 	IIy = h*b^3/12; "moment of inertia";
 	IIIx = b*h^3/12; "AASHTO 5.6.2";
 end
+
+# ╔═╡ aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
+@handfunc begin Iy = calc_Ix(b, h) end
 
 # ╔═╡ defc22d4-4de6-4c6a-b60c-9ae937999c15
 md"### Table Example"
@@ -140,12 +152,12 @@ arg = "AASHTO 5.6.2"
 
 
 # ╔═╡ Cell order:
-# ╟─ab72ba8c-b356-11ee-0a39-0d1b38e5f4ca
-# ╟─ce5b3335-daca-45cc-82bb-6a05ec02e9a5
-# ╟─02f3158c-59a5-4282-88d4-35c4551c0033
-# ╟─1bc35d4c-9391-4459-b961-d7b608324790
-# ╟─59d2b9f7-1601-478a-99dc-e54f7166aafa
-# ╟─af2113ee-0352-4b65-a269-723450ba54ea
+# ╠═ab72ba8c-b356-11ee-0a39-0d1b38e5f4ca
+# ╠═ce5b3335-daca-45cc-82bb-6a05ec02e9a5
+# ╠═02f3158c-59a5-4282-88d4-35c4551c0033
+# ╠═59d2b9f7-1601-478a-99dc-e54f7166aafa
+# ╠═1bc35d4c-9391-4459-b961-d7b608324790
+# ╠═af2113ee-0352-4b65-a269-723450ba54ea
 # ╟─8de622aa-5a8a-4761-8f58-b651d1ae04b6
 # ╟─ff37c719-5e6e-44f6-8a7c-b15a4a04ffc5
 # ╠═2b3ad300-c287-47eb-a80c-3d6140ad13f3
@@ -153,16 +165,19 @@ arg = "AASHTO 5.6.2"
 # ╠═5c94ae24-3346-48e5-aff3-18140a2967fb
 # ╠═a14751cd-1ec4-4620-bc4b-e19abb50bb32
 # ╟─dc918ecf-23b1-49f0-8976-a3986d06e522
-# ╟─7ade629c-5382-48b0-a70e-b5482f21a89d
+# ╠═7ade629c-5382-48b0-a70e-b5482f21a89d
 # ╟─f4c40265-adf0-4257-a953-73b2bee8974c
 # ╟─ef7ad156-0f24-4594-857e-df3635b06af6
-# ╟─a156a574-e767-46a7-9885-27d698663135
+# ╠═a156a574-e767-46a7-9885-27d698663135
 # ╟─bf091ac0-adce-42af-8be5-fe76fa70b3dc
 # ╟─de809996-e677-4c59-adcd-4697dc423965
 # ╠═420da70b-6e19-4298-b633-2e55393299b7
-# ╟─d35d01cd-7a80-4b3b-a64c-8dab2231d82b
+# ╠═d35d01cd-7a80-4b3b-a64c-8dab2231d82b
+# ╠═c53d154d-0d97-4aba-aeb4-a4cb6456c0be
+# ╠═5ba6f0f3-3826-462e-80d2-6949dcf358cc
 # ╟─2ce0e082-7235-4bb0-99ef-fd32b29782e6
 # ╟─fb872702-2762-4542-9ac5-0b8809f5ebfd
+# ╠═aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
 # ╟─defc22d4-4de6-4c6a-b60c-9ae937999c15
 # ╟─8d93b4ff-c972-47ad-b73c-a8691b32a442
 # ╟─fe5a8486-87e1-46db-9ce4-adfca8b10a12
