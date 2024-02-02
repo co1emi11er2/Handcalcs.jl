@@ -3,6 +3,8 @@ environment:
   matrix:
     - julia_version: 1.10
     - julia_version: nightly
+  COVERALLS_TOKEN:
+    secure: syL8CvtwYu3BUrmnAkEMBLUgDGI25eGSn
 platform:
   - x64
 cache:
@@ -14,9 +16,6 @@ branches:
   only:
     - master
     - /release-.*/
-environment:
-  COVERALLS_TOKEN:
-    secure: syL8CvtwYu3BUrmnAkEMBLUgDGI25eGSn
 notifications:
   - provider: Email
     on_build_success: false
