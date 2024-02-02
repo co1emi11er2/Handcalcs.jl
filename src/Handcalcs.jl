@@ -1,6 +1,5 @@
 module Handcalcs
 
-# Write your package code here.
 using Latexify: latexify
 using MacroTools: postwalk
 using MacroTools
@@ -9,10 +8,7 @@ using LaTeXStrings
 
 export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
 
-function hello()
-    println("hello world")
-end
-
+# TODO: need to rewrite handcalc to use latexdefine
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
@@ -93,7 +89,7 @@ function calc_Ix(b, h)
 	return b*h^3/12;
 end
 
-# Write macro that will parse a function
+# TODO: Write macro that will parse a function
 macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
