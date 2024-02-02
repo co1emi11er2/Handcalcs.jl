@@ -14,6 +14,9 @@ branches:
   only:
     - master
     - /release-.*/
+environment:
+  COVERALLS_TOKEN:
+    secure: syL8CvtwYu3BUrmnAkEMBLUgDGI25eGSn
 notifications:
   - provider: Email
     on_build_success: false
@@ -30,3 +33,5 @@ test_script:
 on_success:
   - echo "%JL_CODECOV_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_CODECOV_SCRIPT%"
+after_test:
+- C:\projects\julia\bin\julia -e "using Pkg; Pkg.add(\"Coverage\"); using Coverage; Coveralls.submit(process_folder())"
