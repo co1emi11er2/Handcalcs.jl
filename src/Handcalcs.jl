@@ -93,6 +93,7 @@ function calc_Ix(b, h)
 	return b*h^3/12;
 end
 
+# Write macro that will parse a function
 macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
