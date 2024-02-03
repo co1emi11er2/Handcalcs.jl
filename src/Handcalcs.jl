@@ -1,3 +1,6 @@
+"""
+Module for better calc documentation.
+"""
 module Handcalcs
 
 using Latexify: latexify
@@ -8,7 +11,27 @@ using LaTeXStrings
 
 export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
 
-# TODO: need to rewrite handcalc to use latexdefine
+# TODO: need to rewrite handcalc to fix unitful issue
+"""
+    @handcalc expression
+
+Create `LaTeXString` representing `expression`. The expression being a vaiable followed by an equals sign and an algebraic equation.
+Any side effects of the expression, like assignments, are evaluated as well.
+The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
+
+# Examples
+```julia-repl
+julia> a = 2
+2
+julia> b = 5
+5
+julia> @handcalc c = a + b
+L"\$c = a + b = 2 + 5 = 7\$"
+
+julia> c
+7
+```
+"""
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
@@ -55,6 +78,37 @@ function numeric_sub(x)
 	end
 end
 
+"""
+    @handcalcs expressions
+
+Create `LaTeXString` representing `expressions`. The expressions representing a number of expressions.
+A single expression being a vaiable followed by an equals sign and an algebraic equation.
+Any side effects of the expression, like assignments, are evaluated as well.  
+The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
+Can also add comments to the end of equations. See example below.
+
+# Examples
+```julia-repl
+julia> a = 2
+2
+julia> b = 5
+5
+julia> @handcalc begin 
+    c = a + b; "eq 1"
+    d = a - c
+end
+L"\$\\begin{align}
+\\\\c = a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
+\\\\d = a - c = 2 - 7 = -5
+\\end{align}\$"
+
+julia> c
+7
+julia> d
+-5
+
+```
+"""
 macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
@@ -78,10 +132,10 @@ function multiline_latex(exprs...)
         if occursin("text", expr)
             multi_latex *= "\\text{  }" * expr[2:end-1] # remove the $ from end and beginning of string
         else
-            multi_latex *=  "\\\\" * expr[2:end-1] # remove the $ from end and beginning of string
+            multi_latex *=  "\n" * "\\\\" * expr[2:end-1] # remove the $ from end and beginning of string
         end
     end
-    multi_latex *= L"\end{align}"[2:end] # remove the $ from beginning of string
+    multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
     return latexstring(multi_latex)
 end
 

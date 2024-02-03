@@ -32,17 +32,14 @@ end
 
 @testset "handcalcs macro" begin
     #TODO: Figure out way to write expected better and get it to pass
-    expected = (L"$\begin{align}\\
-                  Iy = \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667
-                  \text{  }(\text{moment of inertia y})\\
-                  Ix = \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667
-                  \text{  }(\text{moment of inertia x})
-                  \end{align}$")
-    expected = (L"$\begin{align}\\Iy = \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667\text{  }(\text{moment of inertia y})\\Ix = \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667\text{  }(\text{moment of inertia x})\end{align}$")
+    expected = (L"$\begin{align}
+\\Iy = \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667\text{  }(\text{moment of inertia y})
+\\Ix = \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667\text{  }(\text{moment of inertia x})
+\end{align}$")
+    # expected = (L"$\begin{align}\\Iy = \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667\text{  }(\text{moment of inertia y})\\Ix = \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667\text{  }(\text{moment of inertia x})\end{align}$")
     b = 5
     h = 10
     comment1 = "moment of inertia"
-
     calc = @handcalcs begin
         Iy = h*b^3/12; "moment of inertia y";
 	    Ix = b*h^3/12; "moment of inertia x";
