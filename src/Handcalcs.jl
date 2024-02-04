@@ -93,14 +93,14 @@ julia> a = 2
 2
 julia> b = 5
 5
-julia> @handcalc begin 
+julia> @handcalcs begin 
     c = a + b; "eq 1"
     d = a - c
 end
-L"\$\\begin{align}
+L"\$\begin{align}
 \\\\c = a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
 \\\\d = a - c = 2 - 7 = -5
-\\end{align}\$"
+\end{align}\$"
 
 julia> c
 7
