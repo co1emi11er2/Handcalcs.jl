@@ -46,20 +46,19 @@ This macro is the same as @handcalc but for multiple expressions. You can add co
 a = 2
 b = 5
 @handcalcs begin 
-    c = a + b; "eq 1"
+    c = a + b; "eq 1";
     d = a - c
 end
 ```
 
 ```LaTeX
 $\begin{align}
-\\c = a + b = 2 + 5 = 7\text{  }(\text{eq 1})
-\\d = a - c = 2 - 7 = -5
+\\c &= a + b = 2 + 5 = 7\text{  }(\text{eq 1})
+\\d &= a - c = 2 - 7 = -5
 \end{align}\$"
 ```
 ![fraction](/assets/handcalcs_latex_render.png)
 
-**Note:** *Need to fix alignment of equations*
 
 ## Installation
 This package is registered in the Julia registry, so to install it you can just
