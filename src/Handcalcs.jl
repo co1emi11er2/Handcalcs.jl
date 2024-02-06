@@ -7,9 +7,8 @@ using Latexify: latexify
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
-# using CodeTracking, Revise
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -137,19 +136,6 @@ function multiline_latex(exprs...)
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
     return latexstring(multi_latex)
-end
-
-function calc_Ix(b, h) 
-	return b*h^3/12;
-end
-
-# TODO: Write macro that will parse a function
-macro handfunc(expr, kwargs...)
-    expr = unblock(expr)
-	expr = rmlines(expr)
-    exprs = []
-    println(expr)
-    # @show($(expr.args[2]))
 end
 
 end
