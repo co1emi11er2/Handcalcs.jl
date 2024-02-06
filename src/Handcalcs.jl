@@ -35,7 +35,7 @@ julia> c
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    math_syms = [:*, :/, :^, :+, :-, :%]
+    math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
     expr_numeric = postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr.args[2:end]...)
     params = _extractparam.(kwargs)
     post = :identity
