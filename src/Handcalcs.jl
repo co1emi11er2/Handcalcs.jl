@@ -118,7 +118,7 @@ macro handcalcs(expr, kwargs...)
             comment = latexstring("(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
-            push!(exprs, :(@handcalc $(arg)))
+            push!(exprs, :(@handcalc $(arg) $(kwargs...)))
 		else
 			error("Code pieces should be of type string or expression")
         end
