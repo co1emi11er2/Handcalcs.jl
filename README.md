@@ -53,9 +53,9 @@ end
 
 ```LaTeX
 $\begin{align}
-\\c &= a + b = 2 + 5 = 7\text{  }(\text{eq 1})
+c &= a + b = 2 + 5 = 7\text{  }(\text{eq 1})
 \\d &= a - c = 2 - 7 = -5
-\end{align}\$"
+\end{align}$"
 ```
 ![fraction](/assets/handcalcs_latex_render.png)
 
