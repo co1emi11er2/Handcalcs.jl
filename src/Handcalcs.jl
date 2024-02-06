@@ -7,7 +7,7 @@ using Latexify: latexify
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
-# using CodeTracking, Revise
+using CodeTracking, Revise
 
 export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
 
@@ -118,7 +118,7 @@ macro handcalcs(expr, kwargs...)
             comment = latexstring("(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
-            push!(exprs, :(@handcalc $(arg)))
+            push!(exprs, :(@handcalc $(arg) $(kwargs...)))
 		else
 			error("Code pieces should be of type string or expression")
         end
@@ -140,15 +140,22 @@ function multiline_latex(exprs...)
 end
 
 function calc_Ix(b, h) 
-	return b*h^3/12;
+    Ix = b*h^3/12
+	return Ix;
 end
 
 # TODO: Write macro that will parse a function
 macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    exprs = []
-    println(expr)
+    func_head = expr.args[2].args[1]
+    func_args = expr.args[2].args[2:end]
+    return quote
+        func = code_expr(eval($func_head), Base.typesof($func_args...))
+        func
+    end
+    # exprs = []
+    # println(expr)
     # @show($(expr.args[2]))
 end
 
