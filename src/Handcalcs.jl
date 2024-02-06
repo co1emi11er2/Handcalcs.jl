@@ -112,6 +112,12 @@ macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     exprs = []
+    # If singular expression
+    if expr.head == :(=)
+        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        return Expr(:block, esc(expr), esc(Expr(:call, :multiline_latex, exprs...)))
+    end
+    # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
             comment = latexstring("(\\text{", arg, "})")
