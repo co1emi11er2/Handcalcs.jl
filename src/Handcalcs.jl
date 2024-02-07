@@ -115,7 +115,7 @@ macro handcalcs(expr, kwargs...)
     # If singular expression
     if expr.head == :(=)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
-        return Expr(:block, esc(expr), esc(Expr(:call, :multiline_latex, exprs...)))
+        return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
     end
     # If multiple Expressions
     for arg in expr.args
@@ -128,7 +128,7 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(expr), esc(Expr(:call, :multiline_latex, exprs...)))
+    return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
 end
 
 function multiline_latex(exprs...)
