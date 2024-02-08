@@ -3,12 +3,14 @@ Module for better calc documentation.
 """
 module Handcalcs
 
-using Latexify: latexify
+using Latexify: latexify, set_default, get_default, reset_default
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
 
-export @handcalc, @handcalcs, latexify, multiline_latex
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default
+
+# set_default(fmt=x->format(round(x, digits=4)))
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
