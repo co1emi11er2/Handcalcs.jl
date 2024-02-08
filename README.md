@@ -11,19 +11,24 @@
 
 This is a package for generating LaTeX maths and designed to improve documentation for your calculations. This package was designed to work in both jupyter and pluto.
 
-This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), be able to render the algebraic expressions within a function, and many other things. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalc` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
+This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), be able to render the algebraic expressions within a function, and many other things. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 ## Basic Demo
-*Will add gif soon!*
+![handcalc demo](/assets/handcalcs_demo.gif)
 
 ## Basic example:
-### @handcalc macro
+### Single line expression
 ```julia
 using Handcalcs
 a = 3
 b = 4
-@handcalc c = sqrt(a^2 + b^2)
+@handcalcs c = sqrt(a^2 + b^2)
 ```
+or
+```julia
+@handcalcs begin c = sqrt(a^2 + b^2) end
+```
+You may want to do the latter in Pluto. This will supress the assignment callout in the top left of the output cell.
 
 This generates a LaTeXString (from
 [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl)) which, when
@@ -38,9 +43,9 @@ Atom) it will automatically render as:
 
 ![fraction](/assets/handcalc_latex_render.png)
 
-### @handcalcs macro
+### Multi line expression
 
-This macro is the same as @handcalc but for multiple expressions. You can add comments to the side of the expression by adding a string beside the expression. Note: the variables being assigned in the expressions are evaluated (see [docs]() for more details). See example below.
+You can add comments to the side of the expression by adding a string beside the expression. Note: the variables being assigned in the expressions are evaluated (see [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/) for more details). See example below.
 
 ```julia
 a = 2
@@ -69,4 +74,4 @@ Pkg.add("Handcalcs")
 ```
 
 ## Further information
-For further information see the [docs]() *- Note: docs link not working. Will fix soon!*
+For further information see the [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/)
