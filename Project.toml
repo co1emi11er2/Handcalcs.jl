@@ -1,7 +1,7 @@
 name = "Handcalcs"
 uuid = "e8a07092-c156-4455-ab8e-ed8bc81edefb"
 authors = ["Cole Miller"]
-version = "0.1.1"
+version = "0.1.2"
 
 [deps]
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
