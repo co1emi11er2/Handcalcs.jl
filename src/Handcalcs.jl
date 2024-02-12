@@ -9,7 +9,7 @@ using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, @handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, @handfunc
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -142,6 +142,11 @@ end
 function calc_Ix(b, h) 
     Ix = b*h^3/12
 	return Ix;
+end
+
+function calc_Iy(h, b; expo=3, denominator=12)
+    Iy = h*b^expo/denominator
+    return Iy
 end
 
 # TODO: Write macro that will parse a function
