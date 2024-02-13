@@ -172,27 +172,28 @@ end
 
 
 function parse_func_args(func)
-    kw_arr = []
+    kw_dict = Dict()
     pos_arr = []
     for arg in func.args[1].args[2:end] # this skips the function name
         iskw, arr = _extract_arg(arg)
         if iskw
-            kw_arr = append!(kw_arr, arr)
+            kw_dict = arr
         else
             append!(pos_arr, arr)
         end
     end
-    return kw_arr, pos_arr
+    return kw_dict, pos_arr
 end
 
 function _extract_arg(arg::Expr) 
     iskw = true
+    dict = Dict()
     arr = []
     if arg.head == :parameters # check if function keyword arguments
         for kw in arg.args
-            append!(arr, [[kw.args[1] kw.args[2]]])
+            dict[kw.args[1]] =  kw.args[2]
         end
-        return iskw, arr
+        return iskw, dict
     elseif arg.head == :kw # check if default function arguments (not kw (keyword))
         iskw = false
         append!(arr, [[arg.args[1] arg.args[2]]])
