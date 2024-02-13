@@ -8,8 +8,9 @@ using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
+using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, @handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, @handfunc, @handtest, parse_func_args
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -144,7 +145,7 @@ function calc_Ix(b, h)
 	return Ix;
 end
 
-function calc_Iy(h, b; expo=3, denominator=12)
+function calc_Iy(h, b=15; expo=3, denominator=12)
     Iy = h*b^expo/denominator
     return Iy
 end
@@ -155,13 +156,57 @@ macro handfunc(expr, kwargs...)
 	expr = rmlines(expr)
     func_head = expr.args[2].args[1]
     func_args = expr.args[2].args[2:end]
+    func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
     return quote
-        func = code_expr(eval($func_head), Base.typesof($func_args...))
-        func
+        $func
     end
     # exprs = []
     # println(expr)
     # @show($(expr.args[2]))
+end
+
+macro handtest(ex)
+    InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
+end
+
+
+
+function parse_func_args(func)
+    kw_arr = []
+    pos_arr = []
+    for arg in func.args[1].args[2:end] # this skips the function name
+        iskw, arr = _extract_arg(arg)
+        if iskw
+            kw_arr = append!(kw_arr, arr)
+        else
+            append!(pos_arr, arr)
+        end
+    end
+    return kw_arr, pos_arr
+end
+
+function _extract_arg(arg::Expr) 
+    iskw = true
+    arr = []
+    if arg.head == :parameters # check if function keyword arguments
+        for kw in arg.args
+            append!(arr, [[kw.args[1] kw.args[2]]])
+        end
+        return iskw, arr
+    elseif arg.head == :kw # check if default function arguments (not kw (keyword))
+        iskw = false
+        append!(arr, [[arg.args[1] arg.args[2]]])
+        return iskw, arr
+    else
+        error("Not a keyword or a default argument.")
+    end
+end
+
+function _extract_arg(arg::Symbol) 
+    iskw = false
+    arr = [[arg nothing]]
+    return iskw, arr
+
 end
 
 end
