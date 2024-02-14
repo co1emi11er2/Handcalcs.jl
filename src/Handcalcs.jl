@@ -37,7 +37,8 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
-    expr_numeric = postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr.args[2:end]...)
+    expr_post = expr.head == :(=) ? expr.args[2:end] : expr
+    expr_numeric = _walk_expr(expr_post, math_syms)
     params = _extractparam.(kwargs)
     post = :identity
     for param in params
@@ -58,6 +59,14 @@ macro handcalc(expr, kwargs...)
             Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr_numeric), Expr(:call, post, _executable(expr)))),
         ),
     )
+end
+
+function _walk_expr(expr::Vector, math_syms)
+    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr...)
+end
+
+function _walk_expr(expr::Expr, math_syms)
+    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr)
 end
 
 function _executable(expr)
@@ -114,9 +123,16 @@ macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     exprs = []
+    println(typeof(expr))
+    # If singular expression
+    if expr.head == :(=)
+        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
+    end
+    # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = latexstring("(\\text{", arg, "})")
+            comment = latexstring("\\text{  }(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
             push!(exprs, :(@handcalc $(arg) $(kwargs...)))
@@ -124,16 +140,16 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(expr), esc(Expr(:call, :multiline_latex, exprs...)))
+    return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
 end
 
 function multiline_latex(exprs...)
     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
-    for expr in exprs
-        if occursin("text", expr)
-            multi_latex *= "\\text{  }" * expr[2:end-1] # remove the $ from end and beginning of string
+    for (i, expr) in enumerate(exprs)
+        if occursin("text{  }", expr)
+            multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
-            multi_latex *=  "\n" * "\\\\" * replace(expr[2:end-1], "="=>"&=", count=1) # remove the $ from end and beginning of string
+            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\") * replace(expr[2:end-1], "="=>"&=", count=1) # remove the $ from end and beginning of string
         end
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
@@ -276,6 +292,26 @@ function _merge_args!(found_kw_dict::Dict, found_pos_arr, kw_dict::Dict, pos_arr
         end
     end
     
+end
+
+function _dict_to_expr(dict::Dict)
+    # check if the argument is a dictionary
+
+    # create an empty expression
+    expr = Expr(:block)
+    # loop through the key-value pairs in the dictionary
+    for (key, value) in dict
+        # check if the key is a symbol
+        if typeof(key) == Symbol
+            # append the assignment to the expression
+                        push!(expr.args, Expr(:(=), key, value))
+        else
+            # throw an error if the key is not a symbol
+            error("Invalid key: $(key)")
+        end
+    end
+    # return the expression
+    return expr
 end
 
 end
