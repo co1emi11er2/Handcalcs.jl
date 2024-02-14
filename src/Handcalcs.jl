@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, @handfunc, @handtest, parse_func_args
+export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -150,15 +150,26 @@ function calc_Iy(h, b=15; expo=3, denominator=12)
     return Iy
 end
 
+function calc_I()
+    I = 5*15^3/12
+    return I
+end
+
+
 # TODO: Write macro that will parse a function
 macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     func_head = expr.args[2].args[1]
-    func_args = expr.args[2].args[2:end]
-    func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
+    func_args = expr.args[2].args
+    found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
+    found_func_args = found_func.args[1]
+    found_kw_dict, found_pos_arr = parse_func_args(found_func_args)
+    kw_dict, pos_arr = parse_func_args(func_args)
+    kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
+    _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
     return quote
-        $func
+        $found_func
     end
     # exprs = []
     # println(expr)
@@ -171,43 +182,100 @@ end
 
 
 
-function parse_func_args(func)
-    kw_dict = Dict()
+function parse_func_args(func_args)
     pos_arr = []
-    for arg in func.args[1].args[2:end] # this skips the function name
-        iskw, arr = _extract_arg(arg)
-        if iskw
-            kw_dict = arr
-        else
-            append!(pos_arr, arr)
-        end
+    len_args = length(func_args.args)
+    if len_args == 1 # check if any function arguments
+        return nothing, nothing
+    end
+
+    # parse keyword function arguments
+    iskw, kw_dict = _extract_kw_args(func_args.args[2])
+
+    # parse positional function arguments
+    idx = iskw ? 3 : 2 # default assumes there are keywords
+    if len_args == idx-1 # check if any positional arguments
+        return kw_dict, nothing
+    end
+    for arg in func_args.args[idx:end] # this skips the function name and keywords
+        arr = _extract_arg(arg)
+        append!(pos_arr, arr)
     end
     return kw_dict, pos_arr
 end
 
-function _extract_arg(arg::Expr) 
+function _extract_kw_args(arg::Expr)
     iskw = true
     dict = Dict()
-    arr = []
     if arg.head == :parameters # check if function keyword arguments
         for kw in arg.args
-            dict[kw.args[1]] =  kw.args[2]
+            dict = _extract_kw(kw, dict)
         end
         return iskw, dict
-    elseif arg.head == :kw # check if default function arguments (not kw (keyword))
-        iskw = false
-        append!(arr, [[arg.args[1] arg.args[2]]])
-        return iskw, arr
     else
-        error("Not a keyword or a default argument.")
+        error("Not a keyword argument.")
+    end
+end
+
+function _extract_kw_args(arg::Symbol)
+    iskw = false
+    dict = nothing
+    return iskw, dict
+end
+
+function _extract_kw(kw::Expr, dict::Dict)
+    dict[kw.args[1]] =  kw.args[2]
+    return dict
+end
+
+function _extract_kw(arg::Symbol, dict::Dict)
+    dict[kw] =  nothing
+    return dict
+end
+
+function _extract_arg(arg::Expr) 
+    arr = []
+    if arg.head == :kw # check if default function arguments (not kw (keyword))
+        append!(arr, [[arg.args[1] arg.args[2]]])
+        return arr
+    else
+        error("Not a default argument.")
     end
 end
 
 function _extract_arg(arg::Symbol) 
-    iskw = false
     arr = [[arg nothing]]
-    return iskw, arr
+    return arr
+end
 
+function _clean_args(kw_dict, pos_arr)
+    kw_dict = isnothing(kw_dict) ? Dict() : kw_dict
+    arr_acc = []
+    for (i, arr) in enumerate(pos_arr)
+        if !isnothing(arr[2])
+            kw_dict[arr[1]] = arr[2]
+        else
+            append!(arr_acc, [arr])
+        end
+    end
+    return kw_dict, arr_acc
+end
+
+function _merge_args!(found_kw_dict::Dict, found_pos_arr, kw_dict::Dict, pos_arr)
+    # overwrite keywords
+    if !isnothing(found_kw_dict)
+        for kw in keys(kw_dict)
+            found_kw_dict[kw] = kw_dict[kw]
+        end
+    end
+
+    # merge positional arguments
+    if !isnothing(found_pos_arr)
+        for (i, arr) in enumerate(pos_arr)
+            found_pos_arr[i][2] = arr[1]
+        end
+    end
+    
 end
 
 end
