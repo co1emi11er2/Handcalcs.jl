@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!
+export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!, handfunc
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -177,15 +177,10 @@ macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     func_head = expr.args[2].args[1]
-    func_args = expr.args[2].args
+    func_args = QuoteNode(expr.args[2])
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
-    found_func_args = found_func.args[1]
-    found_kw_dict, found_pos_arr = parse_func_args(found_func_args)
-    kw_dict, pos_arr = parse_func_args(func_args)
-    kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
-    _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
     return quote
-        $found_func
+        handfunc($found_func, $func_args)
     end
     # exprs = []
     # println(expr)
@@ -196,7 +191,26 @@ macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
+function handfunc(found_func, func_args)
+    kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
+    return_expr = _initialize_expr(kw_dict, pos_arr)
+    return return_expr
+end
 
+function _initialize_kw_and_pos_args(found_func, func_args)
+    found_func_args = found_func.args[1]
+    println(found_func)
+    println(found_func_args)
+    println(func_args)
+    found_kw_dict, found_pos_arr = parse_func_args(found_func_args)
+    kw_dict, pos_arr = parse_func_args(func_args)
+    kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
+
+    _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
+    println(found_kw_dict)
+    println(found_pos_arr)
+    return found_kw_dict, found_pos_arr
+end
 
 function parse_func_args(func_args)
     pos_arr = []
@@ -213,7 +227,7 @@ function parse_func_args(func_args)
     if len_args == idx-1 # check if any positional arguments
         return kw_dict, nothing
     end
-    for arg in func_args.args[idx:end] # this skips the function name and keywords
+    for arg in func_args.args[idx:end] # this skips the function name and keyword
         arr = _extract_arg(arg)
         append!(pos_arr, arr)
     end
@@ -233,7 +247,7 @@ function _extract_kw_args(arg::Expr)
     end
 end
 
-function _extract_kw_args(arg::Symbol)
+function _extract_kw_args(arg)
     iskw = false
     dict = nothing
     return iskw, dict
@@ -259,7 +273,7 @@ function _extract_arg(arg::Expr)
     end
 end
 
-function _extract_arg(arg::Symbol) 
+function _extract_arg(arg) 
     arr = [[arg nothing]]
     return arr
 end
@@ -277,7 +291,7 @@ function _clean_args(kw_dict, pos_arr)
     return kw_dict, arr_acc
 end
 
-function _merge_args!(found_kw_dict::Dict, found_pos_arr, kw_dict::Dict, pos_arr)
+function _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
     # overwrite keywords
     if !isnothing(found_kw_dict)
         for kw in keys(kw_dict)
@@ -294,24 +308,38 @@ function _merge_args!(found_kw_dict::Dict, found_pos_arr, kw_dict::Dict, pos_arr
     
 end
 
-function _dict_to_expr(dict::Dict)
-    # check if the argument is a dictionary
-
-    # create an empty expression
-    expr = Expr(:block)
+function _dict_to_expr!(expr::Expr, dict::Dict)
     # loop through the key-value pairs in the dictionary
     for (key, value) in dict
         # check if the key is a symbol
         if typeof(key) == Symbol
             # append the assignment to the expression
-                        push!(expr.args, Expr(:(=), key, value))
+            push!(expr.args, Expr(:(=), key, value))
         else
             # throw an error if the key is not a symbol
             error("Invalid key: $(key)")
         end
     end
-    # return the expression
-    return expr
 end
 
+function _dict_to_expr!(expr::Expr, dict)
+    #do nothing
+end
+
+function _arr_to_expr!(expr::Expr, arr::Array)
+    for (arg_name, arg_val) in arr
+        push!(expr.args, Expr(:(=), arg_name, arg_val))
+    end
+end
+
+function _arr_to_expr!(expr::Expr, arr)
+    #do nothing
+end
+
+function _initialize_expr(kw_dict, pos_arr)
+    expr = Expr(:let)
+    _dict_to_expr!(expr, kw_dict)
+    _arr_to_expr!(expr, pos_arr)
+    return expr
+end
 end
