@@ -123,7 +123,6 @@ macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     exprs = []
-    println(typeof(expr))
     # If singular expression
     if expr.head == :(=)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
@@ -157,8 +156,14 @@ function multiline_latex(exprs...)
 end
 
 function calc_Ix(b, h) 
+    d = if b > 4
+        b * 5
+    else
+        b + 5
+    end
+    c = h + 6
     Ix = b*h^3/12
-	return Ix;
+    
 end
 
 function calc_Iy(h, b=15; expo=3, denominator=12)
@@ -173,14 +178,18 @@ end
 
 
 # TODO: Write macro that will parse a function
-macro handfunc(expr, kwargs...)
-    expr = unblock(expr)
+macro handfunc(exprs, kwargs...)
+    expr = unblock(exprs)
 	expr = rmlines(expr)
     func_head = expr.args[2].args[1]
     func_args = QuoteNode(expr.args[2])
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
+    # println(found_func)
     return quote
-        handfunc($found_func, $func_args)
+        x = handfunc($found_func, $func_args)
+        Main.eval(x)
+        # display(x)
+        # $exprs
     end
     # exprs = []
     # println(expr)
@@ -192,23 +201,26 @@ macro handtest(ex)
 end
 
 function handfunc(found_func, func_args)
+    func_body = unblock(found_func.args[2])
+    func_body = rmlines(func_body)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
+    push!(return_expr.args[2].args, :(@handcalcs $func_body))
     return return_expr
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
     found_func_args = found_func.args[1]
-    println(found_func)
-    println(found_func_args)
-    println(func_args)
+    # println(found_func)
+    # println(found_func_args)
+    # println(func_args)
     found_kw_dict, found_pos_arr = parse_func_args(found_func_args)
     kw_dict, pos_arr = parse_func_args(func_args)
     kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
 
     _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
-    println(found_kw_dict)
-    println(found_pos_arr)
+    # println(found_kw_dict)
+    # println(found_pos_arr)
     return found_kw_dict, found_pos_arr
 end
 
@@ -264,9 +276,14 @@ function _extract_kw(arg::Symbol, dict::Dict)
 end
 
 function _extract_arg(arg::Expr) 
+    # println(arg)
+    # println(arg.head)
     arr = []
     if arg.head == :kw # check if default function arguments (not kw (keyword))
-        append!(arr, [[arg.args[1] arg.args[2]]])
+        append!(arr, [Any[arg.args[1] arg.args[2]]])
+        return arr
+    elseif arg.head == :(.)
+        append!(arr, [Any[arg nothing]])
         return arr
     else
         error("Not a default argument.")
@@ -274,7 +291,7 @@ function _extract_arg(arg::Expr)
 end
 
 function _extract_arg(arg) 
-    arr = [[arg nothing]]
+    arr = [Any[arg nothing]]
     return arr
 end
 
@@ -292,6 +309,7 @@ function _clean_args(kw_dict, pos_arr)
 end
 
 function _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
+    # println(found_pos_arr)
     # overwrite keywords
     if !isnothing(found_kw_dict)
         for kw in keys(kw_dict)
@@ -314,7 +332,7 @@ function _dict_to_expr!(expr::Expr, dict::Dict)
         # check if the key is a symbol
         if typeof(key) == Symbol
             # append the assignment to the expression
-            push!(expr.args, Expr(:(=), key, value))
+            push!(expr.args[2].args, Expr(:(=), key, value))
         else
             # throw an error if the key is not a symbol
             error("Invalid key: $(key)")
@@ -328,7 +346,7 @@ end
 
 function _arr_to_expr!(expr::Expr, arr::Array)
     for (arg_name, arg_val) in arr
-        push!(expr.args, Expr(:(=), arg_name, arg_val))
+        push!(expr.args[2].args, Expr(:(=), arg_name, arg_val))
     end
 end
 
@@ -337,7 +355,7 @@ function _arr_to_expr!(expr::Expr, arr)
 end
 
 function _initialize_expr(kw_dict, pos_arr)
-    expr = Expr(:let)
+    expr = Expr(:let, Expr(:block,), Expr(:block,))
     _dict_to_expr!(expr, kw_dict)
     _arr_to_expr!(expr, pos_arr)
     return expr
