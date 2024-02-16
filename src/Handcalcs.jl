@@ -160,8 +160,8 @@ function calc_Ix(b, h)
         b * 5
     else
         b + 5
-    end
-    c = h + 6
+    end; "test if statement";
+    c = h + 6; "test equation";
     Ix = b*h^3/12
     
 end
@@ -218,6 +218,7 @@ function handfunc(found_func, func_args)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $func_body))
+    # dump(return_expr)
     return return_expr
 end
 
@@ -226,17 +227,17 @@ function _initialize_kw_and_pos_args(found_func, func_args)
     # println(found_func)
     # println(found_func_args)
     # println(func_args)
-    found_kw_dict, found_pos_arr = parse_func_args(found_func_args)
-    kw_dict, pos_arr = parse_func_args(func_args)
+    found_kw_dict, found_pos_arr = parse_func_args(found_func_args, _extract_kw_args, _extract_arg)
+    kw_dict, pos_arr = parse_func_args(func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
 
     _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
-    # println(found_kw_dict)
-    # println(found_pos_arr)
+    println(found_kw_dict)
+    println(found_pos_arr)
     return found_kw_dict, found_pos_arr
 end
 
-function parse_func_args(func_args)
+function parse_func_args(func_args, kw_func, pos_func)
     pos_arr = []
     len_args = length(func_args.args)
     if len_args == 1 # check if any function arguments
@@ -244,7 +245,7 @@ function parse_func_args(func_args)
     end
 
     # parse keyword function arguments
-    iskw, kw_dict = _extract_kw_args(func_args.args[2])
+    iskw, kw_dict = kw_func(func_args.args[2])
 
     # parse positional function arguments
     idx = iskw ? 3 : 2 # default assumes there are keywords
@@ -252,13 +253,14 @@ function parse_func_args(func_args)
         return kw_dict, nothing
     end
     for arg in func_args.args[idx:end] # this skips the function name and keyword
-        arr = _extract_arg(arg)
+        arr = pos_func(arg)
         append!(pos_arr, arr)
     end
     return kw_dict, pos_arr
 end
 
 function _extract_kw_args(arg::Expr)
+    # println(arg)
     iskw = true
     dict = Dict()
     if arg.head == :parameters # check if function keyword arguments
