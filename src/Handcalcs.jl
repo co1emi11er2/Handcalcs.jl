@@ -187,18 +187,18 @@ end
 
 # TODO: Write macro that will parse a function
 macro handfunc(expr, kwargs...)
-    e = esc(expr.args[1])
-    r = esc(expr.args[2])
     expr = unblock(expr)
 	expr = rmlines(expr)
+    var = esc(expr.args[1])
+    eq = esc(expr.args[2])
     func_head = expr.args[2].args[1]
     func_args = QuoteNode(expr.args[2])
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
     # println(found_func)
     return quote
         x = handfunc($found_func, $func_args)
-        latex = Main.eval(x)
-        $e = $r
+        latex = $Main.eval(x)
+        $var = $eq
         latex
         # display(x)
         # $exprs
