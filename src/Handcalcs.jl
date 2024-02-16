@@ -173,13 +173,23 @@ end
 
 function calc_I()
     I = 5*15^3/12
-    return I
+    # return I
+end
+
+function area_sqare(side)
+    area = side^2
+end
+
+function area_rectangle(l, w)
+    area = l * w
 end
 
 
 # TODO: Write macro that will parse a function
-macro handfunc(exprs, kwargs...)
-    expr = unblock(exprs)
+macro handfunc(expr, kwargs...)
+    e = esc(expr.args[1])
+    r = esc(expr.args[2])
+    expr = unblock(expr)
 	expr = rmlines(expr)
     func_head = expr.args[2].args[1]
     func_args = QuoteNode(expr.args[2])
@@ -187,7 +197,9 @@ macro handfunc(exprs, kwargs...)
     # println(found_func)
     return quote
         x = handfunc($found_func, $func_args)
-        Main.eval(x)
+        latex = Main.eval(x)
+        $e = $r
+        latex
         # display(x)
         # $exprs
     end
@@ -298,11 +310,13 @@ end
 function _clean_args(kw_dict, pos_arr)
     kw_dict = isnothing(kw_dict) ? Dict() : kw_dict
     arr_acc = []
-    for (i, arr) in enumerate(pos_arr)
-        if !isnothing(arr[2])
-            kw_dict[arr[1]] = arr[2]
-        else
-            append!(arr_acc, [arr])
+    if !isnothing(pos_arr)
+        for (i, arr) in enumerate(pos_arr)
+            if !isnothing(arr[2])
+                kw_dict[arr[1]] = arr[2]
+            else
+                append!(arr_acc, [arr])
+            end
         end
     end
     return kw_dict, arr_acc
@@ -356,8 +370,12 @@ end
 
 function _initialize_expr(kw_dict, pos_arr)
     expr = Expr(:let, Expr(:block,), Expr(:block,))
+    if !isnothing(kw_dict)
     _dict_to_expr!(expr, kw_dict)
+    end
+    if !isnothing(pos_arr)
     _arr_to_expr!(expr, pos_arr)
+    end
     return expr
 end
 end
