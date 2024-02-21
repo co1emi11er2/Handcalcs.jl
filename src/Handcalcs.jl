@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!, handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, calc_Ix, @handfunc
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
