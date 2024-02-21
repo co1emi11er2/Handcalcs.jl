@@ -3,14 +3,14 @@ Module for better calc documentation.
 """
 module Handcalcs
 
-using Latexify: latexify
+using Latexify: latexify, set_default, get_default, reset_default
 using MacroTools: postwalk
 using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!, handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex, , set_default, get_default, reset_default, calc_Ix, calc_Iy, calc_I, @handfunc, @handtest, parse_func_args, _merge_args!, handfunc
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -104,13 +104,13 @@ julia> a = 2
 julia> b = 5
 5
 julia> @handcalcs begin 
-    c = a + b; "eq 1"
+    c = a + b; "eq 1";
     d = a - c
 end
-L"\$\begin{align}
-\\\\c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
+L"\$\\begin{align}
+c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
 \\\\d &= a - c = 2 - 7 = -5
-\end{align}\$"
+\\end{align}\$"
 
 julia> c
 7
