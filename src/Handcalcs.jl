@@ -157,6 +157,7 @@ end
 
 function calc_Ix(b, h)
     Ix = b*h^3/12
+    return Ix
 end
 
 function calc_Iy(h, b=15; expo=3, denominator=12)
@@ -206,8 +207,10 @@ macro handtest(ex)
 end
 
 function handfunc(found_func, func_args)
-    func_body = unblock(found_func.args[2])
+    func_body = remove_return_statements(found_func.args[2])
+    func_body = unblock(func_body)
     func_body = rmlines(func_body)
+    
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $func_body))
@@ -363,4 +366,20 @@ function _initialize_expr(kw_dict, pos_arr)
     end
     return expr
 end
+
+function remove_return_statements(expr::Expr)
+    # Initialize an empty expression
+    filtered_expr = Expr(:block)
+
+    # Iterate through the subexpressions
+    for subexpr in expr.args
+        if !(subexpr isa Expr && subexpr.head == :return)
+            # If it's not a return statement, add it to the filtered expression
+            push!(filtered_expr.args, subexpr)
+        end
+    end
+
+    return filtered_expr
+end
+
 end
