@@ -108,7 +108,7 @@ calc.args[2].args[3].args[1]
 end
 
 # ╔═╡ aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
-@handfunc begin Iy = calc_Ix(b, h) end
+@handfunc Iy=calc_Ix(5, 15)
 
 # ╔═╡ defc22d4-4de6-4c6a-b60c-9ae937999c15
 md"### Table Example"
