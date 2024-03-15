@@ -1,7 +1,7 @@
 name = "Handcalcs"
 uuid = "e8a07092-c156-4455-ab8e-ed8bc81edefb"
 authors = ["Cole Miller"]
-version = "0.1.3"
+version = "0.1.4"
 
 [deps]
 CodeTracking = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
