@@ -41,7 +41,7 @@ And when this LaTeXString is displayed in an environment which supports the
 tex/latex MIME type (Jupyter and Pluto notebooks, Jupyterlab and Hydrogen for
 Atom) it will automatically render as:
 
-![fraction](/assets/handcalc_latex_render.png)
+[<img src="./assets/handcalc_latex_render.png" width="300"/>](image.png)
 
 ### Multi line expression
 
@@ -60,11 +60,28 @@ end
 $\begin{align}
 c &= a + b = 2 + 5 = 7\text{  }(\text{eq 1})
 \\d &= a - c = 2 - 7 = -5
-\end{align}$"
+\end{align}$
 ```
-![fraction](/assets/handcalcs_latex_render.png)
 
+[<img src="./assets/handcalcs_latex_render.png" width="300"/>](image.png)
 
+### Function expression
+
+This macro will generate LaTeX for a function that was called. The generated LaTeX would be the algebraic equations within the function. Note that this currently only works in global scope and not within functions. 
+
+```julia
+b = 5
+h = 15
+@handfunc Iy = calc_Ix(b, h) # calc_Ix is some function defined in another package
+```
+
+```LaTeX
+$\begin{align}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\end{align}$
+```
+
+[<img src="./assets/handfunc_latex_render_remove.png" width="300"/>](image.png)
 ## Installation
 This package is registered in the Julia registry, so to install it you can just
 run:
