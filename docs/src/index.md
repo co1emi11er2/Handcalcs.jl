@@ -49,6 +49,7 @@ The `Ix` variable is evaluated. Ix being the variable assigned in the @handfunc 
 Current Limitations for `@handfunc`
 - You must pass numbers or symbols (not fields of objects). This is also a current limitation of the @handcalcs macro.
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
+- It curently can only be used in the global scope. You can not use it within a function unless you use numbers within the function you want to call.
 
 ## Using Unitful with UnitfulLatexify
 
@@ -67,7 +68,6 @@ You can see that it looks as though only the unit is being squared. This should 
 There are a number of things that I would like to implement to the package. See [handcalcs.py](https://github.com/connorferster/handcalcs) for potential features. Here is a list of features I hope to add:
 
 - A parameters macro similar to python package
-- A macro that will generate ``\LaTeX`` for a function that was called. The generated ``\LaTeX`` would be the algebraic equations within the function
 - A way to break down a ``\LaTeX`` equation that is too long to multiple lines
 
 ## References
