@@ -110,6 +110,14 @@ end
 # ╔═╡ aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
 @handfunc Iy=calc_Ix(5, 15)
 
+# ╔═╡ 0d056aac-e50f-4b17-8377-0bf5296e4a41
+Iy
+
+# ╔═╡ 01bdb53f-c378-45cf-8262-4f2dd67f5947
+Main.eval(:(let b = 5, h = 15
+      #= C:\Users\CMILLER\.julia\dev\Handcalcs\src\Handcalcs.jl:216 =# @handcalcs Ix = (b * h ^ 3) / 12
+  end))
+
 # ╔═╡ defc22d4-4de6-4c6a-b60c-9ae937999c15
 md"### Table Example"
 
@@ -178,6 +186,8 @@ arg = "AASHTO 5.6.2"
 # ╟─2ce0e082-7235-4bb0-99ef-fd32b29782e6
 # ╟─fb872702-2762-4542-9ac5-0b8809f5ebfd
 # ╠═aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
+# ╠═0d056aac-e50f-4b17-8377-0bf5296e4a41
+# ╠═01bdb53f-c378-45cf-8262-4f2dd67f5947
 # ╟─defc22d4-4de6-4c6a-b60c-9ae937999c15
 # ╟─8d93b4ff-c972-47ad-b73c-a8691b32a442
 # ╟─fe5a8486-87e1-46db-9ce4-adfca8b10a12

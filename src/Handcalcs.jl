@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, calc_Ix, @handfunc
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, calc_Ix, @handfunc, @handfunc2, test_return, @handfunc3, @handfunc4, handfunc
 
 # TODO: need to rewrite handcalc to fix unitful issue
 """
@@ -190,10 +190,11 @@ macro handfunc(expr, kwargs...)
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
     # println(found_func)
     return quote
-        x = handfunc($found_func, $func_args)
-        latex = $Main.eval(x)
+        x = handfunc($__module__, $found_func, $func_args)
+        # latex = $Main.eval(x)
         $var = $eq
-        latex
+        x
+        # latex
         # display(x)
         # $exprs
     end
@@ -202,11 +203,64 @@ macro handfunc(expr, kwargs...)
     # @show($(expr.args[2]))
 end
 
+macro handfunc2(expr, kwargs...)
+    return esc(
+        Expr(
+            :call,
+            :test_return,
+            Meta.quot(expr)))
+end
+
+function test_return(expr)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    var = esc(expr.args[1])
+    eq = expr.args[2]
+    func_head = expr.args[2].args[1]
+    func_args = expr.args[2]
+    println(eq)
+    found_func = @eval @code_expr $eq
+    found_func
+    x = handfunc(found_func, func_args)
+    x = @eval $x
+    x
+    # found_func = unblock(found_func)
+	# found_func = rmlines(found_func)
+    # println(found_func)
+    # typeof(found_func)
+    # _x = handfunc(found_func, func_args)
+    # return_expr = Expr(:block)
+    # push!(return_expr.args, _x)
+
+    
+end
+
+macro handfunc3(expr)
+    println(expr)
+    test_return(expr)
+end
+
+macro handfunc4(expr)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    ex = Meta.quot(expr)
+    var = esc(expr.args[1])
+    eq = expr.args[2]
+    println(__module__)
+    return quote
+        x = $(test_return)($ex)
+        $var = $eq
+        x
+        # display(x)
+        # $exprs
+    end
+end
+
 macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
-function handfunc(found_func, func_args)
+function handfunc(mod, found_func, func_args)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
@@ -214,7 +268,8 @@ function handfunc(found_func, func_args)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $func_body))
-    return return_expr
+    ret = @eval mod $return_expr
+    return ret
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
