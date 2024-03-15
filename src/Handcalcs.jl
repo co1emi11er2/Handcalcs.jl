@@ -190,10 +190,11 @@ macro handfunc(expr, kwargs...)
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
     # println(found_func)
     return quote
-        x = handfunc($found_func, $func_args)
-        latex = $Main.eval(x)
+        x = handfunc($__module__, $found_func, $func_args)
+        # latex = $Main.eval(x)
         $var = $eq
-        latex
+        x
+        # latex
         # display(x)
         # $exprs
     end
@@ -206,7 +207,7 @@ macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
-function handfunc(found_func, func_args)
+function handfunc(eval_module, found_func, func_args)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
@@ -214,7 +215,8 @@ function handfunc(found_func, func_args)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $func_body))
-    return return_expr
+    ret = @eval eval_module $return_expr
+    return ret
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
