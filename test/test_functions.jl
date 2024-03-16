@@ -1,4 +1,6 @@
+module TestFunctions
 
+export calc_Ix
 
 function calc_Ix(b, h)
     Ix = b*h^3/12
@@ -21,4 +23,6 @@ end
 
 function area_rectangle(l, w)
     area = l * w
+end
+
 end
