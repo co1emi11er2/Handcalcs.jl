@@ -201,12 +201,15 @@ function _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
 end
 
 function _dict_to_expr!(expr::Expr, dict::Dict)
+    left_tuple_expr = expr.args[1].args[1].args
+    right_tuple_expr = expr.args[1].args[2].args
     # loop through the key-value pairs in the dictionary
     for (key, value) in dict
         # check if the key is a symbol
         if typeof(key) == Symbol
             # append the assignment to the expression
-            push!(expr.args[1].args, Expr(:(=), key, value))
+            push!(left_tuple_expr, key)
+            push!(right_tuple_expr, value)
         else
             # throw an error if the key is not a symbol
             error("Invalid key: $(key)")
@@ -219,8 +222,11 @@ function _dict_to_expr!(expr::Expr, dict)
 end
 
 function _arr_to_expr!(expr::Expr, arr::Array)
+    left_tuple_expr = expr.args[1].args[1].args
+    right_tuple_expr = expr.args[1].args[2].args
     for (arg_name, arg_val) in arr
-        push!(expr.args[1].args, Expr(:(=), arg_name, arg_val))
+        push!(left_tuple_expr, arg_name)
+        push!(right_tuple_expr, arg_val)
     end
 end
 
@@ -229,7 +235,7 @@ function _arr_to_expr!(expr::Expr, arr)
 end
 
 function _initialize_expr(kw_dict, pos_arr)
-    expr = Expr(:let, Expr(:block,), Expr(:block,))
+    expr = Expr(:let, Expr(:(=),Expr(:tuple,), Expr(:tuple,)), Expr(:block,))
     if !isnothing(kw_dict)
     _dict_to_expr!(expr, kw_dict)
     end

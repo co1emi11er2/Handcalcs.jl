@@ -1,8 +1,7 @@
 # using Handcalcs
 # using LaTeXStrings, Unitful, UnitfulLatexify
 # using Test
-# include("test_functions.jl")
-# using .TestFunctions
+
 
 b = 5
 h = 15
@@ -19,6 +18,11 @@ calc_3 = @handfunc x = calc_Ix(5, 15) # check numeric parameters
 @test calc_1 == expected_1
 @test calc_2 == expected_1
 @test calc_3 == expected_1
+
+a = 5
+b = 15
+calc_4 = @handfunc x = calc_Ix(a, b) # check positional parameters with b = a and h = b. Make sure b is not redfined
+@test calc_4 == expected_1
 
 # Check no parameters
 expected_2 = (L"$\begin{align}
