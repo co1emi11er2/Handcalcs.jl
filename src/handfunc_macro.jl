@@ -73,11 +73,64 @@ macro handfunc(expr, kwargs...)
     # @show($(expr.args[2]))
 end
 
+macro handfunc2(expr, kwargs...)
+    return esc(
+        Expr(
+            :call,
+            :test_return,
+            Meta.quot(expr)))
+end
+
+function test_return(expr, kwargs)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    var = esc(expr.args[1])
+    eq = expr.args[2]
+    func_head = expr.args[2].args[1]
+    func_args = expr.args[2]
+    println(eq)
+    found_func = @eval @code_expr $eq
+    found_func
+    x = handfunc(found_func, func_args, kwargs)
+    # x = @eval $x
+    x
+    # found_func = unblock(found_func)
+	# found_func = rmlines(found_func)
+    # println(found_func)
+    # typeof(found_func)
+    # _x = handfunc(found_func, func_args)
+    # return_expr = Expr(:block)
+    # push!(return_expr.args, _x)
+
+    
+end
+
+macro handfunc3(expr, kwargs...)
+    println(expr)
+    esc(test_return(expr, kwargs))
+end
+
+macro handfunc4(expr)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    ex = Meta.quot(expr)
+    var = esc(expr.args[1])
+    eq = expr.args[2]
+    println(__module__)
+    return quote
+        x = $(test_return)($ex)
+        $var = $eq
+        x
+        # display(x)
+        # $exprs
+    end
+end
+
 macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
-function handfunc(eval_module, found_func, func_args, kwargs)
+function handfunc(found_func, func_args, kwargs)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
@@ -85,8 +138,8 @@ function handfunc(eval_module, found_func, func_args, kwargs)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $(func_body) $(kwargs...)))
-    ret = @eval eval_module $return_expr
-    return ret
+    # ret = @eval eval_module $return_expr
+    return return_expr
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
@@ -226,7 +279,8 @@ function _arr_to_expr!(expr::Expr, arr::Array)
     right_tuple_expr = expr.args[1].args[2].args
     for (arg_name, arg_val) in arr
         push!(left_tuple_expr, arg_name)
-        push!(right_tuple_expr, arg_val)
+        # push!(right_tuple_expr, arg_val)
+        push!(right_tuple_expr, Expr(:call, :esc, arg_val))
     end
 end
 
