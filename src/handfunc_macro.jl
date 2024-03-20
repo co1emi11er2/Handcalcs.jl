@@ -60,7 +60,7 @@ macro handfunc(expr, kwargs...)
     found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
     # println(found_func)
     return quote
-        x = handfunc($__module__, $found_func, $func_args, $(kwargs))
+        x = handfunc($found_func, $func_args, $(kwargs))
         # latex = $Main.eval(x)
         $var = $eq
         x
@@ -73,11 +73,45 @@ macro handfunc(expr, kwargs...)
     # @show($(expr.args[2]))
 end
 
+macro handfunc2(expr, kwargs...)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    var = esc(expr.args[1])
+    eq = esc(expr.args[2])
+    return quote
+        found_func = $(esc(:(@code_expr $(expr.args[2]))))
+        func_args = $(QuoteNode(expr.args[2]))
+        latex_eq = handfunc(found_func, func_args, $kwargs)
+        # latex = @eval $(Expr(:$, :latex_eq))
+        func_args = $(esc(:(@func_vars $(expr.args[2]))))
+        $(esc(:($(expr.args[2].args[4]))))
+        # $var = $eq
+        # latex
+    end
+end
+
+macro func_vars(expr)
+    expr = unblock(expr)
+	expr = rmlines(expr)
+    func_vars(expr)
+
+end
+
+function func_vars(expr)
+    kw_dict, pos_arr = parse_func_args(expr, _extract_kw_args, _extract_arg)
+    return quote
+        kw_dict = $kw_dict
+        pos_arr = $pos_arr
+    end
+end
+
+
+
 macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
-function handfunc(eval_module, found_func, func_args, kwargs)
+function handfunc(found_func, func_args, kwargs)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
@@ -85,8 +119,8 @@ function handfunc(eval_module, found_func, func_args, kwargs)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $(func_body) $(kwargs...)))
-    ret = @eval eval_module $return_expr
-    return ret
+    # ret = @eval eval_module $return_expr
+    return return_expr
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
