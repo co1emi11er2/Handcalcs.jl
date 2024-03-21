@@ -73,7 +73,7 @@ macro handfunc(expr, kwargs...)
     # @show($(expr.args[2]))
 end
 
-macro handfunc2(expr, kwargs...)
+macro handfunc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     var = esc(expr.args[1])
@@ -93,16 +93,26 @@ end
 
 macro func_vars(expr)
     math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
+    expr_func = expr.head == :(=) ? expr.args[2] : expr
+    func_vars!(expr_func, math_syms)
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
     return esc(Meta.quot(expr_numeric))
 end
 
-function func_vars(expr)
+function func_vars!(expr, math_syms)
     kw_dict, pos_arr = parse_func_args(expr, _extract_kw_args, _extract_arg)
-    return quote
-        kw_dict = $kw_dict
-        pos_arr = $pos_arr
+    if !isnothing(kw_dict)
+        for kw in keys(kw_dict)
+            push!(math_syms, kw)
+        end
+    end
+    if !isnothing(pos_arr)
+        for arr in pos_arr
+            if !isnothing(arr[2])
+                push!(math_syms, arr[1])
+            end
+        end
     end
 end
 
