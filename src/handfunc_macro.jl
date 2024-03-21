@@ -79,22 +79,23 @@ macro handfunc2(expr, kwargs...)
     var = esc(expr.args[1])
     eq = esc(expr.args[2])
     return quote
-        found_func = $(esc(:(@code_expr $(expr.args[2]))))
-        func_args = $(QuoteNode(expr.args[2]))
-        latex_eq = handfunc(found_func, func_args, $kwargs)
-        # latex = @eval $(Expr(:$, :latex_eq))
+        found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
+        # func_args = $(QuoteNode(expr.args[2]))
         func_args = $(esc(:(@func_vars $(expr.args[2]))))
-        $(esc(:($(expr.args[2].args[4]))))
-        # $var = $eq
-        # latex
+        latex_eq = handfunc(found_func, func_args, $kwargs)
+        latex = @eval $(Expr(:$, :latex_eq))
+        # func_args = $(esc(:(@func_vars $(expr.args[2]))))
+        
+        $var = $eq
+        latex
     end
 end
 
 macro func_vars(expr)
-    expr = unblock(expr)
-	expr = rmlines(expr)
-    func_vars(expr)
-
+    math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
+    expr_post = expr.head == :(=) ? expr.args[2:end] : expr
+    expr_numeric = _walk_expr(expr_post, math_syms)
+    return esc(Meta.quot(expr_numeric))
 end
 
 function func_vars(expr)
