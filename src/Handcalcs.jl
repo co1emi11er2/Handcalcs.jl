@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc, calc_Ix, calc_Iy #, initialize_format
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc #, initialize_format
 
 # function initialize_format()
 #     @eval begin
