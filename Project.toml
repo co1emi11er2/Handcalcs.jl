@@ -10,6 +10,7 @@ LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+TestHandcalcFunctions = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
 
 [compat]
 CodeTracking = "1.3"
@@ -23,8 +24,9 @@ julia = "1.10"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+TestHandcalcFunctions = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulLatexify = "45397f5d-5981-4c77-b2b3-fc36d6e9b728"
 
 [targets]
-test = ["Test", "Unitful", "UnitfulLatexify"]
+test = ["Test", "Unitful", "UnitfulLatexify", "TestHandcalcFunctions"]

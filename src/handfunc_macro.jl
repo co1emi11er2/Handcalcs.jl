@@ -1,34 +1,3 @@
-
-# Temporary test functions
-# ***************************************************
-# ***************************************************
-
-function calc_Ix(b, h)
-    Ix = b*h^3/12
-    return Ix
-end
-
-function calc_Iy(h, b=15; expo=3, denominator=12)
-    Iy = h*b^expo/denominator
-    return Iy
-end
-
-function calc_I()
-    I = 5*15^3/12
-    # return I
-end
-
-function area_sqare(side)
-    area = side^2
-end
-
-function area_rectangle(l, w)
-    area = l * w
-end
-
-# ***************************************************
-# ***************************************************
-
 """
     @handfunc expression
 
@@ -55,37 +24,11 @@ macro handfunc(expr, kwargs...)
 	expr = rmlines(expr)
     var = esc(expr.args[1])
     eq = esc(expr.args[2])
-    func_head = expr.args[2].args[1]
-    func_args = QuoteNode(expr.args[2])
-    found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
-    # println(found_func)
-    return quote
-        x = handfunc($found_func, $func_args, $(kwargs))
-        # latex = $Main.eval(x)
-        $var = $eq
-        x
-        # latex
-        # display(x)
-        # $exprs
-    end
-    # exprs = []
-    # println(expr)
-    # @show($(expr.args[2]))
-end
-
-macro handfunc(expr, kwargs...)
-    expr = unblock(expr)
-	expr = rmlines(expr)
-    var = esc(expr.args[1])
-    eq = esc(expr.args[2])
     return quote
         found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
-        # func_args = $(QuoteNode(expr.args[2]))
-        func_args = $(esc(:(@func_vars $(expr.args[2]))))
+        func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
         latex_eq = handfunc(found_func, func_args, $kwargs)
         latex = @eval $(Expr(:$, :latex_eq))
-        # func_args = $(esc(:(@func_vars $(expr.args[2]))))
-        
         $var = $eq
         latex
     end
