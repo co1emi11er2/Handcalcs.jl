@@ -14,7 +14,7 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 
 # function initialize_format()
 #     @eval begin
-#         using Formatting
+#         using Format
 #         set_default(fmt=x->format(round(x, digits=4)))
 #     end
 # end
