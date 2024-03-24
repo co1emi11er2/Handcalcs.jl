@@ -49,7 +49,7 @@ The `Ix` variable is evaluated. Ix being the variable assigned in the @handfunc 
 Current Limitations for `@handfunc`
 - You must pass numbers or symbols (not fields of objects). This is also a current limitation of the @handcalcs macro.
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
-- It curently can only be used in the global scope. You can not use it within a function unless you use numbers within the function you want to call.
+- If the function has other function calls within it's body that are not defined in Main, then the macro will error
 
 ## Using Unitful with UnitfulLatexify
 
