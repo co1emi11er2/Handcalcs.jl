@@ -43,6 +43,8 @@ Atom) it will automatically render as:
 
 [<img src="./assets/handcalc_latex_render.png" width="300"/>](image.png)
 
+Also note `c` is evaluated as well.
+
 ### Multi line expression
 
 You can add comments to the side of the expression by adding a string beside the expression. Note: the variables being assigned in the expressions are evaluated (see [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/) for more details). See example below.
@@ -67,7 +69,7 @@ c &= a + b = 2 + 5 = 7\text{  }(\text{eq 1})
 
 ### Function expression
 
-This macro will generate LaTeX for a function that was called. The generated LaTeX would be the algebraic equations within the function. Note that this currently only works in global scope and not within functions. 
+This macro will generate LaTeX for a function that was called. The generated LaTeX would be the algebraic equations within the function.
 
 ```julia
 b = 5
@@ -82,6 +84,8 @@ Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
 ```
 
 [<img src="./assets/handfunc_latex_render_remove.png" width="300"/>](image.png)
+
+Note that `Iy` is evaluated (not`Ix`).
 ## Installation
 This package is registered in the Julia registry, so to install it you can just
 run:

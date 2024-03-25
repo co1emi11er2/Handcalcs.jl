@@ -23,6 +23,13 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
     math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
+    # if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
+    #     if f ∉ math_syms
+    #         return esc(:((@macroexpand @handfunc $expr)))
+    #     end
+    #     # return :($esc(@handfunc $expr))
+    # end
+    
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
     params = _extractparam.(kwargs)

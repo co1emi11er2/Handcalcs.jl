@@ -1,4 +1,4 @@
-using Handcalcs
+using Handcalcs, TestHandcalcFunctions
 using Documenter
 
 DocMeta.setdocmeta!(Handcalcs, :DocTestSetup, :(using Handcalcs); recursive=true)

@@ -1,34 +1,3 @@
-
-# Temporary test functions
-# ***************************************************
-# ***************************************************
-
-function calc_Ix(b, h)
-    Ix = b*h^3/12
-    return Ix
-end
-
-function calc_Iy(h, b=15; expo=3, denominator=12)
-    Iy = h*b^expo/denominator
-    return Iy
-end
-
-function calc_I()
-    I = 5*15^3/12
-    # return I
-end
-
-function area_sqare(side)
-    area = side^2
-end
-
-function area_rectangle(l, w)
-    area = l * w
-end
-
-# ***************************************************
-# ***************************************************
-
 """
     @handfunc expression
 
@@ -55,29 +24,48 @@ macro handfunc(expr, kwargs...)
 	expr = rmlines(expr)
     var = esc(expr.args[1])
     eq = esc(expr.args[2])
-    func_head = expr.args[2].args[1]
-    func_args = QuoteNode(expr.args[2])
-    found_func = InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (expr.args[2],))
-    # println(found_func)
     return quote
-        x = handfunc($__module__, $found_func, $func_args, $(kwargs))
-        # latex = $Main.eval(x)
+        found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
+        func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
+        latex_eq = handfunc(found_func, func_args, $kwargs)
+        latex = @eval $(Expr(:$, :latex_eq))
         $var = $eq
-        x
-        # latex
-        # display(x)
-        # $exprs
+        latex
     end
-    # exprs = []
-    # println(expr)
-    # @show($(expr.args[2]))
 end
+
+macro func_vars(expr)
+    math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
+    expr_func = expr.head == :(=) ? expr.args[2] : expr
+    func_vars!(expr_func, math_syms)
+    expr_post = expr.head == :(=) ? expr.args[2:end] : expr
+    expr_numeric = _walk_expr(expr_post, math_syms)
+    return esc(Meta.quot(expr_numeric))
+end
+
+function func_vars!(expr, math_syms)
+    kw_dict, pos_arr = parse_func_args(expr, _extract_kw_args, _extract_arg)
+    if !isnothing(kw_dict)
+        for kw in keys(kw_dict)
+            push!(math_syms, kw)
+        end
+    end
+    if !isnothing(pos_arr)
+        for arr in pos_arr
+            if !isnothing(arr[2])
+                push!(math_syms, arr[1])
+            end
+        end
+    end
+end
+
+
 
 macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
 end
 
-function handfunc(eval_module, found_func, func_args, kwargs)
+function handfunc(found_func, func_args, kwargs)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
@@ -85,8 +73,8 @@ function handfunc(eval_module, found_func, func_args, kwargs)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $(func_body) $(kwargs...)))
-    ret = @eval eval_module $return_expr
-    return ret
+    # ret = @eval eval_module $return_expr
+    return return_expr
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)

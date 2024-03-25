@@ -10,11 +10,11 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc, calc_Ix #, initialize_format
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc #, initialize_format
 
 # function initialize_format()
 #     @eval begin
-#         using Formatting
+#         using Format
 #         set_default(fmt=x->format(round(x, digits=4)))
 #     end
 # end
