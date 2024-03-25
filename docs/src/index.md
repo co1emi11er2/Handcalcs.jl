@@ -49,7 +49,7 @@ The `Ix` variable is evaluated. Ix being the variable assigned in the @handfunc 
 Current Limitations for `@handfunc`
 - You must pass numbers or symbols (not fields of objects). This is also a current limitation of the @handcalcs macro.
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
-- If the function has other function calls within it's body that are not defined in Main, then the macro will error
+- If the function has other function calls within it's body that are not available in Main, then the macro will error.
 
 ## Using Unitful with UnitfulLatexify
 
@@ -61,7 +61,7 @@ a = 2u"inch"
 b = -5u"inch"
 @handcalc c = sqrt(a^2 + b^2)
 ```
-You can see that it looks as though only the unit is being squared. This should be an easy fix. However, not sure if this should be done in this package or the UnitfulLatexify package.
+You can see that it looks as though only the unit is being squared. This should be an easy fix. See pull request made in Latexify.jl [here](https://github.com/korsbo/Latexify.jl/pull/280). The pull request has been up for a while, so not sure if it will get updated soon. You can always `dev Latexify` and add the one line change for now.
 
 ## Future Plans
 
