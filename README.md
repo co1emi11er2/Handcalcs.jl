@@ -85,7 +85,7 @@ Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
 
 [<img src="./assets/handfunc_latex_render_remove.png" width="300"/>](image.png)
 
-Note that `Iy` is evaluated (not`Ix`).
+Note that `Iy` is evaluated (not`Ix`). Also note that return statements are filtered out of the function body, so keep relevant parts separate from return statements.
 ## Installation
 This package is registered in the Julia registry, so to install it you can just
 run:
