@@ -70,6 +70,7 @@ You can see that it looks as though only the unit is being squared. This should 
 
 There are a number of things that I would like to implement to the package. See [handcalcs.py](https://github.com/connorferster/handcalcs) for potential features. Here is a list of features I hope to add:
 
+- Get recursion working for @handfunc macro
 - A parameters macro similar to python package
 - A way to break down a ``\LaTeX`` equation that is too long to multiple lines
 
