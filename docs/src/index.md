@@ -42,7 +42,10 @@ The moment of inertia about the y direction is: $I_y\n")
 
 A simple example for a function:
 ```@example main
-@handfunc Ix = calc_Ix(5, 15) # function is defined in another package
+using TestHandcalcFunctions
+b = 5 # width
+h = 15 # height
+@handfunc Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
 ```
 The `Ix` variable is evaluated. Ix being the variable assigned in the @handfunc part (variables within function are not defined in the global name space). If you assign it to a different variable then that will be the variable defined (although you will still see it as Ix in the latex portion). Also note that return statements are filtered out of the function body, so keep relevant parts separate from return statements.
 
