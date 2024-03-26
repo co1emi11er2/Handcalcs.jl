@@ -73,3 +73,10 @@ function clean_expr(expr)
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
+
+function clean_kwargs(kwargs)
+    if kwargs == (:params,)
+        handcalcs_kwargs = kwargs
+        kwargs = ()
+    end
+end
