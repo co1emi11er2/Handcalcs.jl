@@ -26,7 +26,7 @@ calc_4 = @handfunc x = calc_Ix(a, b) # check positional parameters with b = a an
 
 # Check no parameters
 expected_2 = (L"$\begin{align}
-I &= \frac{5 \cdot 15^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+I &= \frac{5 \cdot 15^{3}}{12} = 1406.25
 \end{align}$")  
 calc_4 = @handfunc x = TestHandcalcFunctions.calc_I() # check no parameters
 @test calc_4 == expected_2

@@ -59,9 +59,17 @@ function multiline_latex(exprs...)
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
-            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\") * replace(expr[2:end-1], "="=>"&=", count=1) # remove the $ from end and beginning of string
+            cleaned_expr = clean_expr(expr)
+            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\") * cleaned_expr 
         end
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
     return latexstring(multi_latex)
+end
+
+function clean_expr(expr)
+    expr = expr[2:end-1] # remove the $ from end and beginning of string
+    expr = expr[end] == " " ? expr : expr * " " # add trailing space if there isn't one
+    expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
+    expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
