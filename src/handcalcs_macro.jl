@@ -20,7 +20,8 @@ julia> @handcalcs begin
 end
 L"\$\\begin{align}
 c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
-\\\\d &= a - c = 2 - 7 = -5
+\\\\[10pt]
+d &= a - c = 2 - 7 = -5
 \\end{align}\$"
 
 julia> c
@@ -60,7 +61,7 @@ function multiline_latex(exprs...)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
             cleaned_expr = clean_expr(expr)
-            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\") * cleaned_expr 
+            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\[10pt]\n") * cleaned_expr 
         end
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
