@@ -54,15 +54,8 @@ macro handcalc(expr, kwargs...)
     )
 end
 
-# function _walk_expr(expr::Vector, math_syms)
-#     print("This is vector")
-#     postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr...)
-# end
-
-# function _walk_expr(expr::Expr, math_syms)
-#     print("This is expr")
-#     postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr)
-# end
+# Latexify Functions
+# ***************************************************
 
 function _executable(expr)
     return postwalk(expr) do ex
@@ -76,6 +69,14 @@ end
 _extractparam(arg::Symbol) = arg
 _extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2]) 
 
+# ***************************************************
+
+
+# These Functions parse the original expression to
+# create an expression that interplotes the variables
+# ***************************************************
+# ***************************************************
+
 function numeric_sub(x)
 	Expr(:($), x)
 end
@@ -83,11 +84,11 @@ end
 function _walk_expr(expr::Vector, math_syms)
     count = 0
     return prewalk(expr...) do ex
-        if count > 0
+        if count > 0 # skip sections based on prewalk
             count -= 1
             return ex
         end
-        if Meta.isexpr(ex, :.)
+        if Meta.isexpr(ex, :.) # interpolates field args
             count = _det_branch_size(ex; count=3)
             return Expr(:$, ex)
         end
@@ -102,12 +103,11 @@ end
 function _walk_expr(expr::Expr, math_syms)
     count = 0
     return prewalk(expr) do ex
-        # println(ex)
-        if count > 0
+        if count > 0 # skip sections based on prewalk
             count -= 1
             return ex
         end
-        if Meta.isexpr(ex, :.)
+        if Meta.isexpr(ex, :.) # interpolates field args
             count = length(ex.args) + 1
             return Expr(:$, ex)
         end
@@ -119,7 +119,7 @@ function _walk_expr(expr::Expr, math_syms)
     end
 end
 
-function _det_branch_size(expr; count=3)
+function _det_branch_size(expr; count=3) # determines field arg depth
     arg1 = expr.args[1]
     if Meta.isexpr(arg1, :.)
         count += 1
@@ -127,3 +127,6 @@ function _det_branch_size(expr; count=3)
     end
     return count
 end
+
+# ***************************************************
+# ***************************************************
