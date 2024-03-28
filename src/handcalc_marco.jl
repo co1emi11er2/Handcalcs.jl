@@ -54,13 +54,15 @@ macro handcalc(expr, kwargs...)
     )
 end
 
-function _walk_expr(expr::Vector, math_syms)
-    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr...)
-end
+# function _walk_expr(expr::Vector, math_syms)
+#     print("This is vector")
+#     postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr...)
+# end
 
-function _walk_expr(expr::Expr, math_syms)
-    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr)
-end
+# function _walk_expr(expr::Expr, math_syms)
+#     print("This is expr")
+#     postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr)
+# end
 
 function _executable(expr)
     return postwalk(expr) do ex
@@ -75,8 +77,53 @@ _extractparam(arg::Symbol) = arg
 _extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2]) 
 
 function numeric_sub(x)
-	try Expr(:($), x)
-	catch
-		x
-	end
+	Expr(:($), x)
+end
+
+function _walk_expr(expr::Vector, math_syms)
+    count = 0
+    return prewalk(expr...) do ex
+        if count > 0
+            count -= 1
+            return ex
+        end
+        if Meta.isexpr(ex, :.)
+            count = _det_branch_size(ex; count=3)
+            return Expr(:$, ex)
+        end
+        if (ex isa Symbol) & (ex ∉ math_syms)
+            count = 1
+            return numeric_sub(ex)
+        end
+            return ex
+    end
+end
+
+function _walk_expr(expr::Expr, math_syms)
+    count = 0
+    return prewalk(expr) do ex
+        # println(ex)
+        if count > 0
+            count -= 1
+            return ex
+        end
+        if Meta.isexpr(ex, :.)
+            count = length(ex.args) + 1
+            return Expr(:$, ex)
+        end
+        if (ex isa Symbol) & (ex ∉ math_syms)
+            count = 1
+            return numeric_sub(ex)
+        end
+            return ex
+    end
+end
+
+function _det_branch_size(expr; count=3)
+    arg1 = expr.args[1]
+    if Meta.isexpr(arg1, :.)
+        count += 1
+        return _det_branch_size(arg1; count=count)
+    end
+    return count
 end
