@@ -92,6 +92,10 @@ function _walk_expr(expr::Vector, math_syms)
             count = _det_branch_size(ex; count=3)
             return Expr(:$, ex)
         end
+        if Meta.isexpr(ex, :kw) # interpolates field args
+            count = 1
+            return ex
+        end
         if (ex isa Symbol) & (ex ∉ math_syms)
             count = 1
             return numeric_sub(ex)
@@ -110,6 +114,10 @@ function _walk_expr(expr::Expr, math_syms)
         if Meta.isexpr(ex, :.) # interpolates field args
             count = length(ex.args) + 1
             return Expr(:$, ex)
+        end
+        if Meta.isexpr(ex, :kw) # interpolates field args
+            count = 1
+            return ex
         end
         if (ex isa Symbol) & (ex ∉ math_syms)
             count = 1
