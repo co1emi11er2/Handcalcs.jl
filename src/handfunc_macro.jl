@@ -36,30 +36,10 @@ end
 
 macro func_vars(expr)
     math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
-    expr_func = expr.head == :(=) ? expr.args[2] : expr
-    func_vars!(expr_func, math_syms)
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
     return esc(Meta.quot(expr_numeric))
 end
-
-function func_vars!(expr, math_syms)
-    kw_dict, pos_arr = parse_func_args(expr, _extract_kw_args, _extract_arg)
-    if !isnothing(kw_dict)
-        for kw in keys(kw_dict)
-            push!(math_syms, kw)
-        end
-    end
-    if !isnothing(pos_arr)
-        for arr in pos_arr
-            if !isnothing(arr[2])
-                push!(math_syms, arr[1])
-            end
-        end
-    end
-end
-
-
 
 macro handtest(ex)
     InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
