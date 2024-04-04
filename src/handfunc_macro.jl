@@ -41,10 +41,6 @@ macro func_vars(expr)
     return esc(Meta.quot(expr_numeric))
 end
 
-macro handtest(ex)
-    InteractiveUtils.gen_call_with_extracted_types_and_kwargs(__module__, :code_expr, (ex,))
-end
-
 function handfunc(found_func, func_args, kwargs)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
