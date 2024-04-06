@@ -39,6 +39,7 @@ macro handcalcs(expr, kwargs...)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
         return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
     end
+    h_kwargs, kwargs = clean_kwargs(kwargs)
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
@@ -50,7 +51,7 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(kwargs)...), exprs...)))
+    return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
 end
 
 function multiline_latex(exprs...; cols=1, spa=10, kwargs...)
@@ -81,12 +82,18 @@ function clean_expr(expr)
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
 
-function clean_kwargs!(kwargs)
-    println(typeof(kwargs), kwargs)
-    h_kwargs = Dict{Symbol, Int}()
-    for sym in [:cols, :spa]
-        split_kwargs
+function clean_kwargs(kwargs)
+    h_kwargs = []
+    l_kwargs = []
+    for kwarg in kwargs
+        if _split_kwarg(kwarg) in h_syms
+            h_kwargs = push!(h_kwargs, kwarg)
+        else
+            l_kwargs = push!(l_kwargs, kwarg)
+        end
     end
-    return h_kwargs
+    return Tuple(h_kwargs), Tuple(l_kwargs)
 end
-    
+
+_split_kwarg(arg::Symbol) = arg
+_split_kwarg(arg::Expr) = arg.args[1]

@@ -19,6 +19,7 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 #     end
 # end
 const math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%, :sqrt, :sin, :cos, :tan]
+const h_syms = [:cols, :spa]
 
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
