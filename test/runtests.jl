@@ -2,7 +2,6 @@ using Handcalcs
 using LaTeXStrings, Unitful, UnitfulLatexify
 using Test
 using TestHandcalcFunctions
-# include("test_functions.jl")
 # using .TestFunctions
 
 
