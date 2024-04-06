@@ -40,10 +40,11 @@ macro handcalcs(expr, kwargs...)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
         return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
     end
+    h_kwargs, kwargs = clean_kwargs(kwargs)
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = latexstring("\\text{  }(\\text{", arg, "})")
+            comment = latexstring("\\;\\text{  }(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
             push!(exprs, :(@handcalc $(arg) $(kwargs...)))
@@ -51,17 +52,24 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
+    return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
 end
 
-function multiline_latex(exprs...)
+function multiline_latex(exprs...; cols=1, spa=10, kwargs...)
+    cols_start = cols
     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
     for (i, expr) in enumerate(exprs)
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
             cleaned_expr = clean_expr(expr)
-            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\[10pt]\n") * cleaned_expr 
+            if cols == 0 
+                cols = cols_start 
+                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr
+            else
+                multi_latex *= (i ==1 ? "\n" : "&\n") * cleaned_expr 
+            end
+            cols -= 1
         end
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
@@ -74,3 +82,19 @@ function clean_expr(expr)
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
+
+function clean_kwargs(kwargs)
+    h_kwargs = []
+    l_kwargs = []
+    for kwarg in kwargs
+        if _split_kwarg(kwarg) in h_syms
+            h_kwargs = push!(h_kwargs, kwarg)
+        else
+            l_kwargs = push!(l_kwargs, kwarg)
+        end
+    end
+    return Tuple(h_kwargs), Tuple(l_kwargs)
+end
+
+_split_kwarg(arg::Symbol) = arg
+_split_kwarg(arg::Expr) = arg.args[1]

@@ -4,7 +4,7 @@ Module for better calc documentation.
 module Handcalcs
 
 using Latexify: latexify, set_default, get_default, reset_default
-using MacroTools: postwalk
+using MacroTools: postwalk, prewalk
 using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
@@ -18,6 +18,8 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 #         set_default(fmt=x->format(round(x, digits=4)))
 #     end
 # end
+const math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%, :sqrt, :sin, :cos, :tan]
+const h_syms = [:cols, :spa]
 
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")

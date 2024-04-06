@@ -54,13 +54,8 @@ macro handcalc(expr, kwargs...)
     )
 end
 
-function _walk_expr(expr::Vector, math_syms)
-    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr...)
-end
-
-function _walk_expr(expr::Expr, math_syms)
-    postwalk(x -> (x isa Symbol) & (x ∉ math_syms) ? numeric_sub(x) : x, expr)
-end
+# Latexify Functions
+# ***************************************************
 
 function _executable(expr)
     return postwalk(expr) do ex
@@ -74,9 +69,72 @@ end
 _extractparam(arg::Symbol) = arg
 _extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2]) 
 
+# ***************************************************
+
+
+# These Functions parse the original expression to
+# create an expression that interplotes the variables
+# ***************************************************
+# ***************************************************
+
 function numeric_sub(x)
-	try Expr(:($), x)
-	catch
-		x
-	end
+	Expr(:($), x)
 end
+
+function _walk_expr(expr::Vector, math_syms)
+    count = 0
+    return prewalk(expr...) do ex
+        if count > 0 # skip sections based on prewalk
+            count -= 1
+            return ex
+        end
+        if Meta.isexpr(ex, :.) # interpolates field args
+            count = _det_branch_size(ex; count=3)
+            return Expr(:$, ex)
+        end
+        if Meta.isexpr(ex, :kw) # interpolates field args
+            count = 1
+            return ex
+        end
+        if (ex isa Symbol) & (ex ∉ math_syms)
+            count = 1
+            return numeric_sub(ex)
+        end
+            return ex
+    end
+end
+
+function _walk_expr(expr::Expr, math_syms)
+    count = 0
+    return prewalk(expr) do ex
+        if count > 0 # skip sections based on prewalk
+            count -= 1
+            return ex
+        end
+        if Meta.isexpr(ex, :.) # interpolates field args
+            count = length(ex.args) + 1
+            return Expr(:$, ex)
+        end
+        if Meta.isexpr(ex, :kw) # interpolates field args
+            count = 1
+            return ex
+        end
+        if (ex isa Symbol) & (ex ∉ math_syms)
+            count = 1
+            return numeric_sub(ex)
+        end
+            return ex
+    end
+end
+
+function _det_branch_size(expr; count=3) # determines field arg depth
+    arg1 = expr.args[1]
+    if Meta.isexpr(arg1, :.)
+        count += 1
+        return _det_branch_size(arg1; count=count)
+    end
+    return count
+end
+
+# ***************************************************
+# ***************************************************

@@ -9,7 +9,7 @@ CurrentModule = Handcalcs
 This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Handcalcs.jl). This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), be able to render the algebraic expressions within a function, and many other things. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 ## Examples
-A simple example for a single expression:
+### A single expression example:
 
 ```@example main
 using Handcalcs
@@ -23,7 +23,7 @@ The variable x is still evaluated:
 x
 ```
 
-A simple example for multiple expressions:
+### An example of multiple expressions:
 ```@example main
 b = 5 # width
 h = 15 # height
@@ -39,8 +39,21 @@ The `I_x` and `I_y` variables are still evaluated:
 println("The moment of inertia about the x direction is: $I_x\n
 The moment of inertia about the y direction is: $I_y\n")
 ```
+### You can edit the layout of the returned LaTeX expression with `cols` and `spa`:
+- cols - change the number of columns the expression returns (default = 1).
+- spa - change the vertical line spacing between expressions (default = 10).
+```@example main
+@handcalcs begin
+    a = 1
+    b = 2
+    c = 3
+    x = 4
+    y = 5
+    z = 6
+end cols=3 spa=0
+```
 
-A simple example for a function:
+### An example for rendering expressions within a function:
 ```@example main
 using TestHandcalcFunctions
 b = 5 # width
