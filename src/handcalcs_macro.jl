@@ -20,7 +20,8 @@ julia> @handcalcs begin
 end
 L"\$\\begin{align}
 c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
-\\\\d &= a - c = 2 - 7 = -5
+\\\\[10pt]
+d &= a - c = 2 - 7 = -5
 \\end{align}\$"
 
 julia> c
