@@ -16,9 +16,9 @@ calc2 = @handcalcs begin x = (-b + sqrt(b^2 - 4*a*c))/(2*a) end
 
 # Multiple Expressions - General
 expected = (L"$\begin{align}
-Iy &= \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667\text{  }(\text{moment of inertia y})
+Iy &= \frac{h \cdot b^{3}}{12} = \frac{10 \cdot 5^{3}}{12} = 104.16666666666667\;\text{  }(\text{moment of inertia y})
 \\[10pt]
-Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667\text{  }(\text{moment of inertia x})
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 10^{3}}{12} = 416.6666666666667\;\text{  }(\text{moment of inertia x})
 \end{align}$")
 b = 5
 h = 10

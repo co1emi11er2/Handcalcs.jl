@@ -19,6 +19,7 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 #     end
 # end
 
+include("clean_kwargs.jl")
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
 include("handfunc_macro.jl")

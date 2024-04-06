@@ -42,7 +42,7 @@ macro handcalcs(expr, kwargs...)
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = latexstring("\\text{  }(\\text{", arg, "})")
+            comment = latexstring("\\;\\text{  }(\\text{", arg, "})")
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
             push!(exprs, :(@handcalc $(arg) $(kwargs...)))
@@ -53,14 +53,35 @@ macro handcalcs(expr, kwargs...)
     return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
 end
 
-function multiline_latex(exprs...)
+# function multiline_latex(exprs...)
+#     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
+#     for (i, expr) in enumerate(exprs)
+#         if occursin("text{  }", expr)
+#             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
+#         else
+#             cleaned_expr = clean_expr(expr)
+#             multi_latex *=  "\n" * (i ==1 ? "" : "\\\\[10pt]\n") * cleaned_expr 
+#         end
+#     end
+#     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
+#     return latexstring(multi_latex)
+# end
+
+function multiline_latex(exprs...; cols=1, spa=10)
+    cols_start = cols
     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
     for (i, expr) in enumerate(exprs)
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
             cleaned_expr = clean_expr(expr)
-            multi_latex *=  "\n" * (i ==1 ? "" : "\\\\[10pt]\n") * cleaned_expr 
+            if cols == 0 
+                cols = cols_start 
+                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr
+            else
+                multi_latex *= (i ==1 ? "\n" : "&\n") * cleaned_expr 
+            end
+            cols -= 1
         end
     end
     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
@@ -74,9 +95,13 @@ function clean_expr(expr)
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
 
-function clean_kwargs(kwargs)
-    if kwargs == (:params,)
-        handcalcs_kwargs = kwargs
-        kwargs = ()
+function clean_kwargs!(kwargs)
+    println(typeof(kwargs), kwargs)
+    h_kwargs = Dict{Symbol, Int}()
+    for sym in [:cols, :spa]
+        if sym in keys(kwargs)
+            h_kwargs[sym] = pop!(kwargs,sym)
+        end
     end
+    return h_kwargs
 end
