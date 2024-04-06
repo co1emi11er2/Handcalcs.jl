@@ -76,4 +76,20 @@ end
 # ***************************************************
 
 
+# Check field args
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{align}
+area &= l \cdot w = 5 \cdot 15 = 75
+\end{align}$"
+
+struct myRec
+    b
+    h
+end
+rec = myRec(5, 15)
+calc = @handfunc area = TestHandcalcFunctions.area_rectangle(rec.b, rec.h)
+@test calc == expected
+# ***************************************************
+
 # Check recursion and other functions within function body
