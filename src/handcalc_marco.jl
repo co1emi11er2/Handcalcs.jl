@@ -22,7 +22,6 @@ julia> c
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
     # if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
     #     if f ∉ math_syms
     #         return esc(:((@macroexpand @handfunc $expr)))
