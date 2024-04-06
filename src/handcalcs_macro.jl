@@ -50,24 +50,10 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
+    return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(kwargs)...), exprs...)))
 end
 
-# function multiline_latex(exprs...)
-#     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
-#     for (i, expr) in enumerate(exprs)
-#         if occursin("text{  }", expr)
-#             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
-#         else
-#             cleaned_expr = clean_expr(expr)
-#             multi_latex *=  "\n" * (i ==1 ? "" : "\\\\[10pt]\n") * cleaned_expr 
-#         end
-#     end
-#     multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
-#     return latexstring(multi_latex)
-# end
-
-function multiline_latex(exprs...; cols=1, spa=10)
+function multiline_latex(exprs...; cols=1, spa=10, kwargs...)
     cols_start = cols
     multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
     for (i, expr) in enumerate(exprs)
@@ -99,9 +85,8 @@ function clean_kwargs!(kwargs)
     println(typeof(kwargs), kwargs)
     h_kwargs = Dict{Symbol, Int}()
     for sym in [:cols, :spa]
-        if sym in keys(kwargs)
-            h_kwargs[sym] = pop!(kwargs,sym)
-        end
+        split_kwargs
     end
     return h_kwargs
 end
+    

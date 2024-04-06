@@ -18,8 +18,8 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 #         set_default(fmt=x->format(round(x, digits=4)))
 #     end
 # end
+const math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%, :sqrt, :sin, :cos, :tan]
 
-include("clean_kwargs.jl")
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
 include("handfunc_macro.jl")

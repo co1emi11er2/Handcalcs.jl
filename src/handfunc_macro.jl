@@ -35,7 +35,6 @@ macro handfunc(expr, kwargs...)
 end
 
 macro func_vars(expr)
-    math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%]
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
     return esc(Meta.quot(expr_numeric))
