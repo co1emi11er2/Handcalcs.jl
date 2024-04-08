@@ -57,7 +57,7 @@ end
 
 function multiline_latex(exprs...; cols=1, spa=10, kwargs...)
     cols_start = cols
-    multi_latex = L"\begin{align}"[1:end-1] # remove the $ from end of string
+    multi_latex = "\\begin{align*}"
     for (i, expr) in enumerate(exprs)
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
@@ -72,8 +72,8 @@ function multiline_latex(exprs...; cols=1, spa=10, kwargs...)
             cols -= 1
         end
     end
-    multi_latex *= "\n" * L"\end{align}"[2:end] # remove the $ from beginning of string
-    return latexstring(multi_latex)
+    multi_latex *= "\n" * "\\end{align*}"
+    return LaTeXString(multi_latex)
 end
 
 function clean_expr(expr)
