@@ -15,5 +15,6 @@ calc = @handcalc x = (-b + sqrt(b^2 - 4*a*c))/(2*a)
 calc2 = @handcalc begin x = (-b + sqrt(b^2 - 4*a*c))/(2*a) end
 
 @test calc == expected
+@test x == 2.0
 @test calc2 == expected
 # ***************************************************

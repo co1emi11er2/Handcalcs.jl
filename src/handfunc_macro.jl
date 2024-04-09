@@ -9,9 +9,9 @@ The RHS can be formatted or otherwise transformed by supplying a function as kwa
 # Examples
 ```julia-repl
 julia> @handfunc Iy = calc_Ix(5, 15)
-L"\$\\begin{align}
+L"\$\\begin{aligned}
 Ix &= \\frac{b \\cdot h^{3}}{12} = \\frac{5 \\cdot 15^{3}}{12} = 1406.25
-\\end{align}\$"
+\\end{aligned}\$"
 
 julia> Iy
 1406.25
