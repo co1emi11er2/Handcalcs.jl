@@ -18,11 +18,11 @@ julia> @handcalcs begin
     c = a + b; "eq 1";
     d = a - c
 end
-L"\$\\begin{align}
+L"\$\\begin{aligned}
 c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
 \\\\[10pt]
 d &= a - c = 2 - 7 = -5
-\\end{align}\$"
+\\end{aligned}\$"
 
 julia> c
 7
@@ -41,7 +41,6 @@ macro handcalcs(expr, kwargs...)
         return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
     end
     h_kwargs, kwargs = clean_kwargs(kwargs)
-    # h_kwargs = merge(default_h_kwargs, h_kwargs)
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
@@ -56,25 +55,9 @@ macro handcalcs(expr, kwargs...)
     return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
 end
 
-function multiline_latex(exprs...; cols=1, spa=10, h_env="aligned", kwargs...)
-    cols_start = cols
-    multi_latex = "\\begin{$h_env}"
-    for (i, expr) in enumerate(exprs)
-        if occursin("text{  }", expr)
-            multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
-        else
-            cleaned_expr = clean_expr(expr)
-            if cols == 0 
-                cols = cols_start 
-                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr
-            else
-                multi_latex *= (i ==1 ? "\n" : "&\n") * cleaned_expr 
-            end
-            cols -= 1
-        end
-    end
-    multi_latex *= "\n" * "\\end{$h_env}"
-    return latexstring(multi_latex)
+function multiline_latex(exprs...; kwargs...)
+    h_kwargs = merge(default_h_kwargs, kwargs)
+    return process_multiline_latex(exprs...;h_kwargs...)
 end
 
 function clean_expr(expr)
@@ -100,4 +83,23 @@ end
 _split_kwarg(arg::Symbol) = arg
 _split_kwarg(arg::Expr) = arg.args[1]
 
-# function process_multiline_latex()
+function process_multiline_latex(exprs...;cols=1, spa=10, h_env="aligned", kwargs...)
+    cols_start = cols
+    multi_latex = "\\begin{$h_env}"
+    for (i, expr) in enumerate(exprs)
+        if occursin("text{  }", expr)
+            multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
+        else
+            cleaned_expr = clean_expr(expr)
+            if cols == 0 
+                cols = cols_start 
+                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr
+            else
+                multi_latex *= (i ==1 ? "\n" : "&\n") * cleaned_expr 
+            end
+            cols -= 1
+        end
+    end
+    multi_latex *= "\n" * "\\end{$h_env}"
+    return h_env == "aligned" ? latexstring(multi_latex) : LaTeXString(multi_latex)
+end

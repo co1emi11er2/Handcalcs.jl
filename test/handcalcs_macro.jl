@@ -14,6 +14,7 @@ c = 2
 calc = @handcalcs x = (-b + sqrt(b^2 - 4*a*c))/(2*a)
 calc2 = @handcalcs begin x = (-b + sqrt(b^2 - 4*a*c))/(2*a) end
 @test calc == expected
+@test x == 2.0
 @test calc2 == expected    
 # ***************************************************
 
@@ -34,6 +35,7 @@ calc = @handcalcs begin
     Ix = b*h^3/12; "moment of inertia x";
 end
 @test calc == expected
+@test Iy == 104.16666666666667
 # ***************************************************
 
 

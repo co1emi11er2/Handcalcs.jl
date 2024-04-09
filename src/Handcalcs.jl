@@ -10,7 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc #, initialize_format
+export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc, set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
 
 # function initialize_format()
 #     @eval begin
@@ -19,8 +19,9 @@ export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_defaul
 #     end
 # end
 const math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%, :sqrt, :sin, :cos, :tan]
-const h_syms = [:cols, :spa]
+const h_syms = [:cols, :spa, :h_env]
 
+include("default_h_kwargs.jl")
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
 include("handfunc_macro.jl")

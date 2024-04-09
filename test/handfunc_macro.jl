@@ -25,6 +25,7 @@ a = 5
 b = 15
 calc_4 = @handfunc x = calc_Ix(a, b) # check positional parameters with b = a and h = b. Make sure b is not redfined
 @test calc_4 == expected_1
+@test x == 1406.25
 # ***************************************************
 
 

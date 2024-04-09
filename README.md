@@ -11,7 +11,7 @@
 
 This is a package for generating LaTeX maths and designed to improve documentation for your calculations. This package was designed to work in both jupyter and pluto.
 
-This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), be able to render the algebraic expressions within a function, and many other things. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
+This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), and get recursion working for function calls. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 ## Basic Demo
 ![handcalc demo](/assets/handcalcs_demo.gif)
@@ -59,11 +59,11 @@ end
 ```
 
 ```LaTeX
-$\begin{align}
+$\begin{aligned}
 c &= a + b = 2 + 5 = 7\;\text{  }(\text{eq 1})
 \\[10pt]
 d &= a - c = 2 - 7 = -5
-\end{align}$
+\end{aligned}$
 ```
 
 [<img src="./assets/handcalcs_latex_render.png" width="300"/>](image.png)
@@ -79,9 +79,9 @@ h = 15
 ```
 
 ```LaTeX
-$\begin{align}
+$\begin{aligned}
 Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
-\end{align}$
+\end{aligned}$
 ```
 
 [<img src="./assets/handfunc_latex_render_remove.png" width="300"/>](image.png)
