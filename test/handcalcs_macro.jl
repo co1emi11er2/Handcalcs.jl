@@ -128,3 +128,33 @@ end cols=3 spa=5
 
 @test calc == expected
 # ***************************************************
+
+
+# parameters test
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+a &= 5
+\\[10pt]
+b &= 6
+\end{aligned}$"
+
+a = 5
+
+calc = @handcalcs begin # check mix of symbol and variable
+    a
+    b = 6
+end
+@test calc == expected
+
+expected = L"$\begin{aligned}
+a &= 5
+\end{aligned}$"
+
+calc = @handcalcs a   # check single symbol
+@test calc == expected
+
+calc = @handcalcs begin a end
+@test calc == expected
+# ***************************************************
+
