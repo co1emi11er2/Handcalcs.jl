@@ -19,10 +19,12 @@ julia> @handcalcs begin
     d = a - c
 end
 L"\$\\begin{aligned}
-c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
+c &= a + b = 2 + 5 = 7\\;\\text{  }(\\text{eq 1})
 \\\\[10pt]
 d &= a - c = 2 - 7 = -5
-\\end{aligned}\$"
+\\\\[10pt]
+e &= 7
+\\end{aligned}$"
 
 julia> c
 7
