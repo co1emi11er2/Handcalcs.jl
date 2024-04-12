@@ -12,11 +12,17 @@ Can also add comments to the end of equations. See example below.
 ```julia-repl
 julia> a = 2
 2
+
 julia> b = 5
 5
+
+julia> e = 7
+7
+
 julia> @handcalcs begin 
     c = a + b; "eq 1";
     d = a - c
+    e
 end
 L"\$\\begin{aligned}
 c &= a + b = 2 + 5 = 7\\;\\text{  }(\\text{eq 1})
@@ -24,10 +30,11 @@ c &= a + b = 2 + 5 = 7\\;\\text{  }(\\text{eq 1})
 d &= a - c = 2 - 7 = -5
 \\\\[10pt]
 e &= 7
-\\end{aligned}$"
+\\end{aligned}\$"
 
 julia> c
 7
+
 julia> d
 -5
 
