@@ -12,20 +12,29 @@ Can also add comments to the end of equations. See example below.
 ```julia-repl
 julia> a = 2
 2
+
 julia> b = 5
 5
+
+julia> e = 7
+7
+
 julia> @handcalcs begin 
     c = a + b; "eq 1";
     d = a - c
+    e
 end
 L"\$\\begin{aligned}
-c &= a + b = 2 + 5 = 7\\text{  }(\\text{eq 1})
+c &= a + b = 2 + 5 = 7\\;\\text{  }(\\text{eq 1})
 \\\\[10pt]
 d &= a - c = 2 - 7 = -5
+\\\\[10pt]
+e &= 7
 \\end{aligned}\$"
 
 julia> c
 7
+
 julia> d
 -5
 
@@ -34,13 +43,22 @@ julia> d
 macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    exprs = []
+    h_kwargs, kwargs = clean_kwargs(kwargs) # parse handcalc kwargs (h_kwargs)
+
+    exprs = [] #initialize expression accumulator
+
+    # If singular symbol
+    if typeof(expr) == Symbol
+        push!(exprs, :(@latexdefine $(expr) $(kwargs...)))
+        return _handcalcs(exprs, h_kwargs)
+    end
+
     # If singular expression
     if expr.head == :(=)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
-        return Expr(:block, esc(Expr(:call, :multiline_latex, exprs...)))
+        return _handcalcs(exprs, h_kwargs)
     end
-    h_kwargs, kwargs = clean_kwargs(kwargs)
+    
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
@@ -48,11 +66,19 @@ macro handcalcs(expr, kwargs...)
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
             push!(exprs, :(@handcalc $(arg) $(kwargs...)))
+        elseif typeof(arg) == Symbol # type symbol is a parameter that will be returned back
+            push!(exprs, :(@latexdefine $(arg) $(kwargs...)))
 		else
 			error("Code pieces should be of type string or expression")
         end
     end
-    return Expr(:block, esc(Expr(:call, :multiline_latex, Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
+    return _handcalcs(exprs, h_kwargs)
+end
+
+function _handcalcs(exprs, h_kwargs)
+    Expr(:block, esc(
+        Expr(:call, :multiline_latex, 
+        Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
 end
 
 function multiline_latex(exprs...; kwargs...)

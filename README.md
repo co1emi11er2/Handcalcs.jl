@@ -13,26 +13,35 @@ This is a package for generating LaTeX maths and designed to improve documentati
 
 This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), and get recursion working for function calls. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
+**Note: This package now renders properly in Quarto/Weave!! You can change the default settings to your liking. See [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/) for more info.**
+
 ## Basic Demo
+
 ![handcalc demo](/assets/handcalcs_demo.gif)
 
 ## Basic example:
+
 ### Single line expression
+
 ```julia
 using Handcalcs
 a = 3
 b = 4
 @handcalcs c = sqrt(a^2 + b^2)
 ```
+
 or
+
 ```julia
 @handcalcs begin c = sqrt(a^2 + b^2) end
 ```
+
 You may want to do the latter in Pluto. This will supress the assignment callout in the top left of the output cell.
 
 This generates a LaTeXString (from
 [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl)) which, when
 printed looks like:
+
 ```LaTeX
 $c = \sqrt{a^{2} + b^{2}} = \sqrt{3^{2} + 4^{2}} = 5.0$
 ```

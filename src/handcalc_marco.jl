@@ -43,15 +43,26 @@ macro handcalc(expr, kwargs...)
             break
         end
     end
-    return esc(
+    return _handcalc(expr, expr_numeric, post, kwargs)
+end
+
+# Handcalcs - Symbolic and Numeric return
+# ***************************************************
+function _handcalc(expr, expr_numeric, post, kwargs)
+    esc(
         Expr(
             :call,
             :latexify,
-            Expr(:parameters, _extractparam.(kwargs)...),
-            Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr_numeric), Expr(:call, post, _executable(expr)))),
+            Expr(:parameters, _extractparam.(kwargs)...), 
+            Expr(:call, :Expr, 
+            QuoteNode(:(=)), Meta.quot(expr), # symbolic portion
+            Expr(:call, :Expr, 
+            QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
+            Expr(:call, post, _executable(expr)))), # defines variable
         ),
     )
 end
+# ***************************************************
 
 # Latexify Functions
 # ***************************************************

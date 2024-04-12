@@ -3,14 +3,16 @@ Module for better calc documentation.
 """
 module Handcalcs
 
-using Latexify: latexify, set_default, get_default, reset_default
+using Latexify: latexify, set_default, get_default, reset_default, @latexdefine
 using MacroTools: postwalk, prewalk
 using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 
-export @handcalc, @handcalcs, latexify, multiline_latex, set_default, get_default, reset_default, @handfunc, set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
+export @handcalc, @handcalcs, @handfunc, multiline_latex
+export set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
+export latexify, @latexdefine, set_default, get_default, reset_default
 
 # function initialize_format()
 #     @eval begin
