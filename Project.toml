@@ -4,6 +4,7 @@ authors = ["Cole Miller"]
 version = "0.2.1"
 
 [deps]
+AbstractTrees = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
 CodeTracking = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"

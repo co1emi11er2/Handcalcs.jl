@@ -2,7 +2,8 @@
 """
     @handcalc expression
 
-Create `LaTeXString` representing `expression`. The expression being a vaiable followed by an equals sign and an algebraic equation.
+Create `LaTeXString` representing `expression`. The expression being a vaiable followed by
+an equals sign and an algebraic equation.
 Any side effects of the expression, like assignments, are evaluated as well.
 The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
 
@@ -22,12 +23,13 @@ julia> c
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    # if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
-    #     if f ∉ math_syms
-    #         return esc(:((@macroexpand @handfunc $expr)))
-    #     end
-    #     # return :($esc(@handfunc $expr))
-    # end
+    if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
+        if f ∉ math_syms
+            kwargs = kwargs..., :(is_recursive = true)
+            return esc(:(@handfunc $(expr) $(kwargs...)))
+        end
+        # return :($esc(@handfunc $expr))
+    end
     
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
@@ -148,3 +150,8 @@ end
 
 # ***************************************************
 # ***************************************************
+
+function add_recursive_kwarg(kwargs)
+    l_kwargs = []
+
+end
