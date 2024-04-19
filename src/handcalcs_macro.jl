@@ -106,7 +106,9 @@ function clean_expr(expr)
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
 
-function clean_kwargs(kwargs)
+# Splits handcalc kwargs and latexify kwargs 
+# Also checks for recursion (if @handcalcs is being called from @handcalc)
+function clean_kwargs(kwargs) 
     is_recursive = false
     h_kwargs = []
     l_kwargs = []
