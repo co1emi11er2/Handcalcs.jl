@@ -23,12 +23,11 @@ julia> c
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
+    if @capture(expr, x_ = f_(fields__) | f_(fields__)) # Check if function call
         if f ∉ math_syms
             kwargs = kwargs..., :(is_recursive = true)
             return esc(:(@handfunc $(expr) $(kwargs...)))
         end
-        # return :($esc(@handfunc $expr))
     end
     
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr

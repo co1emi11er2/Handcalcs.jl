@@ -86,7 +86,7 @@ function _handcalcs_recursive(exprs)
         exprs...)))
 end
 
-function collect_exprs(exprs...)
+function collect_exprs(exprs...) # just collect when exprs recursive
     exprs_array = []
     for expr in exprs
         push!(exprs_array, expr)
@@ -133,7 +133,7 @@ function process_multiline_latex(
     h_env="aligned", 
     kwargs...
     )
-    exprs = collect(Leaves(exprs))
+    exprs = collect(Leaves(exprs)) # This handles nested vectors when recursive
     cols_start = cols
     multi_latex = "\\begin{$h_env}"
     for (i, expr) in enumerate(exprs)
