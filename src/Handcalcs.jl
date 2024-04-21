@@ -21,7 +21,12 @@ export latexify, @latexdefine, set_default, get_default, reset_default
 #         set_default(fmt=x->format(round(x, digits=4)))
 #     end
 # end
-const math_syms = [:*, :/, :^, :+, :-, :%, :.*, :./, :.^, :.+, :.-, :.%, :sqrt, :sin, :cos, :tan]
+const math_syms = [
+    :*, :/, :^, :+, :-, :%,
+    :.*, :./, :.^, :.+, :.-, :.%,
+    :<, :>, Symbol(==), :<=, :>=,
+    :.<, :.>, :.==, :.<=, :.>=,
+    :sqrt, :sin, :cos, :tan]
 const h_syms = [:cols, :spa, :h_env]
 
 include("default_h_kwargs.jl")
