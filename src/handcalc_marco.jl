@@ -179,8 +179,16 @@ function parse_not_funcs(expr::Expr)
     not_funcs = []
     if expr.head in [:vcat :hcat :vect]
         for arg in expr.args
-            push!(not_funcs, parse_not_funcs(arg))
+            push!(not_funcs, parse_not_func(arg))
         end
     end
     return not_funcs
+end
+
+function parse_not_func(value::QuoteNode)
+    value.value
+end
+
+function parse_not_func(value)
+    @show value
 end
