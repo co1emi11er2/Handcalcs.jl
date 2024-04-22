@@ -11,7 +11,6 @@ using CodeTracking, Revise
 using InteractiveUtils
 import AbstractTrees: Leaves
 using PrecompileTools: @setup_workload, @compile_workload 
-using TestHandcalcFunctions
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
 export set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
