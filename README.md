@@ -84,7 +84,7 @@ This macro will generate LaTeX for a function that was called. The generated LaT
 ```julia
 b = 5
 h = 15
-@handfunc Iy = calc_Ix(b, h) # calc_Ix is some function defined in another package
+@handcalcs Iy = calc_Ix(b, h) # calc_Ix is some function defined in another package
 ```
 
 ```LaTeX
