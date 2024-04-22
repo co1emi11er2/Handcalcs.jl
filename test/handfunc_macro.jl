@@ -94,3 +94,15 @@ calc = @handfunc area = TestHandcalcFunctions.area_rectangle(rec.b, rec.h)
 # ***************************************************
 
 # Check recursion and other functions within function body
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &= \frac{h \cdot b^{expo}}{denominator} = \frac{15 \cdot 5^{3}}{12} = 156.25
+\end{aligned}$"
+b = 5
+h = 15
+calc = @handfunc Is = TestHandcalcFunctions.calc_Is(b, h)
+@test calc == expected
+# ***************************************************

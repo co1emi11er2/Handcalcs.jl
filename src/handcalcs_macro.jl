@@ -2,9 +2,9 @@
 """
     @handcalcs expressions
 
-Create `LaTeXString` representing `expressions`. The expressions representing a number of expressions.
-A single expression being a vaiable followed by an equals sign and an algebraic equation.
-Any side effects of the expression, like assignments, are evaluated as well.  
+Create `LaTeXString` representing `expressions`. The expressions representing a number of
+expressions. A single expression being a vaiable followed by an equals sign and an algebraic
+equation. Any side effects of the expression, like assignments, are evaluated as well.  
 The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
 Can also add comments to the end of equations. See example below.
 
@@ -43,20 +43,19 @@ julia> d
 macro handcalcs(expr, kwargs...)
     expr = unblock(expr)
 	expr = rmlines(expr)
-    h_kwargs, kwargs = clean_kwargs(kwargs) # parse handcalc kwargs (h_kwargs)
-
+    is_recursive, h_kwargs, kwargs = clean_kwargs(kwargs) # parse handcalc kwargs (h_kwargs)
     exprs = [] #initialize expression accumulator
 
     # If singular symbol
     if typeof(expr) == Symbol
         push!(exprs, :(@latexdefine $(expr) $(kwargs...)))
-        return _handcalcs(exprs, h_kwargs)
+        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
 
     # If singular expression
     if expr.head == :(=)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
-        return _handcalcs(exprs, h_kwargs)
+        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
     
     # If multiple Expressions
@@ -72,13 +71,27 @@ macro handcalcs(expr, kwargs...)
 			error("Code pieces should be of type string or expression")
         end
     end
-    return _handcalcs(exprs, h_kwargs)
+    return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
 end
 
 function _handcalcs(exprs, h_kwargs)
     Expr(:block, esc(
         Expr(:call, :multiline_latex, 
         Expr(:parameters, _extractparam.(h_kwargs)...), exprs...)))
+end
+
+function _handcalcs_recursive(exprs)
+    Expr(:block, esc(
+        Expr(:call, :collect_exprs, 
+        exprs...)))
+end
+
+function collect_exprs(exprs...) # just collect when exprs recursive
+    exprs_array = []
+    for expr in exprs
+        push!(exprs_array, expr)
+    end
+    return exprs_array
 end
 
 function multiline_latex(exprs...; kwargs...)
@@ -93,23 +106,36 @@ function clean_expr(expr)
     expr = replace(expr, "="=>"&=", count=1) # add alignment
 end
 
-function clean_kwargs(kwargs)
+# Splits handcalc kwargs and latexify kwargs 
+# Also checks for recursion (if @handcalcs is being called from @handcalc)
+function clean_kwargs(kwargs) 
+    is_recursive = false
     h_kwargs = []
     l_kwargs = []
     for kwarg in kwargs
-        if _split_kwarg(kwarg) in h_syms
+        split_kwarg = _split_kwarg(kwarg)
+        if split_kwarg in h_syms
             h_kwargs = push!(h_kwargs, kwarg)
+        elseif split_kwarg == :is_recursive
+            is_recursive = true
         else
             l_kwargs = push!(l_kwargs, kwarg)
         end
     end
-    return Tuple(h_kwargs), Tuple(l_kwargs)
+    return is_recursive, Tuple(h_kwargs), Tuple(l_kwargs)
 end
 
 _split_kwarg(arg::Symbol) = arg
 _split_kwarg(arg::Expr) = arg.args[1]
 
-function process_multiline_latex(exprs...;cols=1, spa=10, h_env="aligned", kwargs...)
+function process_multiline_latex(
+    exprs...;
+    cols=1, 
+    spa=10, 
+    h_env="aligned", 
+    kwargs...
+    )
+    exprs = collect(Leaves(exprs)) # This handles nested vectors when recursive
     cols_start = cols
     multi_latex = "\\begin{$h_env}"
     for (i, expr) in enumerate(exprs)

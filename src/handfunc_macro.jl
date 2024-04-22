@@ -1,7 +1,8 @@
 """
     @handfunc expression
 
-Create `LaTeXString` representing `expressions`. These expressions represent a number of expressions that exist within the function that was called.
+Create `LaTeXString` representing `expressions`. These expressions represent a number of
+expressions that exist within the function that was called.
 A single expression being a variable followed by an equals sign and the function being called.
 The expression is evaluated as well (not the expressions within the function).
 The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.

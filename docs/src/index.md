@@ -10,7 +10,7 @@ This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Hand
 
 **Note: This package now renders properly in Quarto/Weave!! You can change the default settings to your liking. See examples below.**
 
-## Examples
+## Expression Examples
 
 ### A single expression example:
 
@@ -65,19 +65,60 @@ a, b, c = 1, 2, 3
     z = 6
 end cols=3 spa=0
 ```
+## Function Examples
+
+The `@handcalcs` macro will now automatically try to "unroll" the expressions within a function when the expression has the following pattern: `variable = function_name(args...; kwargs...)`. Note that this is recursive, so if you have a function that calls other functions where the expressions that call the function are of the format mentioned, it will continue to step into each function to "unroll" all expressions.
+
+One issue that can arise are for the functions that you do not want to unroll. Consider the expression: `y = sin(x)` or ` y = x + 5`. Both of these expressions match the format: `variable = function_name(args...; kwargs...)` and would be unrolled. This would result in an error since these functions don't have generic math expressions that can be latexified defining the function. You will need to use the `not_funcs` keyword to manually tell the @handcalcs macro to pass over these functions. Some of the common math functions that you will not want to unroll are automatically passed over. See examples below.
 
 ### An example for rendering expressions within a function:
+
+```@example other
+function calc_Ix(b, h) # function defined in TestHandcalcFunctions
+    Ix = b*h^3/12
+    return Ix
+end;
+```
 
 ```@example main
 using TestHandcalcFunctions
 b = 5 # width
 h = 15 # height
-@handfunc Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
+@handcalcs Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
 ```
 
-The `Ix` variable is evaluated. Ix being the variable assigned in the @handfunc part (variables within function are not defined in the global name space). If you assign it to a different variable then that will be the variable defined (although you will still see it as Ix in the latex portion). Also note that return statements are filtered out of the function body, so keep relevant parts separate from return statements.
+The `Ix` variable is evaluated. Ix being the variable assigned in the @handcalcs part (variables within function are not defined in the global name space). If you assign it to a different variable then that will be the variable defined (although you will still see it as Ix in the latex portion). Also note that return statements are filtered out of the function body, so keep relevant parts separate from return statements.
 
-Current Limitations for `@handfunc`
+```@example other
+function calc_Is(b, h) # function defined in TestHandcalcFunctions
+    Ix = calc_Ix(b, h)
+    Iy = calc_Iy(h, b)
+    return Ix, Iy
+end;
+```
+
+```@example main
+using TestHandcalcFunctions
+x = 0
+@handcalcs begin
+y = sin(x)
+z = cos(x)
+I_x, I_y = TestHandcalcFunctions.calc_Is(5, 15)
+end not_funcs = [sin cos]
+```
+
+In the above example `sin` and `cos` were passed over and calc_Is was not. As you can see, the calc_Is function was a function that called other functions, and the @handcalcs macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. 
+
+```
+const math_syms = [
+    :*, :/, :^, :+, :-, :%,
+    :.*, :./, :.^, :.+, :.-, :.%,
+    :<, :>, Symbol(==), :<=, :>=,
+    :.<, :.>, :.==, :.<=, :.>=,
+    :sqrt, :sin, :cos, :tan]
+```
+
+Current Limitations for `@handcalcs`
 
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
 - If the function has other function calls within it's body that are not available in Main, then the macro will error.
