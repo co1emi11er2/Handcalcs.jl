@@ -12,6 +12,7 @@ Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 PrecompileTools = "aea7be01-6a6a-4083-8856-8a6e6704d82a"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+TestHandcalcFunctions = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
 
 [compat]
 AbstractTrees = "0.4"

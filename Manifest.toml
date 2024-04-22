@@ -2,7 +2,7 @@
 
 julia_version = "1.10.0"
 manifest_format = "2.0"
-project_hash = "73b94df4c28a113842d20dd1468b496829dab644"
+project_hash = "08e06d85f7dc0b46fe1a0e0a0c4f513f33230ac3"
 
 [[deps.AbstractTrees]]
 git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
@@ -200,6 +200,11 @@ version = "1.0.3"
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 version = "1.10.0"
+
+[[deps.TestHandcalcFunctions]]
+git-tree-sha1 = "1e4ebeb8d7d78f9974c0153321e80fa66487d3bf"
+uuid = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
+version = "0.2.0"
 
 [[deps.UUIDs]]
 deps = ["Random", "SHA"]
