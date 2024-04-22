@@ -168,11 +168,11 @@ function find_not_funcs(kwargs)
 end
 
 function parse_not_funcs(value::QuoteNode)
-    value.value
+    [value.value]
 end
 
 function parse_not_funcs(value::Symbol)
-    value
+    [value]
 end
 
 function parse_not_funcs(expr::Expr)
@@ -181,6 +181,8 @@ function parse_not_funcs(expr::Expr)
         for arg in expr.args
             push!(not_funcs, parse_not_func(arg))
         end
+    elseif expr.head == :.
+        return [expr]
     end
     return not_funcs
 end
@@ -190,5 +192,5 @@ function parse_not_func(value::QuoteNode)
 end
 
 function parse_not_func(value)
-    @show value
+    value
 end
