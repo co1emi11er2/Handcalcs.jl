@@ -15,7 +15,7 @@ calc = @handcalcs x = (-b + sqrt(b^2 - 4*a*c))/(2*a)
 calc2 = @handcalcs begin x = (-b + sqrt(b^2 - 4*a*c))/(2*a) end
 @test calc == expected
 @test x == 2.0
-@test calc2 == expected    
+@test calc2 == expected
 # ***************************************************
 
 
@@ -99,7 +99,7 @@ y = [4; 5; 6]
 calc = @handcalcs z = x + y
 
 calc2 = @handcalcs z = x .* y
-@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r) 
+@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 @test calc2 == replace(expected2, "\r" => "")
 # ***************************************************
 
@@ -158,3 +158,49 @@ calc = @handcalcs begin a end
 @test calc == expected
 # ***************************************************
 
+
+# not_funcs test
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+I_{x} &= \mathrm{calc}_{Ix}\left( 5, 15 \right) = 1406.25
+\end{aligned}$"
+
+calc1 = @handcalcs begin
+    I_x = calc_Ix(5,15)
+end not_funcs = calc_Ix
+
+calc2 = @handcalcs begin
+    I_x = calc_Ix(5,15)
+end not_funcs = :calc_Ix
+
+@test calc1 == expected
+@test calc2 == expected
+
+expected = L"$\begin{aligned}
+Ix &= \mathrm{calc}_{Ix}\left( b, h \right) = \mathrm{calc}_{Ix}\left( 5, 15 \right) = 1406.25
+\\[10pt]
+Iy &= \mathrm{calc}_{Iy}\left( h, b \right) = \mathrm{calc}_{Iy}\left( 15, 5 \right) = 156.25
+\end{aligned}$"
+
+calc1 = @handcalcs begin
+    I_s = calc_Is(5,15)
+end not_funcs = [calc_Ix calc_Iy]
+
+calc2 = @handcalcs begin
+    I_s = calc_Is(5,15)
+end not_funcs = [:calc_Ix :calc_Iy]
+
+calc3 = @handcalcs begin
+    I_s = calc_Is(5,15)
+end not_funcs = [calc_Ix, calc_Iy]
+
+calc4 = @handcalcs begin
+    I_s = calc_Is(5,15)
+end not_funcs = [calc_Ix; calc_Iy]
+
+@test calc1 == expected
+@test calc2 == expected
+@test calc3 == expected
+@test calc4 == expected
+# ***************************************************

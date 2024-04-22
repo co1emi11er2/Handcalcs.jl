@@ -2,7 +2,8 @@
 """
     @handcalc expression
 
-Create `LaTeXString` representing `expression`. The expression being a vaiable followed by an equals sign and an algebraic equation.
+Create `LaTeXString` representing `expression`. The expression being a vaiable followed by
+an equals sign and an algebraic equation.
 Any side effects of the expression, like assignments, are evaluated as well.
 The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
 
@@ -21,14 +22,14 @@ julia> c
 """
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
-	expr = rmlines(expr)
-    # if @capture(expr, x_ = f_(fields__) | f_(fields__)) #future recursion
-    #     if f ∉ math_syms
-    #         return esc(:((@macroexpand @handfunc $expr)))
-    #     end
-    #     # return :($esc(@handfunc $expr))
-    # end
-    
+    expr = rmlines(expr)
+    if @capture(expr, x_ = f_(fields__) | f_(fields__)) # Check if function call
+        if f ∉ math_syms && check_not_funcs(f, kwargs)
+            kwargs = kwargs..., :(is_recursive = true)
+            return esc(:(@handfunc $(expr) $(kwargs...)))
+        end
+    end
+
     expr_post = expr.head == :(=) ? expr.args[2:end] : expr
     expr_numeric = _walk_expr(expr_post, math_syms)
     params = _extractparam.(kwargs)
@@ -53,12 +54,12 @@ function _handcalc(expr, expr_numeric, post, kwargs)
         Expr(
             :call,
             :latexify,
-            Expr(:parameters, _extractparam.(kwargs)...), 
-            Expr(:call, :Expr, 
-            QuoteNode(:(=)), Meta.quot(expr), # symbolic portion
-            Expr(:call, :Expr, 
-            QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
-            Expr(:call, post, _executable(expr)))), # defines variable
+            Expr(:parameters, _extractparam.(kwargs)...),
+            Expr(:call, :Expr,
+                QuoteNode(:(=)), Meta.quot(expr), # symbolic portion
+                Expr(:call, :Expr,
+                    QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
+                    Expr(:call, post, _executable(expr)))), # defines variable
         ),
     )
 end
@@ -77,7 +78,7 @@ function _executable(expr)
 end
 
 _extractparam(arg::Symbol) = arg
-_extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2]) 
+_extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2])
 
 # ***************************************************
 
@@ -88,7 +89,7 @@ _extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2])
 # ***************************************************
 
 function numeric_sub(x)
-	Expr(:($), x)
+    Expr(:($), x)
 end
 
 function _walk_expr(expr::Vector, math_syms)
@@ -110,7 +111,7 @@ function _walk_expr(expr::Vector, math_syms)
             count = 1
             return numeric_sub(ex)
         end
-            return ex
+        return ex
     end
 end
 
@@ -133,7 +134,7 @@ function _walk_expr(expr::Expr, math_syms)
             count = 1
             return numeric_sub(ex)
         end
-            return ex
+        return ex
     end
 end
 
@@ -148,3 +149,48 @@ end
 
 # ***************************************************
 # ***************************************************
+
+function check_not_funcs(f, kwargs)
+    not_funcs = find_not_funcs(kwargs)
+    not_funcs = typeof(not_funcs) == Symbol ? [not_funcs] : not_funcs
+    return f ∉ not_funcs
+end
+
+function find_not_funcs(kwargs)
+    not_funcs = []
+    for kwarg in kwargs
+        split_kwarg = _split_kwarg(kwarg)
+        if split_kwarg == :not_funcs
+            not_funcs = parse_not_funcs(kwarg.args[2])
+        end
+    end
+    return not_funcs
+end
+
+function parse_not_funcs(value::QuoteNode)
+    [value.value]
+end
+
+function parse_not_funcs(value::Symbol)
+    [value]
+end
+
+function parse_not_funcs(expr::Expr)
+    not_funcs = []
+    if expr.head in [:vcat :hcat :vect]
+        for arg in expr.args
+            push!(not_funcs, parse_not_func(arg))
+        end
+    elseif expr.head == :.
+        return [expr]
+    end
+    return not_funcs
+end
+
+function parse_not_func(value::QuoteNode)
+    value.value
+end
+
+function parse_not_func(value)
+    value
+end
