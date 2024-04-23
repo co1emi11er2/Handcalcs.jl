@@ -10,6 +10,7 @@ using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
 import AbstractTrees: Leaves
+using PrecompileTools: @setup_workload, @compile_workload 
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
 export set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
@@ -33,5 +34,6 @@ include("default_h_kwargs.jl")
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
 include("handfunc_macro.jl")
+include("precompile.jl")
 
 end
