@@ -127,6 +127,36 @@ calc = @handcalcs begin
 end cols=3 spa=5
 
 @test calc == expected
+
+a = 2
+b = -5
+c = 2
+expected = L"$\begin{aligned}
+x1 &= \frac{ - b + \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a}
+\\[10pt]
+&= \frac{ + 5 + \sqrt{\left( -5 \right)^{2} - 4 \cdot 2 \cdot 2}}{2 \cdot 2}
+\\[10pt]
+&= 2.0\;\text{  }(\text{moment})
+\\[10pt]
+x2 &= \frac{ - b - \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a}
+\\[10pt]
+&= \frac{ + 5 - \sqrt{\left( -5 \right)^{2} - 4 \cdot 2 \cdot 2}}{2 \cdot 2}
+\\[10pt]
+&= 0.5
+\end{aligned}$"
+
+calc = @handcalcs begin
+    x1 = (-b + sqrt(b^2 - 4*a*c))/(2*a); "moment";
+    x2 = (-b - sqrt(b^2 - 4*a*c))/(2*a)
+end len = :long
+
+calc2 = @handcalcs begin
+    x1 = (-b + sqrt(b^2 - 4*a*c))/(2*a); "moment";
+    x2 = (-b - sqrt(b^2 - 4*a*c))/(2*a)
+end len=:long cols=3 
+
+@test calc == expected
+@test calc2 == expected
 # ***************************************************
 
 

@@ -99,11 +99,12 @@ function multiline_latex(exprs...; kwargs...)
     return process_multiline_latex(exprs...;h_kwargs...)
 end
 
-function clean_expr(expr)
+function clean_expr(expr, len, spa)
     expr = expr[2:end-1] # remove the $ from end and beginning of string
     expr = expr[end] == " " ? expr : expr * " " # add trailing space if there isn't one
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
+    expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr
 end
 
 # Splits handcalc kwargs and latexify kwargs 
@@ -132,9 +133,11 @@ function process_multiline_latex(
     exprs...;
     cols=1, 
     spa=10, 
-    h_env="aligned", 
+    h_env="aligned",
+    len = :short, 
     kwargs...
     )
+    cols = len == :long ? 1 : cols
     exprs = collect(Leaves(exprs)) # This handles nested vectors when recursive
     cols_start = cols
     multi_latex = "\\begin{$h_env}"
@@ -142,7 +145,7 @@ function process_multiline_latex(
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
         else
-            cleaned_expr = clean_expr(expr)
+            cleaned_expr = clean_expr(expr, len, spa)
             if cols == 0 
                 cols = cols_start 
                 multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr

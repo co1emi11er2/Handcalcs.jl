@@ -51,6 +51,7 @@ The moment of inertia about the y direction is: $I_y\n")
 - cols - change the number of columns the expression returns (default = 1).
 - spa - change the vertical line spacing between expressions (default = 10).
 - h_env - change the environment (default = "aligned").
+- len - change expression to write to multiple lines using `len=:long` (default = :short). 
 
 **Note: `@handcalcs` macro can also take symbols of defined variables. See below.**
 
@@ -65,6 +66,15 @@ a, b, c = 1, 2, 3
     z = 6
 end cols=3 spa=0
 ```
+
+```@example main
+a, b, c = 2, -5, 2
+@handcalcs begin
+    x1 = (-b + sqrt(b^2 - 4*a*c))/(2*a)
+    x2 = (-b - sqrt(b^2 - 4*a*c))/(2*a)
+end len = :long # using len argument forces cols=1
+```
+
 ## Function Examples
 
 The `@handcalcs` macro will now automatically try to "unroll" the expressions within a function when the expression has the following pattern: `variable = function_name(args...; kwargs...)`. Note that this is recursive, so if you have a function that calls other functions where the expressions that call the function are of the format mentioned, it will continue to step into each function to "unroll" all expressions.
