@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.36
+# v0.19.40
 
 using Markdown
 using InteractiveUtils
@@ -16,6 +16,15 @@ using PlutoTeachingTools, PlutoUI; TableOfContents()
 # ╔═╡ 1bc35d4c-9391-4459-b961-d7b608324790
 const inch = u"inch";
 
+# ╔═╡ c87a02b7-c55a-4bfd-b776-27968d6932e4
+html"""
+<style>
+	mjx-container {
+		text-align: left !important;
+	}
+</style>
+"""
+
 # ╔═╡ 8de622aa-5a8a-4761-8f58-b651d1ae04b6
 md"""
 # Handcalc Demo
@@ -25,16 +34,19 @@ md"""
 md"## Input Cells"
 
 # ╔═╡ 2b3ad300-c287-47eb-a80c-3d6140ad13f3
-a = 2*inch;
+a = 2inch;
 
 # ╔═╡ f070d246-1dba-415b-a498-81f8207f79a2
-b = -5*inch;
+b = 5inch;
 
 # ╔═╡ 5c94ae24-3346-48e5-aff3-18140a2967fb
-c = 2*inch;
+c = 2inch;
 
 # ╔═╡ a14751cd-1ec4-4620-bc4b-e19abb50bb32
-h = 15*inch;
+h = 15inch;
+
+# ╔═╡ d9ddb9ee-985e-4858-bde1-a036e6ec93f7
+@handcalcs begin a, b, c, h end cols=2
 
 # ╔═╡ dc918ecf-23b1-49f0-8976-a3986d06e522
 md"""
@@ -63,9 +75,6 @@ begin
 	else 
 		html"<p style='text-align: right;'><span style='font-family: bold; color: red;'>Value is NG</span></p>"
 	end
-
-	
-
 end
 
 # ╔═╡ a156a574-e767-46a7-9885-27d698663135
@@ -78,14 +87,17 @@ begin @handcalc d = (a + b) * c end
 end
 
 # ╔═╡ aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
-@handfunc begin I_x= TestHandcalcFunctions.calc_Ix(b, h) end
+@handcalcs begin 
+	I_x= TestHandcalcFunctions.calc_Ix(b, h) 
+end
+
+# ╔═╡ 719f4e28-cccd-45eb-ae4c-d0409a119741
+@handcalcs begin I = calc_Is(5, 15) end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
-CodeTracking = "da1fd8a2-8d9e-5ec2-8556-3022fb5608a2"
 Handcalcs = "e8a07092-c156-4455-ab8e-ed8bc81edefb"
-LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 PlutoTeachingTools = "661c6b06-c737-4d37-b85c-46df65de6f69"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
@@ -94,13 +106,11 @@ Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulLatexify = "45397f5d-5981-4c77-b2b3-fc36d6e9b728"
 
 [compat]
-CodeTracking = "~1.3.5"
-Handcalcs = "~0.1.5"
-LaTeXStrings = "~1.3.1"
-Latexify = "~0.16.2"
-PlutoTeachingTools = "~0.2.14"
-PlutoUI = "~0.7.58"
-TestHandcalcFunctions = "~0.1.0"
+Handcalcs = "~0.3.1"
+Latexify = "~0.16.3"
+PlutoTeachingTools = "~0.2.15"
+PlutoUI = "~0.7.59"
+TestHandcalcFunctions = "~0.2.0"
 Unitful = "~1.19.0"
 UnitfulLatexify = "~1.6.3"
 """
@@ -109,15 +119,20 @@ UnitfulLatexify = "~1.6.3"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.0"
+julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "808cdfe0958183556011e877e2aae6ebe88a2da1"
+project_hash = "1c2f3899ee9f8098cc9e7373c8b85550e5be772d"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
-git-tree-sha1 = "0f748c81756f2e5e6854298f11ad8b2dfae6911a"
+git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
-version = "1.3.0"
+version = "1.3.2"
+
+[[deps.AbstractTrees]]
+git-tree-sha1 = "2d9c9a55f9c93e8887ad391fbae72f8ef55e1177"
+uuid = "1520ce14-60c1-5f80-bbc7-55ef81b5835c"
+version = "0.4.5"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -137,14 +152,14 @@ version = "1.3.5"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
-git-tree-sha1 = "eb7f0f8307f71fac7c606984ea5fb2817275d6e4"
+git-tree-sha1 = "b10d0b65641d57b8b4d5e234446582de5047050d"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.11.4"
+version = "0.11.5"
 
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.0.5+1"
+version = "1.1.0+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -169,15 +184,15 @@ uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 version = "0.8.4"
 
 [[deps.Format]]
-git-tree-sha1 = "f3cf88025f6d03c194d73f5d13fee9004a108329"
+git-tree-sha1 = "9c68794ef81b08086aeb32eeaf33531668d5f5fc"
 uuid = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
-version = "1.3.6"
+version = "1.3.7"
 
 [[deps.Handcalcs]]
-deps = ["CodeTracking", "InteractiveUtils", "LaTeXStrings", "Latexify", "MacroTools", "Revise"]
-git-tree-sha1 = "f0f41473d45396f2c0025236656a53d800a401fe"
+deps = ["AbstractTrees", "CodeTracking", "InteractiveUtils", "LaTeXStrings", "Latexify", "MacroTools", "PrecompileTools", "Revise", "TestHandcalcFunctions"]
+git-tree-sha1 = "ae30bb7ba962ae3dc7dcf6df6bee96decc5473c2"
 uuid = "e8a07092-c156-4455-ab8e-ed8bc81edefb"
-version = "0.1.5"
+version = "0.3.1"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -209,9 +224,9 @@ version = "0.21.4"
 
 [[deps.JuliaInterpreter]]
 deps = ["CodeTracking", "InteractiveUtils", "Random", "UUIDs"]
-git-tree-sha1 = "0015726aa3eb28973fbbdbb7ca2ed6396ffe3a23"
+git-tree-sha1 = "e9648d90370e2d0317f9518c9c6e0841db54a90b"
 uuid = "aa1ae85d-cabe-5617-a682-6adf51b2e16a"
-version = "0.9.30"
+version = "0.9.31"
 
 [[deps.LaTeXStrings]]
 git-tree-sha1 = "50901ebc375ed41dbf8058da26f9de442febbbec"
@@ -220,9 +235,9 @@ version = "1.3.1"
 
 [[deps.Latexify]]
 deps = ["Format", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Requires"]
-git-tree-sha1 = "cad560042a7cc108f5a4c24ea1431a9221f22c1b"
+git-tree-sha1 = "e0b5cd21dc1b44ec6e64f351976f961e6f31d6c4"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.2"
+version = "0.16.3"
 
     [deps.Latexify.extensions]
     DataFramesExt = "DataFrames"
@@ -306,7 +321,7 @@ version = "1.2.0"
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.23+2"
+version = "0.3.23+4"
 
 [[deps.OrderedCollections]]
 git-tree-sha1 = "dfdf5519f235516220579f949664f1bf44e741c5"
@@ -338,15 +353,15 @@ version = "0.1.6"
 
 [[deps.PlutoTeachingTools]]
 deps = ["Downloads", "HypertextLiteral", "LaTeXStrings", "Latexify", "Markdown", "PlutoLinks", "PlutoUI", "Random"]
-git-tree-sha1 = "89f57f710cc121a7f32473791af3d6beefc59051"
+git-tree-sha1 = "5d9ab1a4faf25a62bb9d07ef0003396ac258ef1c"
 uuid = "661c6b06-c737-4d37-b85c-46df65de6f69"
-version = "0.2.14"
+version = "0.2.15"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
-git-tree-sha1 = "71a22244e352aa8c5f0f2adde4150f62368a3f2e"
+git-tree-sha1 = "ab55ee1510ad2af0ff674dbcced5e94921f867a9"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.58"
+version = "0.7.59"
 
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
@@ -429,9 +444,9 @@ deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [[deps.TestHandcalcFunctions]]
-git-tree-sha1 = "3df775c88fa815d10b9ca754e276256fa78cb41d"
+git-tree-sha1 = "1e4ebeb8d7d78f9974c0153321e80fa66487d3bf"
 uuid = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
-version = "0.1.0"
+version = "0.2.0"
 
 [[deps.Tricks]]
 git-tree-sha1 = "eae1bb484cd63b36999ee58be2de6c178105112f"
@@ -496,19 +511,22 @@ version = "17.4.0+2"
 # ╠═02f3158c-59a5-4282-88d4-35c4551c0033
 # ╠═59d2b9f7-1601-478a-99dc-e54f7166aafa
 # ╠═1bc35d4c-9391-4459-b961-d7b608324790
+# ╟─c87a02b7-c55a-4bfd-b776-27968d6932e4
 # ╟─8de622aa-5a8a-4761-8f58-b651d1ae04b6
 # ╟─ff37c719-5e6e-44f6-8a7c-b15a4a04ffc5
 # ╠═2b3ad300-c287-47eb-a80c-3d6140ad13f3
 # ╠═f070d246-1dba-415b-a498-81f8207f79a2
 # ╠═5c94ae24-3346-48e5-aff3-18140a2967fb
 # ╠═a14751cd-1ec4-4620-bc4b-e19abb50bb32
+# ╟─d9ddb9ee-985e-4858-bde1-a036e6ec93f7
 # ╟─dc918ecf-23b1-49f0-8976-a3986d06e522
 # ╟─a7e0bd67-96f9-4d6d-895b-62be07deb9d1
-# ╠═7ade629c-5382-48b0-a70e-b5482f21a89d
+# ╟─7ade629c-5382-48b0-a70e-b5482f21a89d
 # ╟─f4c40265-adf0-4257-a953-73b2bee8974c
 # ╟─ef7ad156-0f24-4594-857e-df3635b06af6
-# ╠═a156a574-e767-46a7-9885-27d698663135
-# ╠═fb872702-2762-4542-9ac5-0b8809f5ebfd
-# ╠═aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
+# ╟─a156a574-e767-46a7-9885-27d698663135
+# ╟─fb872702-2762-4542-9ac5-0b8809f5ebfd
+# ╟─aa1131ee-fcf9-44b2-9d65-09bdeccb1e0c
+# ╟─719f4e28-cccd-45eb-ae4c-d0409a119741
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
