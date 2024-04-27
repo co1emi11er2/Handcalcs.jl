@@ -94,12 +94,10 @@ function _extract_kw_args(arg::Expr)
             dict = _extract_kw(kw, dict)
         end
         return iskw, dict
-    elseif  arg.head == :(::)
+    else
         iskw = false
         dict = nothing
         return iskw, dict
-    else
-        error("Not a keyword argument.")
     end
 end
 
@@ -130,7 +128,7 @@ function _extract_arg(arg::Expr)
     elseif arg.head == :(::)
         append!(arr, [Any[arg.args[1] nothing]])
     else
-        error("Not a default argument.")
+        append!(arr, [Any[arg nothing]])
     end
 end
 

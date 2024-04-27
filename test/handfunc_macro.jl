@@ -60,7 +60,9 @@ expected_Iy_3 = (L"$\begin{aligned}
 Iy &= \frac{h \cdot b^{expo}}{denominator} = \frac{15 \cdot 5^{2}}{10} = 37.5
 \end{aligned}$")
 calc_Iy_3 = @handfunc x = TestHandcalcFunctions.calc_Iy(15,5;expo=2, denominator=10) # check kw arguments with ";"
+calc_Iy_4 = @handfunc x = TestHandcalcFunctions.calc_Iy(10+5,5;expo=2, denominator=5+5) # check expressions
 @test calc_Iy_3 == expected_Iy_3
+@test calc_Iy_4 == expected_Iy_3
 # ***************************************************
 
 
