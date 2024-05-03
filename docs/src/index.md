@@ -6,7 +6,7 @@ CurrentModule = Handcalcs
 
 ## Introduction
 
-This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Handcalcs.jl). This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), be able to render the algebraic expressions within a function, and many other things. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
+This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Handcalcs.jl). This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. At this point, I believe most (if not all) of the features from the python package are here. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/). This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 **Note: This package now renders properly in Quarto/Weave!! You can change the default settings to your liking. See examples below.**
 
@@ -178,10 +178,14 @@ You can see that it looks as though only the unit is being squared. This should 
 
 ## Future Plans
 
-There are a number of things that I would like to implement to the package. See [handcalcs.py](https://github.com/connorferster/handcalcs) for potential features. Here is a list of features I hope to add:
+There are a number of things that I would like to implement to the package. Here is a list of features I hope to add:
 
-- Get recursion working for @handfunc macro
-- A way to break down a ``\LaTeX`` equation that is too long to multiple lines
+- Maybe add a way to change color of expressions.
+- Maybe a symbolic mode that would essentially be like @latexdefine but you get function unrolling and multiline support.
+- A way to disable @handcalcs macro if you are wanting to run script for multiple iterations and not worried about rendering all iterations. That way you get speed for those situations.
+- I have also thought about adding a setting that you could change if you were within the REPL and instead of latex (since it is not very readable) to instead output a simple string instead. For example: `I_x = b*h^3/12 = 5*15^3/12 = 1406.25`.
+
+
 
 ## References
 

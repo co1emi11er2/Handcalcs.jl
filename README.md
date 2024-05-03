@@ -11,13 +11,15 @@
 
 This is a package for generating LaTeX maths and designed to improve documentation for your calculations. This package was designed to work in both jupyter and pluto.
 
-This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. The current version of Handcalcs.jl is working for typical algebraic formulas. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/), and get recursion working for function calls. This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
+This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. At this point, I believe most (if not all) of the features from the python package are here. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/). This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 **Note: This package now renders properly in Quarto/Weave!! You can change the default settings to your liking. See [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/) for more info.**
 
 ## Basic Demo
 
 ![handcalc demo](/assets/handcalcs_demo.gif)
+
+*Note: In the gif, `@handfunc` is used for unrolling a function with algebraic expressions. It is now recommended to use the `@handcalcs` macro for this. See the [docs](https://co1emi11er2.github.io/Handcalcs.jl/stable/).*
 
 ## Basic example:
 
