@@ -55,6 +55,7 @@ end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
     found_func_args = found_func.args[1]
+    found_func_args
     found_kw_dict, found_pos_arr = parse_func_args(found_func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = parse_func_args(func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
@@ -86,15 +87,17 @@ function parse_func_args(func_args, kw_func, pos_func)
 end
 
 function _extract_kw_args(arg::Expr)
-    iskw = true
-    dict = Dict()
     if arg.head == :parameters # check if function keyword arguments
+        iskw = true
+        dict = Dict()
         for kw in arg.args
             dict = _extract_kw(kw, dict)
         end
         return iskw, dict
     else
-        error("Not a keyword argument.")
+        iskw = false
+        dict = nothing
+        return iskw, dict
     end
 end
 
@@ -122,8 +125,10 @@ function _extract_arg(arg::Expr)
     elseif arg.head == :(.)
         append!(arr, [Any[arg nothing]])
         return arr
+    elseif arg.head == :(::)
+        append!(arr, [Any[arg.args[1] nothing]])
     else
-        error("Not a default argument.")
+        append!(arr, [Any[arg nothing]])
     end
 end
 
