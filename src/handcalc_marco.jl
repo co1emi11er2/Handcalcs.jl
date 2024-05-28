@@ -23,10 +23,15 @@ julia> c
 macro handcalc(expr, kwargs...)
     expr = unblock(expr)
     expr = rmlines(expr)
+    expr_og = copy(expr)
     if @capture(expr, x_ = f_(fields__) | f_(fields__)) # Check if function call
         if f ∉ math_syms && check_not_funcs(f, kwargs)
+            if f == :(|>) && true # Check if pipe and if opt_out TODO: write opt_out option
+                expr.args[2] = expr.args[2].args[2]
+            else
             kwargs = kwargs..., :(is_recursive = true)
             return esc(:(@handfunc $(expr) $(kwargs...)))
+            end
         end
     end
 
@@ -44,12 +49,12 @@ macro handcalc(expr, kwargs...)
             break
         end
     end
-    return _handcalc(expr, expr_numeric, post, kwargs)
+    return _handcalc(expr_og, expr, expr_numeric, post, kwargs)
 end
 
 # Handcalcs - Symbolic and Numeric return
 # ***************************************************
-function _handcalc(expr, expr_numeric, post, kwargs)
+function _handcalc(expr_og, expr, expr_numeric, post, kwargs)
     esc(
         Expr(
             :call,
@@ -59,7 +64,7 @@ function _handcalc(expr, expr_numeric, post, kwargs)
                 QuoteNode(:(=)), Meta.quot(expr), # symbolic portion
                 Expr(:call, :Expr,
                     QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
-                    Expr(:call, post, _executable(expr)))), # defines variable
+                    Expr(:call, post, _executable(expr_og)))), # defines variable
         ),
     )
 end
