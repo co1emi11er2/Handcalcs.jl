@@ -12,8 +12,9 @@ you call it multiple times, defaults will be added or replaced, but not reset.
 - cols: sets the number of columns in the output
 - spa: sets the line spacing
 - len: can set to `:long` and it will split equation to multiple lines
-- h_env: Choose between "aligned" (default), "align" and other LaTeX options
-- not_funcs: Name the functions you do not want to "unroll" 
+- color: change the color of the output (`:blue`, `:red`, etc)
+- h_env: choose between "aligned" (default), "align" and other LaTeX options
+- not_funcs: name the functions you do not want to "unroll" 
 - parse_pipe: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
 
 Example: 

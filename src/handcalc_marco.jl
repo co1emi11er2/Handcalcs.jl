@@ -26,11 +26,11 @@ macro handcalc(expr, kwargs...)
     expr_og = copy(expr)
     if @capture(expr, x_ = f_(fields__) | f_(fields__)) # Check if function call
         if f ∉ math_syms && check_not_funcs(f, kwargs)
-            if f == :(|>) && get(default_h_kwargs, :parse_pipe, true) # Check if pipe and if parse_pipe
+            if f == :(|>) && get(default_h_kwargs, :parse_pipe, true)  # Check if pipe and if parse_pipe
                 expr.args[2] = expr.args[2].args[2]
             else
-            kwargs = kwargs..., :(is_recursive = true)
-            return esc(:(@handfunc $(expr) $(kwargs...)))
+                kwargs = kwargs..., :(is_recursive = true)
+                return esc(:(@handfunc $(expr) $(kwargs...)))
             end
         end
     end

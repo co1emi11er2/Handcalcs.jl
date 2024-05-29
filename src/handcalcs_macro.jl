@@ -1,12 +1,20 @@
 
 """
-    @handcalcs expressions
+    @handcalcs(expressions, kwargs)
 
 Create `LaTeXString` representing `expressions`. The expressions representing a number of
 expressions. A single expression being a vaiable followed by an equals sign and an algebraic
 equation. Any side effects of the expression, like assignments, are evaluated as well.  
 The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
 Can also add comments to the end of equations. See example below.
+
+## Kwargs
+- cols: sets the number of columns in the output
+- spa: sets the line spacing
+- len: can set to `:long` and it will split equation to multiple lines
+- color: change the color of the output (`:blue`, `:red`, etc)
+- h_env: choose between "aligned" (default), "align" and other LaTeX options
+- not_funcs: name the functions you do not want to "unroll" 
 
 # Examples
 ```julia-repl
@@ -135,6 +143,7 @@ function process_multiline_latex(
     spa=10, 
     h_env="aligned",
     len = :short, 
+    color = :black,
     kwargs...
     )
     cols = len == :long ? 1 : cols
@@ -156,5 +165,9 @@ function process_multiline_latex(
         end
     end
     multi_latex *= "\n" * "\\end{$h_env}"
+    if color != :black
+        color = string(color)
+        multi_latex = "\\color{$color} "* multi_latex 
+    end
     return h_env == "aligned" ? latexstring(multi_latex) : LaTeXString(multi_latex)
 end

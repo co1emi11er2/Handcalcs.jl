@@ -23,7 +23,7 @@
             x = 4
             y = 5
             z = 6
-        end cols=3 spa=5 h_env = "align"
+        end cols=3 spa=5 h_env = "align" color=:blue
 
 
         calc = @handcalcs z = xx + yy
