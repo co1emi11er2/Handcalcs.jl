@@ -49,6 +49,10 @@ julia> d
 ```
 """
 macro handcalcs(expr, kwargs...)
+    if get(default_h_kwargs, :disable, false)
+        return esc(expr)
+    end
+
     expr = unblock(expr)
 	expr = rmlines(expr)
     is_recursive, h_kwargs, kwargs = clean_kwargs(kwargs) # parse handcalc kwargs (h_kwargs)

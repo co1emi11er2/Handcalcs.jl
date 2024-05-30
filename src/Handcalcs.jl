@@ -28,7 +28,7 @@ const math_syms = [
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
     :sqrt, :sin, :cos, :tan]
-const h_syms = [:cols, :spa, :h_env, :len, :color]
+const h_syms = [:cols, :spa, :h_env, :len, :color, :disable]
 
 include("default_h_kwargs.jl")
 include("handcalc_marco.jl")

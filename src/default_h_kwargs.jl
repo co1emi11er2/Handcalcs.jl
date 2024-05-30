@@ -16,6 +16,7 @@ you call it multiple times, defaults will be added or replaced, but not reset.
 - h_env: choose between "aligned" (default), "align" and other LaTeX options
 - not_funcs: name the functions you do not want to "unroll" 
 - parse_pipe: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
 
 Example: 
 ```julia
@@ -50,6 +51,7 @@ Get a Dict with the user-specified default kwargs for handcalcs, set by `set_han
 - h_env: Choose between "aligned" (default), "align" and other LaTeX options
 - not_funcs: Name the functions you do not want to "unroll" 
 - parse_pipe: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
 """
 function get_handcalcs end
 get_handcalcs() = default_h_kwargs
