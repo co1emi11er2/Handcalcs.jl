@@ -46,12 +46,13 @@ println("The moment of inertia about the x direction is: $I_x\n
 The moment of inertia about the y direction is: $I_y\n")
 ```
 
-### You can edit the layout of the returned LaTeX expression with `cols` and `spa`:
+### You can edit the layout of the returned LaTeX expression with the following kwargs:
 
-- cols - change the number of columns the expression returns (default = 1).
-- spa - change the vertical line spacing between expressions (default = 10).
-- h_env - change the environment (default = "aligned").
-- len - change expression to write to multiple lines using `len=:long` (default = :short). 
+- `cols` - change the number of columns the expression returns (default = 1).
+- `spa` - change the vertical line spacing between expressions (default = 10).
+- `color`: change the color of the output (`:blue`, `:red`, etc)
+- `h_env` - change the environment (default = "aligned").
+- `len` - change expression to write to multiple lines using `len=:long` (default = :short).
 
 **Note: `@handcalcs` macro can also take symbols of defined variables. See below.**
 
@@ -137,6 +138,16 @@ Current Limitations for `@handcalcs`
 
 You can change the default settings using the `set_handcalcs` function *(similar to the `set_default` function in Latexify)*.
 
+#### Settings
+
+- `cols` - change the number of columns the expression returns (default = 1).
+- `spa` - change the vertical line spacing between expressions (default = 10).
+- `len`: can set to `:long` and it will split equation to multiple lines
+- `color`: change the color of the output (`:blue`, `:red`, etc)
+- `h_env`: choose between "aligned" (default), "align" and other LaTeX options
+- `not_funcs`: name the functions you do not want to "unroll" 
+- `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+
 ```julia
 set_handcalcs(cols=3)
 ```
@@ -165,27 +176,35 @@ reset_handcalcs()
 
 ## Using Unitful with UnitfulLatexify
 
-The package has plans to work with the packages [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/) and [UnitfulLatexify.jl](https://gustaphe.github.io/UnitfulLatexify.jl/stable/). The only issue known is the rendering of units under exponents. Parenthesis need to wrap the numerical value and the unit for it to display correctly. See example below.
+The package integrates with the packages [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/) and [UnitfulLatexify.jl](https://gustaphe.github.io/UnitfulLatexify.jl/stable/). 
 
 ```@example main
 using Unitful, UnitfulLatexify
 a = 2u"inch"
 b = -5u"inch"
-@handcalc c = sqrt(a^2 + b^2)
+@handcalcs c = sqrt(a^2 + b^2)
 ```
 
-You can see that it looks as though only the unit is being squared. This should be an easy fix. See pull request made in Latexify.jl [here](https://github.com/korsbo/Latexify.jl/pull/280). The pull request has been up for a while, so not sure if it will get updated soon. You can always `dev Latexify` and add the one line change for now.
+If you want to set the units of the output, you can write it the same way you would using Unitful. The `@handcalcs` macro will parse the `|>` operator out of the output while still evaluating the result with the conversion.
+
+```@example main
+b = 40u"ft"
+t = 8.5u"inch"
+@handcalcs begin
+    b
+    t
+    a = b * t       |> u"inch"^2
+    Ix = b*t^3/12   |> u"inch"^4
+end
+```
 
 ## Future Plans
 
 There are a number of things that I would like to implement to the package. Here is a list of features I hope to add:
 
-- Maybe add a way to change color of expressions.
 - Maybe a symbolic mode that would essentially be like @latexdefine but you get function unrolling and multiline support.
 - A way to disable @handcalcs macro if you are wanting to run script for multiple iterations and not worried about rendering all iterations. That way you get speed for those situations.
 - I have also thought about adding a setting that you could change if you were within the REPL and instead of latex (since it is not very readable) to instead output a simple string instead. For example: `I_x = b*h^3/12 = 5*15^3/12 = 1406.25`.
-
-
 
 ## References
 
