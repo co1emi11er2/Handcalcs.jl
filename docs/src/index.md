@@ -6,7 +6,7 @@ CurrentModule = Handcalcs
 
 ## Introduction
 
-This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Handcalcs.jl). This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. At this point, I believe most (if not all) of the features from the python package are here. Future plans are to integrate the package with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/). This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
+This is the documentation for [Handcalcs.jl](https://github.com/co1emi11er2/Handcalcs.jl). This package supplies macros to generate ``\LaTeX`` formatted strings from mathmatical formulas. This package takes inspiration from [handcalcs.py](https://github.com/connorferster/handcalcs) which is a python package that works best in jupyter notebooks. The goal is to get the functionalities of that package and bring them to Julia. At this point, I believe most (if not all) of the features from the python package are here. The package can be used with [Unitful.jl](https://painterqubits.github.io/Unitful.jl/stable/). This package is an extension of [Latexify.jl](https://github.com/korsbo/Latexify.jl). The `@latexdefine` macro is similar to the main `@handcalcs` macro, but instead of only a symbolic rendering it also renders the numeric substitution.
 
 **Note: This package now renders properly in Quarto/Weave!! You can change the default settings to your liking. See examples below.**
 
@@ -65,7 +65,7 @@ a, b, c = 1, 2, 3
     x = 4
     y = 5
     z = 6
-end cols=3 spa=0
+end cols=3 spa=0 color=:blue
 ```
 
 ```@example main
@@ -118,7 +118,7 @@ I_x, I_y = TestHandcalcFunctions.calc_Is(5, 15)
 end not_funcs = [sin cos]
 ```
 
-In the above example `sin` and `cos` were passed over and calc_Is was not. As you can see, the calc_Is function was a function that called other functions, and the @handcalcs macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. 
+In the above example `sin` and `cos` were passed over and `calc_Is` was not. As you can see, the `calc_Is` function was a function that called other functions, and the `@handcalcs` macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. 
 
 ```
 const math_syms = [
@@ -134,7 +134,7 @@ Current Limitations for `@handcalcs`
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
 - If the function has other function calls within it's body that are not available in Main, then the macro will error.
 
-### An example of changing default settings:
+## An example of changing default settings:
 
 You can change the default settings using the `set_handcalcs` function *(similar to the `set_default` function in Latexify)*.
 
@@ -147,6 +147,7 @@ You can change the default settings using the `set_handcalcs` function *(similar
 - `h_env`: choose between "aligned" (default), "align" and other LaTeX options
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
 
 ```julia
 set_handcalcs(cols=3)
@@ -203,7 +204,6 @@ end
 There are a number of things that I would like to implement to the package. Here is a list of features I hope to add:
 
 - Maybe a symbolic mode that would essentially be like @latexdefine but you get function unrolling and multiline support.
-- A way to disable @handcalcs macro if you are wanting to run script for multiple iterations and not worried about rendering all iterations. That way you get speed for those situations.
 - I have also thought about adding a setting that you could change if you were within the REPL and instead of latex (since it is not very readable) to instead output a simple string instead. For example: `I_x = b*h^3/12 = 5*15^3/12 = 1406.25`.
 
 ## References
