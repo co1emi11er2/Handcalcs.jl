@@ -107,6 +107,10 @@ function _walk_expr(expr::Vector, math_syms)
             count = 1
             return ex
         end
+        if Meta.isexpr(ex, :ref)
+            count = length(collect(PostOrderDFS(ex)))
+            return Expr(:$, ex)
+        end
         if (ex isa Symbol) & (ex ∉ math_syms)
             count = 1
             return numeric_sub(ex)
@@ -121,6 +125,10 @@ function _walk_expr(expr::Expr, math_syms)
         if count > 0 # skip sections based on prewalk
             count -= 1
             return ex
+        end
+        if Meta.isexpr(ex, :ref)
+            count = length(collect(PostOrderDFS(ex)))
+            return Expr(:$, ex)
         end
         if Meta.isexpr(ex, :.) # interpolates field args
             count = length(ex.args) + 1

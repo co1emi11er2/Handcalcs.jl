@@ -9,7 +9,7 @@ using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
-import AbstractTrees: Leaves
+import AbstractTrees: Leaves, PostOrderDFS
 using PrecompileTools: @setup_workload, @compile_workload 
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
