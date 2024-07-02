@@ -27,7 +27,9 @@ const math_syms = [
     :.*, :./, :.^, :.+, :.-, :.%,
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
-    :sqrt, :sin, :cos, :tan]
+    :sqrt, :sin, :cos, :tan, :sum, 
+    :cumsum, :max, :min, :exp]
+    
 const h_syms = [:cols, :spa, :h_env, :len]
 
 include("default_h_kwargs.jl")

@@ -161,6 +161,10 @@ end
 function check_not_funcs(f, kwargs)
     not_funcs = find_not_funcs(kwargs)
     not_funcs = typeof(not_funcs) == Symbol ? [not_funcs] : not_funcs
+    defaults = get(default_h_kwargs, :not_funcs, [])
+    if defaults != []
+        push!(not_funcs, defaults...)
+    end
     return f ∉ not_funcs
 end
 
