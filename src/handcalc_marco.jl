@@ -112,6 +112,10 @@ function _walk_expr(expr::Vector, math_syms)
             count = 1
             return ex
         end
+        if Meta.isexpr(ex, :ref)
+            count = length(collect(PostOrderDFS(ex)))
+            return Expr(:$, ex)
+        end
         if (ex isa Symbol) & (ex ∉ math_syms)
             count = 1
             return numeric_sub(ex)
@@ -126,6 +130,10 @@ function _walk_expr(expr::Expr, math_syms)
         if count > 0 # skip sections based on prewalk
             count -= 1
             return ex
+        end
+        if Meta.isexpr(ex, :ref)
+            count = length(collect(PostOrderDFS(ex)))
+            return Expr(:$, ex)
         end
         if Meta.isexpr(ex, :.) # interpolates field args
             count = length(ex.args) + 1
@@ -158,6 +166,10 @@ end
 function check_not_funcs(f, kwargs)
     not_funcs = find_not_funcs(kwargs)
     not_funcs = typeof(not_funcs) == Symbol ? [not_funcs] : not_funcs
+    defaults = get(default_h_kwargs, :not_funcs, [])
+    if defaults != []
+        push!(not_funcs, defaults...)
+    end
     return f ∉ not_funcs
 end
 

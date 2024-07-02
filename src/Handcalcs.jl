@@ -9,7 +9,7 @@ using MacroTools
 using LaTeXStrings
 using CodeTracking, Revise
 using InteractiveUtils
-import AbstractTrees: Leaves
+import AbstractTrees: Leaves, PostOrderDFS
 using PrecompileTools: @setup_workload, @compile_workload 
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
@@ -27,7 +27,10 @@ const math_syms = [
     :.*, :./, :.^, :.+, :.-, :.%,
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
-    :sqrt, :sin, :cos, :tan]
+    :sqrt, :sin, :cos, :tan, :sum, 
+    :cumsum, :max, :min, :exp, :log,
+    :log10]
+    
 const h_syms = [:cols, :spa, :h_env, :len, :color, :disable]
 
 include("default_h_kwargs.jl")
