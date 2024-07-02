@@ -119,13 +119,21 @@ end not_funcs = [sin cos]
 
 In the above example `sin` and `cos` were passed over and `calc_Is` was not. As you can see, the `calc_Is` function was a function that called other functions, and the `@handcalcs` macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. 
 
-```
+```julia
 const math_syms = [
     :*, :/, :^, :+, :-, :%,
     :.*, :./, :.^, :.+, :.-, :.%,
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
-    :sqrt, :sin, :cos, :tan]
+    :sqrt, :sin, :cos, :tan, :sum, 
+    :cumsum, :max, :min, :exp, :log,
+    :log10]
+```
+
+If you want to add functions to your specific project, you can do the following:
+
+```@example main
+set_handcalcs(not_funcs = [:foo :bar :baz])
 ```
 
 Current Limitations for `@handcalcs`
