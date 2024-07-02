@@ -126,7 +126,8 @@ const math_syms = [
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
     :sqrt, :sin, :cos, :tan, :sum, 
-    :cumsum, :max, :min, :exp]
+    :cumsum, :max, :min, :exp, :log,
+    :log10]
 ```
 
 If you want to add functions to your specific project, you can do the following:
