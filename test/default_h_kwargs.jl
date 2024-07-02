@@ -31,3 +31,17 @@ calc = @handcalcs begin
 end
 @test calc == expected
 reset_handcalcs()
+
+
+# use set_handcalcs for not_funcs
+# ***************************************************
+# ***************************************************
+set_handcalcs(not_funcs = [:calc_Ix])
+
+expected = L"$\begin{aligned}
+Ix &= \mathrm{calc}_{Ix}\left( 5, 15 \right) = 1406.25
+\end{aligned}$"
+
+calc = @handcalcs Ix = calc_Ix(5, 15)
+@test calc == expected
+reset_handcalcs()
