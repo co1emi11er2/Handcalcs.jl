@@ -15,3 +15,11 @@ expected = L"$x = (a)^{2} = (2\;\mathrm{inch})^{2} = 4\;\mathrm{inch}^{2}$"
 a = 2u"inch"
 calc = @handcalc x = a^2
 @test_broken calc == expected
+
+expected = L"$\begin{aligned}
+area &= b \cdot h = 5\;\mathrm{ft} \cdot 120\;\mathrm{inch} = 50\;\mathrm{ft}^{2}
+\end{aligned}$"
+b = 5u"ft"
+h = 120u"inch"
+calc = @handcalcs area = b*h |> u"ft^2"
+@test calc == expected

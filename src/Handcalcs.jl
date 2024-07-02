@@ -31,7 +31,7 @@ const math_syms = [
     :cumsum, :max, :min, :exp, :log,
     :log10]
     
-const h_syms = [:cols, :spa, :h_env, :len]
+const h_syms = [:cols, :spa, :h_env, :len, :color, :disable]
 
 include("default_h_kwargs.jl")
 include("handcalc_marco.jl")

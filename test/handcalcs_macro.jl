@@ -104,10 +104,10 @@ calc2 = @handcalcs z = x .* y
 # ***************************************************
 
 
-# cols, spa, and len kwargs test
+# cols, spa, color, and len kwargs test
 # ***************************************************
 # ***************************************************
-expected = L"$\begin{aligned}
+expected = L"$\color{blue} \begin{aligned}
 a &= 1&
 b &= 2&
 c &= 3
@@ -124,7 +124,7 @@ calc = @handcalcs begin
     x = 4
     y = 5
     z = 6
-end cols=3 spa=5
+end cols=3 spa=5 color=:blue
 
 @test calc == expected
 

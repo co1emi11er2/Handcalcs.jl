@@ -8,6 +8,16 @@ Set default kwarg values for handcalcs.
 This works for all keyword arguments. It is additive such that if
 you call it multiple times, defaults will be added or replaced, but not reset.
 
+## Kwargs
+- cols: sets the number of columns in the output
+- spa: sets the line spacing
+- len: can set to `:long` and it will split equation to multiple lines
+- color: change the color of the output (`:blue`, `:red`, etc)
+- h_env: choose between "aligned" (default), "align" and other LaTeX options
+- not_funcs: name the functions you do not want to "unroll" 
+- parse_pipe: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
+
 Example: 
 ```julia
 set_handcalcs(cols = 2, spa = 5)
@@ -30,9 +40,18 @@ Reset user-specified default kwargs for handcalcs, set by `set_handcalcs`.
 reset_handcalcs() = empty!(default_h_kwargs)
 
 """
-    get_handcalcs
+    get_handcalcs()
 
 Get a Dict with the user-specified default kwargs for handcalcs, set by `set_handcalcs`.
+
+## Kwargs
+- cols: sets the number of columns in the output
+- spa: sets the line spacing
+- len: can set to `:long` and it will split equation to multiple lines
+- h_env: Choose between "aligned" (default), "align" and other LaTeX options
+- not_funcs: Name the functions you do not want to "unroll" 
+- parse_pipe: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
 """
 function get_handcalcs end
 get_handcalcs() = default_h_kwargs
