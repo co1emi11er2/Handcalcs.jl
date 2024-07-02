@@ -28,7 +28,8 @@ const math_syms = [
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
     :sqrt, :sin, :cos, :tan, :sum, 
-    :cumsum, :max, :min, :exp]
+    :cumsum, :max, :min, :exp, :log,
+    :log10]
     
 const h_syms = [:cols, :spa, :h_env, :len]
 
