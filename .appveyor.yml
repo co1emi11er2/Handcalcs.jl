@@ -1,6 +1,7 @@
 # Documentation: https://github.com/JuliaCI/Appveyor.jl
 environment:
   matrix:
+    - julia_version: 1.11
     - julia_version: 1.10
     - julia_version: nightly
   COVERALLS_TOKEN:
