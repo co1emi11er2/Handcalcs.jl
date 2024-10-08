@@ -1,6 +1,3 @@
-"""
-Module for better calc documentation.
-"""
 module Handcalcs
 
 using Latexify: latexify, set_default, get_default, reset_default, @latexdefine
