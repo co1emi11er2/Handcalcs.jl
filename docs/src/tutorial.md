@@ -127,7 +127,7 @@ const math_syms = [
     :.<, :.>, :.==, :.<=, :.>=,
     :sqrt, :sin, :cos, :tan, :sum, 
     :cumsum, :max, :min, :exp, :log,
-    :log10]
+    :log10, :√]
 ```
 
 If you want to add functions to your specific project, you can do the following:
@@ -180,6 +180,14 @@ and to reset your changes, use
 
 ```julia
 reset_handcalcs()
+```
+
+### Set default precision
+
+Currently, to set the default precision, use the `set_default` function in combination with the [Format.jl](https://github.com/JuliaString/Format.jl) package. The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings. This is what I primarily use for now (you can see the use in the gif on the github page):
+```julia
+using Format
+set_default(fmt = x->format(round(x, digits=4)))
 ```
 
 ## Using Unitful with UnitfulLatexify
