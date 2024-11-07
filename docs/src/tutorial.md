@@ -185,6 +185,7 @@ reset_handcalcs()
 ### Set default precision
 
 Currently, to set the default precision, use the `set_default` function in combination with the [Format.jl](https://github.com/JuliaString/Format.jl) package. The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings. This is what I primarily use for now (you can see the use in the gif on the github page):
+
 ```julia
 using Format
 set_default(fmt = x->format(round(x, digits=4)))
