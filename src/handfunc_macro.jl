@@ -112,7 +112,7 @@ function _extract_kw(kw::Expr, dict::Dict)
     return dict
 end
 
-function _extract_kw(arg::Symbol, dict::Dict)
+function _extract_kw(kw::Symbol, dict::Dict)
     dict[kw] =  nothing
     return dict
 end

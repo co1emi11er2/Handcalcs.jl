@@ -11,10 +11,10 @@ calc = @handcalc x = a + b
 
 #TODO: Fix exponent issue
 # Unitful and UnitfulLatexify exponent test
-expected = L"$x = (a)^{2} = (2\;\mathrm{inch})^{2} = 4\;\mathrm{inch}^{2}$"
+expected = L"$x = a^{2} = \left( 2\;\mathrm{inch} \right)^{2} = 4\;\mathrm{inch}^{2}$"
 a = 2u"inch"
 calc = @handcalc x = a^2
-@test_broken calc == expected
+@test calc == expected
 
 expected = L"$\begin{aligned}
 area &= b \cdot h = 5\;\mathrm{ft} \cdot 120\;\mathrm{inch} = 50\;\mathrm{ft}^{2}

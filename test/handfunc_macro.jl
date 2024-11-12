@@ -63,6 +63,23 @@ calc_Iy_3 = @handfunc x = TestHandcalcFunctions.calc_Iy(15,5;expo=2, denominator
 calc_Iy_4 = @handfunc x = TestHandcalcFunctions.calc_Iy(10+5,5;expo=2, denominator=5+5) # check expressions
 @test calc_Iy_3 == expected_Iy_3
 @test calc_Iy_4 == expected_Iy_3
+
+b = 5
+h = 15
+a = 5
+c = 15
+expected_1 = (L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\end{aligned}$")
+calc_1 = @handfunc x = calc_Ix(;b=b, h=h) # check kw parameters with same name
+#calc_2 = @handfunc x = calc_Ix(;b, h) # check kw parameters with same name
+calc_3 = @handfunc x = calc_Ix(;b=a, h=c) # check kw parameters with different name
+calc_4 = @handfunc x = calc_Ix(;b=5, h=15) # check numeric parameters
+@test calc_1 == expected_1
+# @test calc_2 == expected_1
+@test calc_3 == expected_1
+@test calc_4 == expected_1
+
 # ***************************************************
 
 
