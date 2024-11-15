@@ -195,6 +195,7 @@ function _arr_to_expr!(expr::Expr, arr::Array)
     right_tuple_expr = expr.args[1].args[2].args
     for (arg_name, arg_val) in arr
         push!(left_tuple_expr, arg_name)
+        arg_val = typeof(arg_val) == Symbol ? QuoteNode(arg_val) : arg_val
         push!(right_tuple_expr, arg_val)
     end
 end

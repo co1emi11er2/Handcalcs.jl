@@ -125,3 +125,14 @@ h = 15
 calc = @handfunc Is = TestHandcalcFunctions.calc_Is(b, h)
 @test calc == expected
 # ***************************************************
+
+# Check with symbol variabels
+# ***************************************************
+# ***************************************************
+expected_1 = (L"$\begin{aligned}
+y &= x = hello
+\end{aligned}$")
+x = :hello
+calc_1 = @handcalcs y = sym_function(x)
+@test calc_1 == expected_1
+# ***************************************************
