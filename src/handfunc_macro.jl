@@ -55,7 +55,6 @@ end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
     found_func_args = found_func.args[1]
-    found_func_args
     found_kw_dict, found_pos_arr = parse_func_args(found_func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = parse_func_args(func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
@@ -66,11 +65,15 @@ end
 
 function parse_func_args(func_args, kw_func, pos_func)
     pos_arr = []
+
+    # ignore :where call 
+    func_args = func_args.head == :where ? func_args.args[1] : func_args
+
     len_args = length(func_args.args)
     if len_args == 1 # check if any function arguments
         return nothing, nothing
     end
-
+    
     # parse keyword function arguments
     iskw, kw_dict = kw_func(func_args.args[2])
 
