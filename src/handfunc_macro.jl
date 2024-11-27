@@ -26,10 +26,11 @@ macro handfunc(expr, kwargs...)
     var = esc(expr.args[1])
     eq = esc(expr.args[2])
     return quote
+        found_module = $(esc(:(@which $(expr.args[2])))).module
         found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
         func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
         latex_eq = handfunc(found_func, func_args, $kwargs)
-        latex = @eval $(Expr(:$, :latex_eq))
+        latex = @eval #=found_module=# $(Expr(:$, :latex_eq))
         $var = $eq
         latex
     end
@@ -45,12 +46,19 @@ function handfunc(found_func, func_args, kwargs)
     func_body = remove_return_statements(found_func.args[2])
     func_body = unblock(func_body)
     func_body = rmlines(func_body)
-    
+    # TODO: Can I step through function body and add module in front of function calls?
+    @show func_body
+    @show typeof(func_body)
+    dump(func_body)
     kw_dict, pos_arr = _initialize_kw_and_pos_args(found_func, func_args)
     return_expr = _initialize_expr(kw_dict, pos_arr)
     push!(return_expr.args[2].args, :(@handcalcs $(func_body) $(kwargs...)))
     # ret = @eval eval_module $return_expr
     return return_expr
+end
+
+function _walk_func_body(expr::Expr)
+    nothing
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
