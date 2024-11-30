@@ -65,7 +65,7 @@ macro handcalcs(expr, kwargs...)
     end
 
     # If singular expression
-    if expr.head == :(=)
+    if expr.head == :(=) || expr.head == :call
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
         return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end

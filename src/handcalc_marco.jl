@@ -24,7 +24,7 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
     expr = rmlines(expr)
     expr_og = copy(expr)
-    if @capture(expr, x_ = f_(fields__) | f_(fields__)) # Check if function call
+    if @capture(expr, x_ = f_(fields__)) # Check if function call
         if f ∉ math_syms && check_not_funcs(f, kwargs)
             if f == :(|>) && get(default_h_kwargs, :parse_pipe, true)  # Check if pipe and if parse_pipe
                 expr.args[2] = expr.args[2].args[2]
@@ -136,7 +136,7 @@ function _walk_expr(expr::Expr, math_syms)
             return Expr(:$, ex)
         end
         if Meta.isexpr(ex, :.) # interpolates field args
-            count = length(ex.args) + 1
+            count = _det_branch_size(ex; count=3)
             return Expr(:$, ex)
         end
         if Meta.isexpr(ex, :kw) # interpolates field args
