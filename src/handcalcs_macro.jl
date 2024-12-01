@@ -114,6 +114,15 @@ end
 function clean_expr(expr, len, spa)
     expr = expr[2:end-1] # remove the $ from end and beginning of string
     expr = expr[end] == " " ? expr : expr * " " # add trailing space if there isn't one
+    pattern = r"\\begin\{cases\}(.*?)\\end\{cases\}"s # if format pattern
+    m = match(pattern, expr)
+    if !isnothing(m) # expr is an if statement, do something different
+        expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
+        expr = replace(expr, "="=>"&=", count=1) # add alignment
+        expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr
+        return expr
+    end
+    # TODO the line below breaks if statements in edge cases
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
     expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr
