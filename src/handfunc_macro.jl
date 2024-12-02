@@ -29,7 +29,7 @@ macro handfunc(expr, kwargs...)
         found_module = $(esc(:(Handcalcs.@which $(expr.args[2])))).module
         found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
         func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
-        latex_eq = handfunc(found_module, found_func, func_args, $kwargs)
+        @show latex_eq = handfunc(found_module, found_func, func_args, $kwargs)
         latex = @eval #=found_module=# $(Expr(:$, :latex_eq))
         $var = $eq
         latex
@@ -57,6 +57,7 @@ end
 function _walk_func_body(expr::Expr, found_module)
     prewalk(expr) do x
         if @capture(x, f_(args__))
+            @show f
             if isdefined(Base, f)
                 x
             else

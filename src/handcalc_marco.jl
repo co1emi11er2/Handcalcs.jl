@@ -170,6 +170,11 @@ function check_not_funcs(f, kwargs)
     if defaults != []
         push!(not_funcs, defaults...)
     end
+    if Meta.isexpr(f, :.)
+        @show f = f.args[end].value
+        dump(f)
+        return @show f ∉ not_funcs
+    end
     return f ∉ not_funcs
 end
 
