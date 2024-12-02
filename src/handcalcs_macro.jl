@@ -114,15 +114,30 @@ end
 function clean_expr(expr, len, spa)
     expr = expr[2:end-1] # remove the $ from end and beginning of string
     expr = expr[end] == " " ? expr : expr * " " # add trailing space if there isn't one
-    pattern = r"\\begin\{cases\}(.*?)\\end\{cases\}"s # if format pattern
+    
+    # if format pattern
+    pattern = r"\\begin\{cases\}(.*?)\\end\{cases\}"s 
     m = match(pattern, expr)
     if !isnothing(m) # expr is an if statement, do something different
-        expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
-        expr = replace(expr, "="=>"&=", count=1) # add alignment
-        expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr
+
+        # change "=" within ifs to "==" so they do not match to below exprs
+        for m in eachmatch(pattern, expr) 
+            new_m = replace(m.match, "=" => "==")
+            expr = replace(expr, m.match => new_m)
+        end
+
+        expr = split(expr, " = ") |> unique |> x -> join(x, " = ")[1:end-1] # removes any redundant parts, and removes space at the end
+        expr = replace(expr, " = "=>"&=", count=1) # add alignment
+        expr = len == :long ? replace(expr, " = "=>"\n\\\\[$spa" *"pt]\n&= ", count=2) : expr
+
+        # change "==" back to "="
+        for m in eachmatch(pattern, expr) 
+            new_m = replace(m.match, "==" => "=")
+            expr = replace(expr, m.match => new_m)
+        end
         return expr
     end
-    # TODO the line below breaks if statements in edge cases
+
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
     expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr

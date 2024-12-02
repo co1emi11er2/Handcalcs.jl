@@ -234,3 +234,38 @@ end not_funcs = [calc_Ix; calc_Iy]
 @test calc3 == expected
 @test calc4 == expected
 # ***************************************************
+
+# if statement test
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+I&=\begin{cases}
+\frac{5 \cdot 15^{3}}{12} & \text{if } type = Ix\\
+\frac{15 \cdot 5^{3}}{12} & \text{otherwise}
+\end{cases} = \begin{cases}
+\frac{5 \cdot 15^{3}}{12} & \text{if } Ix = Ix\\
+\frac{15 \cdot 5^{3}}{12} & \text{otherwise}
+\end{cases} = 1406.25
+\end{aligned}$"
+type = :Ix
+calc = @handcalcs I= if type == :Ix
+    5 * 15^3/12
+else
+    15 * 5^3/12
+end
+@test calc == expected
+
+expected = L"$\begin{aligned}
+I&=\begin{cases}
+\frac{5 \cdot 15^{3}}{12} & \text{if } Ix = Ix\\
+\frac{15 \cdot 5^{3}}{12} & \text{otherwise}
+\end{cases} = 1406.25
+\end{aligned}$"
+
+calc = @handcalcs I= if :Ix == :Ix
+    5 * 15^3/12
+else
+    15 * 5^3/12
+end
+@test calc == expected
+# ***************************************************
