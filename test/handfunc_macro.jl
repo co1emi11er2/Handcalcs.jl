@@ -136,3 +136,37 @@ x = :hello
 calc_1 = @handcalcs y = sym_function(x)
 @test calc_1 == expected_1
 # ***************************************************
+
+# Check submodules
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+c &= a + b = 4 + 5 = 9
+\end{aligned}$"
+a = 4
+b = 5
+calc = @handcalcs c = TestHandcalcFunctions.SubA.SubB.sub_module_func(a, b)
+@test calc == expected
+# ***************************************************
+
+# Check parametric functions
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+c &= a + b = 4 + 5 = 9
+\end{aligned}$"
+a = 4
+b = 5
+calc = @handcalcs c = TestHandcalcFunctions.where_func(a, b)
+@test calc == expected
+# ***************************************************
+
+# Check single call
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+5 + 6 + 7 &= 5 + 6 + 7 = 18
+\end{aligned}$"
+calc = @handcalcs 5 + 6 + 7
+@test calc == expected
+# ***************************************************
