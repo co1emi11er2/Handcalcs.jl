@@ -60,7 +60,7 @@ function _walk_func_body(expr::Expr, found_module)
         if @capture(x, f_(args__))
             len = length(collect(Leaves(f)))
             if len == 1
-                if isdefined(Base, f)
+                if isdefined(Main, f) # should really be `Base` but `Main` is used for now
                     x
                 else
                     new_x = :($found_module_sym.$f($(args...)))
