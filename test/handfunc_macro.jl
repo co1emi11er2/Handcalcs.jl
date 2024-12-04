@@ -185,4 +185,17 @@ c &= a + b = 5 + 15 = 20
 \end{aligned}$"
 calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15)
 @test calc == expected
+
+expected = L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &= \mathrm{calc}_{Iy}\left( h, b \right) = \mathrm{calc}_{Iy}\left( 15, 5 \right) = 156.25
+\\[10pt]
+c1 &= \mathrm{\mathrm{\mathrm{TestHandcalcFunctions}\left( SubA \right)}\left( sub}_{{module\\_func} \right)}\left( a, b \right) = \mathrm{sub}_{module\_func}\left( 5, 15 \right) = 75
+\\[10pt]
+c2 &= \mathrm{\mathrm{\mathrm{\mathrm{TestHandcalcFunctions}\left( SubA \right)}\left( SubB \right)}\left( sub}_{{module\\_func} \right)}\left( a, b \right) = \mathrm{sub}_{module\_func}\left( 5, 15 \right) = 20
+\end{aligned}$"
+
+calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15) not_funcs = [:calc_Iy :sub_module_func] 
+@test calc == expected
 # ***************************************************

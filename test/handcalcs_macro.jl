@@ -239,7 +239,7 @@ end not_funcs = [calc_Ix; calc_Iy]
 # ***************************************************
 # ***************************************************
 expected = L"$\begin{aligned}
-I&=\begin{cases}
+I &= \begin{cases}
 \frac{5 \cdot 15^{3}}{12} & \text{if } type = Ix\\
 \frac{15 \cdot 5^{3}}{12} & \text{otherwise}
 \end{cases} = \begin{cases}
@@ -253,10 +253,11 @@ calc = @handcalcs I= if type == :Ix
 else
     15 * 5^3/12
 end
-@test calc == expected
+
+@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 
 expected = L"$\begin{aligned}
-I&=\begin{cases}
+I &= \begin{cases}
 \frac{5 \cdot 15^{3}}{12} & \text{if } Ix = Ix\\
 \frac{15 \cdot 5^{3}}{12} & \text{otherwise}
 \end{cases} = 1406.25
@@ -267,5 +268,5 @@ calc = @handcalcs I= if :Ix == :Ix
 else
     15 * 5^3/12
 end
-@test calc == expected
+@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 # ***************************************************
