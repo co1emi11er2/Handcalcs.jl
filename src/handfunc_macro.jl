@@ -67,11 +67,23 @@ function _walk_func_body(expr::Expr, found_module)
                     new_x
                 end
             else
-                x
+                _add_found_module!(f, found_module_sym)
+                new_x = Expr(:call, f, args...)
+                new_x
             end
         else
             x
         end
+    end
+end
+
+function _add_found_module!(ex, m)
+    if ex.args[1] isa Symbol
+        sym = ex.args[1]
+        ex.args[1] = Expr(:., m, QuoteNode(sym))
+        nothing
+    else
+        _add_found_module!(ex.args[1], m)
     end
 end
 
