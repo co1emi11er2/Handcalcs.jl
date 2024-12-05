@@ -114,7 +114,7 @@ x = 0
 y = sin(x)
 z = cos(x)
 I_x, I_y = TestHandcalcFunctions.calc_Is(5, 15)
-end not_funcs = [sin cos]
+end not_funcs = [:sin :cos]
 ```
 
 In the above example `sin` and `cos` were passed over and `calc_Is` was not. As you can see, the `calc_Is` function was a function that called other functions, and the `@handcalcs` macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. 
@@ -139,7 +139,6 @@ set_handcalcs(not_funcs = [:foo :bar :baz])
 Current Limitations for `@handcalcs`
 
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
-- If the function has other function calls within it's body that are not available in Main, then the macro will error.
 
 ## Changing Default Settings:
 

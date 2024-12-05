@@ -127,7 +127,7 @@ function clean_expr(expr, len, spa)
         end
 
         expr = split(expr, " = ") |> unique |> x -> join(x, " = ")[1:end-1] # removes any redundant parts, and removes space at the end
-        expr = replace(expr, " = "=>"&=", count=1) # add alignment
+        expr = replace(expr, " = "=>" &= ", count=1) # add alignment
         expr = len == :long ? replace(expr, " = "=>"\n\\\\[$spa" *"pt]\n&= ", count=2) : expr
 
         # change "==" back to "="

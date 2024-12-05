@@ -141,7 +141,7 @@ calc_1 = @handcalcs y = sym_function(x)
 # ***************************************************
 # ***************************************************
 expected = L"$\begin{aligned}
-c &= a + b = 4 + 5 = 9
+c2 &= a + b = 4 + 5 = 9
 \end{aligned}$"
 a = 4
 b = 5
@@ -169,4 +169,36 @@ expected = L"$\begin{aligned}
 \end{aligned}$"
 calc = @handcalcs 5 + 6 + 7
 @test calc == expected
+# ***************************************************
+
+# Check recursive functions as well as functions not in scope
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &= \frac{h \cdot b^{expo}}{denominator} = \frac{15 \cdot 5^{3}}{12} = 156.25
+\\[10pt]
+c1 &= a \cdot b = 5 \cdot 15 = 75
+\\[10pt]
+c2 &= a + b = 5 + 15 = 20
+\end{aligned}$"
+calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15)
+@test calc == expected
+
+expected = L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &= \mathrm{calc}_{Iy}\left( h, b \right) = \mathrm{calc}_{Iy}\left( 15, 5 \right) = 156.25
+\\[10pt]
+c1, c2 &= \mathrm{\mathrm{\mathrm{TestHandcalcFunctions}\left( SubA \right)}\left( sub}_{{module\\_func} \right)}\left( a, b \right) = \mathrm{sub}_{module\_func}\left( 5, 15 \right) = \left[
+\begin{array}{c}
+75 \\
+20 \\
+\end{array}
+\right]
+\end{aligned}$"
+
+calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15) not_funcs = [:calc_Iy :sub_module_func] 
+@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 # ***************************************************
