@@ -55,7 +55,9 @@ function handfunc(found_module, found_func, func_args, kwargs)
 end
 
 function _walk_func_body(expr::Expr, found_module)
-    found_module_sym = Symbol(found_module)
+    # found_module can be Foo or Foo.Bar need to parse it correctly
+    found_module_string = string(found_module)
+
     prewalk(expr) do x
         if @capture(x, f_(args__))
             len = length(collect(Leaves(f)))
@@ -63,27 +65,16 @@ function _walk_func_body(expr::Expr, found_module)
                 if isdefined(Main, f) # should really be `Base` but `Main` is used for now
                     x
                 else
-                    new_x = :($found_module_sym.$f($(args...)))
+                    new_x = Meta.parse(found_module_string * "." * string(x))
                     new_x
                 end
             else
-                _add_found_module!(f, found_module_sym)
-                new_x = Expr(:call, f, args...)
+                new_x = Meta.parse(found_module_string * "." * string(x))
                 new_x
             end
         else
             x
         end
-    end
-end
-
-function _add_found_module!(ex, m)
-    if ex.args[1] isa Symbol
-        sym = ex.args[1]
-        ex.args[1] = Expr(:., m, QuoteNode(sym))
-        nothing
-    else
-        _add_found_module!(ex.args[1], m)
     end
 end
 
