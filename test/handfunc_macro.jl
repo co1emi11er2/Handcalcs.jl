@@ -202,3 +202,18 @@ c1, c2 &= \mathrm{\mathrm{\mathrm{TestHandcalcFunctions}\left( SubA \right)}\lef
 calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15) not_funcs = [:calc_Iy :sub_module_func] 
 @test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 # ***************************************************
+
+# Check piped functions not in scope
+# ***************************************************
+# ***************************************************
+a = 5*u"inch"
+b = 6*u"inch"
+calc = @handcalcs result = FunctionTestModule.add_cnv(a, b)
+calc2 = @handcalcs result = FunctionTestModule.add_inch(a, b)
+expected = L"$\begin{aligned}
+c &= a + b = 5\;\mathrm{inch} + 6\;\mathrm{inch} = 11\;\mathrm{inch}
+\end{aligned}$"
+@test calc == expected
+@test calc2 == expected
+# ***************************************************
+

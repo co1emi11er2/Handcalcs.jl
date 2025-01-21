@@ -60,6 +60,11 @@ function _walk_func_body(expr::Expr, found_module)
 
     prewalk(expr) do x
         if @capture(x, f_(args__))
+
+            # if f is |>, need to make sure function after |> gets properly scoped
+            if f == :(|>) 
+                x.args[3] = Meta.parse(found_module_string * "." * string(x.args[3]))
+            end
             len = length(collect(Leaves(f)))
             if len == 1
                 if isdefined(Main, f) # should really be `Base` but `Main` is used for now
