@@ -2,6 +2,8 @@ using Handcalcs
 using LaTeXStrings, Unitful, UnitfulLatexify
 using Test
 using TestHandcalcFunctions
+using Revise
+isdefined(Main, :Revise) ? Main.Revise.includet("FunctionTestModule.jl") : include("FunctionTestModule.jl")
 # using .TestFunctions
 
 
