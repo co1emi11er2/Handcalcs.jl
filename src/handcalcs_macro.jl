@@ -149,15 +149,29 @@ function clean_kwargs(kwargs)
     is_recursive = false
     h_kwargs = []
     l_kwargs = []
+    overwrite_precision = false
     for kwarg in kwargs
         split_kwarg = _split_kwarg(kwarg)
         if split_kwarg in h_syms
             h_kwargs = push!(h_kwargs, kwarg)
         elseif split_kwarg == :is_recursive
             is_recursive = true
+        elseif split_kwarg == :precision
+            overwrite_precision = true
+            precision = kwarg.args[2]
+            l_kwargs = push!(l_kwargs, :(fmt = PrecisionNumberFormatter($precision)))
+        elseif split_kwarg == :fmt
+            overwrite_precision = true
+            l_kwargs = push!(l_kwargs, kwarg)
         else
             l_kwargs = push!(l_kwargs, kwarg)
         end
+    end
+
+    # use default precision if not fmt or precision is given
+    if !overwrite_precision && haskey(default_h_kwargs, :precision)
+        precision = default_h_kwargs[:precision]
+        l_kwargs = push!(l_kwargs, :(fmt = PrecisionNumberFormatter($precision)))
     end
     return is_recursive, Tuple(h_kwargs), Tuple(l_kwargs)
 end

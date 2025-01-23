@@ -45,3 +45,48 @@ Ix &= \mathrm{calc}_{Ix}\left( 5, 15 \right) = 1406.25
 calc = @handcalcs Ix = calc_Ix(5, 15)
 @test calc == expected
 reset_handcalcs()
+
+
+# use set_handcalcs for precision
+# ***************************************************
+# ***************************************************
+set_handcalcs(precision = 1)
+
+expected =L"\begin{aligned}
+x &= 5.3
+\\[10pt]
+y &= 4
+\end{aligned}"
+
+calc = @handcalcs begin
+    x = 5.25
+    y = 4
+end
+@test calc == expected
+
+# make sure default precision does not overwrite given values
+expected =L"\begin{aligned}
+x &= 5.2565
+\\[10pt]
+y &= 4
+\end{aligned}"
+
+calc = @handcalcs begin
+    x = 5.25645
+    y = 4
+end precision = 4
+@test calc == expected
+
+
+expected =L"\begin{aligned}
+x &= 5.2565
+\\[10pt]
+y &= 4.0000
+\end{aligned}"
+
+calc = @handcalcs begin
+    x = 5.25645
+    y = 4
+end fmt = "%.4f"
+@test calc == expected
+reset_handcalcs()
