@@ -2,6 +2,19 @@
 # using Test
 
 
+# Pluto test
+# ***************************************************
+# ***************************************************
+expected = html"""
+<style>
+	mjx-container {
+		text-align: left !important;
+	}
+</style>
+"""
+calc = left_align_in_pluto()
+@test calc == expected
+
 # Quadratic formula test
 # ***************************************************
 # ***************************************************

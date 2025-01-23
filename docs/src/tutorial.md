@@ -238,3 +238,29 @@ t = 8.5u"inch"
     Ix = b*t^3/12   |> u"inch"^4
 end
 ```
+
+## Pluto
+
+Handcalcs renders in [Pluto.jl](https://plutojl.org/). There is one function specifically for rendering in pluto.
+
+```@docs
+left_align_in_pluto
+```
+
+!!! note "Use `begin` and `end`"
+    Pluto outputs an extra variable description when using `@handcalcs` without `begin` and `end`.
+    
+    As an example:
+
+    ```julia
+    @handcalcs x = 2
+    ```
+
+    Instead of writing the code above, write:
+
+    ```julia
+    @handcalcs begin 
+        x = 2 
+    end
+    ```
+
