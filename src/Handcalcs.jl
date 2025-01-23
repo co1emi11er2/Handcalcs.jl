@@ -11,6 +11,7 @@ using PrecompileTools: @setup_workload, @compile_workload
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
 export set_handcalcs, reset_handcalcs, get_handcalcs, PrecisionNumberFormatter
+export left_align_in_pluto
 export latexify, @latexdefine, set_default, get_default, reset_default
 
 # function initialize_format()
@@ -29,6 +30,19 @@ const math_syms = [
     :log10, :√]
     
 const h_syms = [:cols, :spa, :h_env, :len, :color, :disable, :parse_pipe]
+
+"""
+    left_align_in_pluto()
+
+Returns html that changes mathjax settings in pluto. This results in equations that are left aligned instead of centered.
+"""
+left_align_in_pluto() = html"""
+<style>
+	mjx-container {
+		text-align: left !important;
+	}
+</style>
+"""
 
 include("numberformatters.jl")
 include("default_h_kwargs.jl")
