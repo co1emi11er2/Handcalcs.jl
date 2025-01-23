@@ -48,6 +48,7 @@ The moment of inertia about the y direction is: $I_y\n")
 - `spa` - change the vertical line spacing between expressions (default = 10).
 - `color`: change the color of the output (`:blue`, `:red`, etc)
 - `h_env` - change the environment (default = "aligned").
+- `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `len` - change expression to write to multiple lines using `len=:long` (default = :short).
 
 **Note: `@handcalcs` macro can also take symbols of defined variables. See below.**
@@ -151,9 +152,10 @@ You can change the default settings using the `set_handcalcs` function *(similar
 - `len`: can set to `:long` and it will split equation to multiple lines
 - `color`: change the color of the output (`:blue`, `:red`, etc)
 - `h_env`: choose between "aligned" (default), "align" and other LaTeX options
+- `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
-- disable: disable handcalcs rendering to run simulations and turn it back on when needed.
+- `disable`: disable handcalcs rendering to run simulations and turn it back on when needed.
 
 ```julia
 set_handcalcs(cols=3)
@@ -183,12 +185,35 @@ reset_handcalcs()
 
 ### Set default precision
 
-Currently, to set the default precision, use the `set_default` function in combination with the [Format.jl](https://github.com/JuliaString/Format.jl) package. The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings. This is what I primarily use for now (you can see the use in the gif on the github page):
+Handcalcs provides a setting to include a default precision. This setting formats a number to a max precision. See example below:
+
+```@example main
+@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end precision = 2
+```
+
+This setting is off by default, but you can add a default with the `set_handcalcs` function.
 
 ```julia
-using Format
-set_default(fmt = x->format(round(x, digits=4)))
+set_handcalcs(precision=4)
 ```
+
+If other formats are preferred, then use the `fmt` option provided by Latexify. 
+
+```@example main
+@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end fmt = "%.2f"
+```
+
+The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings.
 
 ## Using Unitful with UnitfulLatexify
 

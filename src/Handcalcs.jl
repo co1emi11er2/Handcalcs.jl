@@ -1,6 +1,6 @@
 module Handcalcs
 
-using Latexify: latexify, set_default, get_default, reset_default, @latexdefine
+using Latexify: latexify, set_default, get_default, reset_default, @latexdefine, AbstractNumberFormatter
 using MacroTools: postwalk, prewalk
 using MacroTools
 using LaTeXStrings
@@ -10,7 +10,7 @@ import AbstractTrees: Leaves, PostOrderDFS
 using PrecompileTools: @setup_workload, @compile_workload 
 
 export @handcalc, @handcalcs, @handfunc, multiline_latex, collect_exprs
-export set_handcalcs, reset_handcalcs, get_handcalcs #, initialize_format
+export set_handcalcs, reset_handcalcs, get_handcalcs, PrecisionNumberFormatter
 export latexify, @latexdefine, set_default, get_default, reset_default
 
 # function initialize_format()
@@ -28,8 +28,9 @@ const math_syms = [
     :cumsum, :max, :min, :exp, :log,
     :log10, :√]
     
-const h_syms = [:cols, :spa, :h_env, :len, :color, :disable]
+const h_syms = [:cols, :spa, :h_env, :len, :color, :disable, :parse_pipe]
 
+include("numberformatters.jl")
 include("default_h_kwargs.jl")
 include("handcalc_marco.jl")
 include("handcalcs_macro.jl")
