@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Tutorial · Handcalcs.jl</title><meta name="title" content="Tutorial · Handcalcs.jl"/><meta property="og:title" content="Tutorial · Handcalcs.jl"/><meta property="twitter:title" content="Tutorial · Handcalcs.jl"/><meta name="description" content="Documentation for Handcalcs.jl."/><meta property="og:description" content="Documentation for Handcalcs.jl."/><meta property="twitter:description" content="Documentation for Handcalcs.jl."/><meta property="og:url" content="https://co1emi11er2.github.io/Handcalcs.jl/tutorial/"/><meta property="twitter:url" content="https://co1emi11er2.github.io/Handcalcs.jl/tutorial/"/><link rel="canonical" href="https://co1emi11er2.github.io/Handcalcs.jl/tutorial/"/><script data-outdated-warner src="../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL=".."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../assets/documenter.js"></script><script src="../search_index.js"></script><script src="../siteinfo.js"></script><script src="../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../">Handcalcs.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../">Home</a></li><li class="is-active"><a class="tocitem" href>Tutorial</a><ul class="internal"><li><a class="tocitem" href="#Expression-Examples"><span>Expression Examples</span></a></li><li><a class="tocitem" href="#Changing-the-Output-Settings"><span>Changing the Output Settings</span></a></li><li><a class="tocitem" href="#Function-Examples"><span>Function Examples</span></a></li><li><a class="tocitem" href="#Changing-Default-Settings:"><span>Changing Default Settings:</span></a></li><li><a class="tocitem" href="#Using-Unitful-with-UnitfulLatexify"><span>Using Unitful with UnitfulLatexify</span></a></li><li><a class="tocitem" href="#Pluto"><span>Pluto</span></a></li></ul></li><li><a class="tocitem" href="../references/">References</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Tutorial</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Tutorial</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/co1emi11er2/Handcalcs.jl/blob/master/docs/src/tutorial.md#" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="Tutorial"><a class="docs-heading-anchor" href="#Tutorial">Tutorial</a><a id="Tutorial-1"></a><a class="docs-heading-anchor-permalink" href="#Tutorial" title="Permalink"></a></h1><p>Below are a series of examples of the capabilities of the Handcalcs package.</p><h2 id="Expression-Examples"><a class="docs-heading-anchor" href="#Expression-Examples">Expression Examples</a><a id="Expression-Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Expression-Examples" title="Permalink"></a></h2><h3 id="A-single-expression-example:"><a class="docs-heading-anchor" href="#A-single-expression-example:">A single expression example:</a><a id="A-single-expression-example:-1"></a><a class="docs-heading-anchor-permalink" href="#A-single-expression-example:" title="Permalink"></a></h3><pre><code class="language-julia hljs">using Handcalcs
+a = 2
+b = -5
+c = 2
+@handcalcs x = (-b + sqrt(b^2 - 4*a*c))/ (2*a)</code></pre><p class="math-container">\[\begin{aligned}
+x &amp;= \frac{ - b + \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a} = \frac{ + 5 + \sqrt{\left( -5 \right)^{2} - 4 \cdot 2 \cdot 2}}{2 \cdot 2} = 2.0
+\end{aligned}\]</p><p>The variable x is still evaluated:</p><pre><code class="language-julia hljs">x</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">2.0</code></pre><h3 id="An-example-of-multiple-expressions:"><a class="docs-heading-anchor" href="#An-example-of-multiple-expressions:">An example of multiple expressions:</a><a id="An-example-of-multiple-expressions:-1"></a><a class="docs-heading-anchor-permalink" href="#An-example-of-multiple-expressions:" title="Permalink"></a></h3><p>Note: If you input strings instead of expressions into handcalcs, they will be enclosed in parenthesis and added to the end of the last expression line.</p><pre><code class="language-julia hljs">b = 5 # width
+h = 15 # height
+@handcalcs begin
+  I_x = (b*h^3)/12; &quot;moment of inertia about x&quot;;
+  I_y = (h*b^3)/12; &quot;moment of inertia about y&quot;;
+end</code></pre><p class="math-container">\[\begin{aligned}
+I_{x} &amp;= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25\;\text{  }(\text{moment of inertia about x})
+\\[10pt]
+I_{y} &amp;= \frac{h \cdot b^{3}}{12} = \frac{15 \cdot 5^{3}}{12} = 156.25\;\text{  }(\text{moment of inertia about y})
+\end{aligned}\]</p><p>The <code>I_x</code> and <code>I_y</code> variables are still evaluated:</p><pre><code class="language-julia hljs">println(&quot;The moment of inertia about the x direction is: $I_x\n
+The moment of inertia about the y direction is: $I_y\n&quot;)</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">The moment of inertia about the x direction is: 1406.25
+
+The moment of inertia about the y direction is: 156.25</code></pre><h2 id="Changing-the-Output-Settings"><a class="docs-heading-anchor" href="#Changing-the-Output-Settings">Changing the Output Settings</a><a id="Changing-the-Output-Settings-1"></a><a class="docs-heading-anchor-permalink" href="#Changing-the-Output-Settings" title="Permalink"></a></h2><p>You can edit the layout of the returned LaTeX expression with the following kwargs:</p><ul><li><code>cols</code> - change the number of columns the expression returns (default = 1).</li><li><code>spa</code> - change the vertical line spacing between expressions (default = 10).</li><li><code>color</code>: change the color of the output (<code>:blue</code>, <code>:red</code>, etc)</li><li><code>h_env</code> - change the environment (default = &quot;aligned&quot;).</li><li><code>precision</code>: formats numbers to a max precision. Given <code>precision = 2</code>, <code>2.567</code> will show as <code>2.57</code>, while <code>2.5</code> would show as <code>2.5</code></li><li><code>len</code> - change expression to write to multiple lines using <code>len=:long</code> (default = :short).</li></ul><p><strong>Note: <code>@handcalcs</code> macro can also take symbols of defined variables. See below.</strong></p><pre><code class="language-julia hljs">a, b, c = 1, 2, 3
+@handcalcs begin
+    a # see note above
+    b
+    c
+    x = 4
+    y = 5
+    z = 6
+end cols=3 spa=0 color=:blue</code></pre><p class="math-container">\[\color{blue} \begin{aligned}
+a &amp;= 1&amp;
+b &amp;= 2&amp;
+c &amp;= 3
+\\[0pt]
+x &amp;= 4&amp;
+y &amp;= 5&amp;
+z &amp;= 6
+\end{aligned}\]</p><p>A list of additional colors can be found <a href="https://www.overleaf.com/learn/latex/Using_colors_in_LaTeX">here</a>. Not all of the colors in the link work, but a good number of them do.</p><p>Below is an example of what you can do if an expression is really long.</p><pre><code class="language-julia hljs">a, b, c = 2, -5, 2
+@handcalcs begin
+    x1 = (-b + sqrt(b^2 - 4*a*c))/(2*a)
+    x2 = (-b - sqrt(b^2 - 4*a*c))/(2*a)
+end len = :long # using len argument forces cols=1</code></pre><p class="math-container">\[\begin{aligned}
+x1 &amp;= \frac{ - b + \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a}
+\\[10pt]
+&amp;= \frac{ + 5 + \sqrt{\left( -5 \right)^{2} - 4 \cdot 2 \cdot 2}}{2 \cdot 2}
+\\[10pt]
+&amp;= 2.0
+\\[10pt]
+x2 &amp;= \frac{ - b - \sqrt{b^{2} - 4 \cdot a \cdot c}}{2 \cdot a}
+\\[10pt]
+&amp;= \frac{ + 5 - \sqrt{\left( -5 \right)^{2} - 4 \cdot 2 \cdot 2}}{2 \cdot 2}
+\\[10pt]
+&amp;= 0.5
+\end{aligned}\]</p><h2 id="Function-Examples"><a class="docs-heading-anchor" href="#Function-Examples">Function Examples</a><a id="Function-Examples-1"></a><a class="docs-heading-anchor-permalink" href="#Function-Examples" title="Permalink"></a></h2><p>The <code>@handcalcs</code> macro will now automatically try to &quot;unroll&quot; the expressions within a function when the expression has the following pattern: <code>variable = function_name(args...; kwargs...)</code>. Note that this is recursive, so if you have a function that calls other functions where the expressions that call the function are of the format mentioned, it will continue to step into each function to &quot;unroll&quot; all expressions.</p><p>One issue that can arise are for the functions that you do not want to unroll. Consider the expression: <code>y = sin(x)</code> or <code>y = x + 5</code>. Both of these expressions match the format: <code>variable = function_name(args...; kwargs...)</code> and would be unrolled. This would result in an error since these functions don&#39;t have generic math expressions that can be latexified defining the function. You will need to use the <code>not_funcs</code> keyword to manually tell the @handcalcs macro to pass over these functions. Some of the common math functions that you will not want to unroll are automatically passed over. See examples below.</p><h3 id="An-example-for-rendering-expressions-within-a-function:"><a class="docs-heading-anchor" href="#An-example-for-rendering-expressions-within-a-function:">An example for rendering expressions within a function:</a><a id="An-example-for-rendering-expressions-within-a-function:-1"></a><a class="docs-heading-anchor-permalink" href="#An-example-for-rendering-expressions-within-a-function:" title="Permalink"></a></h3><pre><code class="language-julia hljs">function calc_Ix(b, h) # function defined in TestHandcalcFunctions
+    Ix = b*h^3/12
+    return Ix
+end;</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">calc_Ix (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">using TestHandcalcFunctions
+b = 5 # width
+h = 15 # height
+@handcalcs Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package</code></pre><p class="math-container">\[\begin{aligned}
+Ix &amp;= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\end{aligned}\]</p><p>The <code>Ix</code> variable is evaluated. Ix being the variable assigned in the @handcalcs part (variables within function are not defined in the global name space). If you assign it to a different variable then that will be the variable defined (although you will still see it as Ix in the latex portion). Also note that return statements are filtered out of the function body, so keep relevant parts separate from return statements.</p><pre><code class="language-julia hljs">function calc_Is(b, h) # function defined in TestHandcalcFunctions
+    Ix = calc_Ix(b, h)
+    Iy = calc_Iy(h, b)
+    return Ix, Iy
+end;</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">calc_Is (generic function with 1 method)</code></pre><pre><code class="language-julia hljs">using TestHandcalcFunctions
+x = 0
+@handcalcs begin
+y = sin(x)
+z = cos(x)
+I_x, I_y = TestHandcalcFunctions.calc_Is(5, 15)
+end not_funcs = [:sin :cos]</code></pre><p class="math-container">\[\begin{aligned}
+y &amp;= \sin\left( x \right) = \sin\left( 0 \right) = 0.0
+\\[10pt]
+z &amp;= \cos\left( x \right) = \cos\left( 0 \right) = 1.0
+\\[10pt]
+Ix &amp;= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &amp;= \frac{h \cdot b^{expo}}{denominator} = \frac{15 \cdot 5^{3}}{12} = 156.25
+\end{aligned}\]</p><p>In the above example <code>sin</code> and <code>cos</code> were passed over and <code>calc_Is</code> was not. As you can see, the <code>calc_Is</code> function was a function that called other functions, and the <code>@handcalcs</code> macro continued to step into each function to unroll all expressions. Please see below for a list of the current functions that are passed over automatically. Please submit a pull request if you would like to add more generic math functions that I have left out. </p><pre><code class="language-julia hljs">const math_syms = [
+    :*, :/, :^, :+, :-, :%,
+    :.*, :./, :.^, :.+, :.-, :.%,
+    :&lt;, :&gt;, Symbol(==), :&lt;=, :&gt;=,
+    :.&lt;, :.&gt;, :.==, :.&lt;=, :.&gt;=,
+    :sqrt, :sin, :cos, :tan, :sum, 
+    :cumsum, :max, :min, :exp, :log,
+    :log10, :√]</code></pre><p>If you want to add functions to your specific project, you can do the following:</p><pre><code class="language-julia hljs">set_handcalcs(not_funcs = [:foo :bar :baz])</code></pre><p>Current Limitations for <code>@handcalcs</code></p><ul><li>I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.</li></ul><h2 id="Changing-Default-Settings:"><a class="docs-heading-anchor" href="#Changing-Default-Settings:">Changing Default Settings:</a><a id="Changing-Default-Settings:-1"></a><a class="docs-heading-anchor-permalink" href="#Changing-Default-Settings:" title="Permalink"></a></h2><p>You can change the default settings using the <code>set_handcalcs</code> function <em>(similar to the <code>set_default</code> function in Latexify)</em>.</p><h3 id="Settings"><a class="docs-heading-anchor" href="#Settings">Settings</a><a id="Settings-1"></a><a class="docs-heading-anchor-permalink" href="#Settings" title="Permalink"></a></h3><ul><li><code>cols</code> - change the number of columns the expression returns (default = 1).</li><li><code>spa</code> - change the vertical line spacing between expressions (default = 10).</li><li><code>len</code>: can set to <code>:long</code> and it will split equation to multiple lines</li><li><code>color</code>: change the color of the output (<code>:blue</code>, <code>:red</code>, etc)</li><li><code>h_env</code>: choose between &quot;aligned&quot; (default), &quot;align&quot; and other LaTeX options</li><li><code>precision</code>: formats numbers to a max precision. Given <code>precision = 2</code>, <code>2.567</code> will show as <code>2.57</code>, while <code>2.5</code> would show as <code>2.5</code></li><li><code>not_funcs</code>: name the functions you do not want to &quot;unroll&quot; </li><li><code>parse_pipe</code>: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.</li><li><code>disable</code>: disable handcalcs rendering to run simulations and turn it back on when needed.</li></ul><pre><code class="language-julia hljs">set_handcalcs(cols=3)</code></pre><p>Note that this changes Handcalcs.jl from within and should therefore only be used in your own Julia sessions (do not call this from within your packages).</p><p>The calls are additive so that a new call with</p><pre><code class="language-julia hljs">set_handcalcs(spa = 5)</code></pre><p>will not cancel out the changes we just made to <code>cols</code>. </p><p>To view your changes, use</p><pre><code class="language-julia hljs">get_handcalcs()</code></pre><p>and to reset your changes, use</p><pre><code class="language-julia hljs">reset_handcalcs()</code></pre><h3 id="Set-default-precision"><a class="docs-heading-anchor" href="#Set-default-precision">Set default precision</a><a id="Set-default-precision-1"></a><a class="docs-heading-anchor-permalink" href="#Set-default-precision" title="Permalink"></a></h3><p>Handcalcs provides a setting to include a default precision. This setting formats a number to a max precision. See example below:</p><pre><code class="language-julia hljs">@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end precision = 2</code></pre><p class="math-container">\[\begin{aligned}
+a &amp;= 2.57
+\\[10pt]
+b &amp;= 2.5
+\\[10pt]
+c &amp;= 1
+\\[10pt]
+d &amp;= true
+\end{aligned}\]</p><p>This setting is off by default, but you can add a default with the <code>set_handcalcs</code> function.</p><pre><code class="language-julia hljs">set_handcalcs(precision=4)</code></pre><p>If other formats are preferred, then use the <code>fmt</code> option provided by Latexify. </p><pre><code class="language-julia hljs">@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end fmt = &quot;%.2f&quot;</code></pre><p class="math-container">\[\begin{aligned}
+a &amp;= 2.57
+\\[10pt]
+b &amp;= 2.50
+\\[10pt]
+c &amp;= 1.00
+\\[10pt]
+d &amp;= 1.00
+\end{aligned}\]</p><p>The <code>set_default</code> function is re-exported from the Latexify.jl package. See <a href="https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults">here</a> for more Latexify default settings.</p><h2 id="Using-Unitful-with-UnitfulLatexify"><a class="docs-heading-anchor" href="#Using-Unitful-with-UnitfulLatexify">Using Unitful with UnitfulLatexify</a><a id="Using-Unitful-with-UnitfulLatexify-1"></a><a class="docs-heading-anchor-permalink" href="#Using-Unitful-with-UnitfulLatexify" title="Permalink"></a></h2><p>The package integrates with the packages <a href="https://painterqubits.github.io/Unitful.jl/stable/">Unitful.jl</a> and <a href="https://gustaphe.github.io/UnitfulLatexify.jl/stable/">UnitfulLatexify.jl</a>. </p><pre><code class="language-julia hljs">using Unitful, UnitfulLatexify
+a = 2u&quot;inch&quot;
+b = -5u&quot;inch&quot;
+@handcalcs c = sqrt(a^2 + b^2)</code></pre><p class="math-container">\[\begin{aligned}
+c &amp;= \sqrt{a^{2} + b^{2}} = \sqrt{\left( 2\;\mathrm{inch} \right)^{2} + \left( -5\;\mathrm{inch} \right)^{2}} = 5.385\;\mathrm{inch}
+\end{aligned}\]</p><p>If you want to set the units of the output, you can write it the same way you would using Unitful. The <code>@handcalcs</code> macro will parse the <code>|&gt;</code> operator out of the output while still evaluating the result with the conversion.</p><pre><code class="language-julia hljs">b = 40u&quot;ft&quot;
+t = 8.5u&quot;inch&quot;
+@handcalcs begin
+    b
+    t
+    a = b * t       |&gt; u&quot;inch&quot;^2
+    Ix = b*t^3/12   |&gt; u&quot;inch&quot;^4
+end</code></pre><p class="math-container">\[\begin{aligned}
+b &amp;= 40\;\mathrm{ft}
+\\[10pt]
+t &amp;= 8.5\;\mathrm{inch}
+\\[10pt]
+a &amp;= b \cdot t = 40\;\mathrm{ft} \cdot 8.5\;\mathrm{inch} = 4080\;\mathrm{inch}^{2}
+\\[10pt]
+Ix &amp;= \frac{b \cdot t^{3}}{12} = \frac{40\;\mathrm{ft} \cdot \left( 8.5\;\mathrm{inch} \right)^{3}}{12} = 2.456 \cdot 10^{4}\;\mathrm{inch}^{4}
+\end{aligned}\]</p><h2 id="Pluto"><a class="docs-heading-anchor" href="#Pluto">Pluto</a><a id="Pluto-1"></a><a class="docs-heading-anchor-permalink" href="#Pluto" title="Permalink"></a></h2><p>Handcalcs renders in <a href="https://plutojl.org/">Pluto.jl</a>. There is one function specifically for rendering in pluto.</p><article class="docstring"><header><a class="docstring-article-toggle-button fa-solid fa-chevron-down" href="javascript:;" title="Collapse docstring"></a><a class="docstring-binding" id="Handcalcs.left_align_in_pluto" href="#Handcalcs.left_align_in_pluto"><code>Handcalcs.left_align_in_pluto</code></a> — <span class="docstring-category">Function</span><span class="is-flex-grow-1 docstring-article-toggle-button" title="Collapse docstring"></span></header><section><div><pre><code class="language-julia hljs">left_align_in_pluto()</code></pre><p>Returns html that changes mathjax settings in pluto. This results in equations that are left aligned instead of centered.</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/co1emi11er2/Handcalcs.jl/blob/490863c5904a91df6607da51ba4650025d92da04/src/Handcalcs.jl#L34-L38">source</a></section></article><div class="admonition is-info"><header class="admonition-header">Use `begin` and `end`</header><div class="admonition-body"><p>Pluto outputs an extra variable description when using <code>@handcalcs</code> without <code>begin</code> and <code>end</code>.</p><p>As an example:</p><pre><code class="language-julia hljs">@handcalcs x = 2</code></pre><p>Instead of writing the code above, write:</p><pre><code class="language-julia hljs">@handcalcs begin 
+    x = 2 
+end</code></pre></div></div></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../">« Home</a><a class="docs-footer-nextpage" href="../references/">References »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.8.0 on <span class="colophon-date" title="Friday 24 January 2025 00:09">Friday 24 January 2025</span>. Using Julia version 1.11.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
