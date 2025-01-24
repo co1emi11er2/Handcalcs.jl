@@ -101,12 +101,59 @@ Note that `Iy` is evaluated (not`Ix`). Also note that return statements are filt
 
 ### Set default precision
 
-Currently, to set the default precision, use the `set_default` function in combination with the [Format.jl](https://github.com/JuliaString/Format.jl) package. The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings. This is what I primarily use for now (you can see the use in the gif above):
+Handcalcs provides a setting to include a default precision. This setting formats a number to a max precision. See example below:
 
 ```julia
-using Format
-set_default(fmt = x->format(round(x, digits=4)))
+@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end precision = 2
 ```
+
+```LaTeX
+$\begin{aligned}
+a &= 2.57
+\\[10pt]
+b &= 2.5
+\\[10pt]
+c &= 1
+\\[10pt]
+d &= true
+\end{aligned}$
+```
+
+This setting is off by default, but you can add a default with the `set_handcalcs` function.
+
+```julia
+set_handcalcs(precision=4)
+```
+
+If other formats are preferred, then use the `fmt` option provided by Latexify. 
+
+```julia
+@handcalcs begin
+    a = 2.567
+    b = 2.5
+    c = 1
+    d = true
+end fmt = "%.2f"
+```
+
+```LaTeX
+$\begin{aligned}
+a &= 2.57
+\\[10pt]
+b &= 2.50
+\\[10pt]
+c &= 1.00
+\\[10pt]
+d &= 1.00
+\end{aligned}$
+```
+
+The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings.
 
 ## Installation
 This package is registered in the Julia registry, so to install it you can just
