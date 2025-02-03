@@ -70,6 +70,12 @@ macro handcalcs(expr, kwargs...)
         return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
     
+    # If singular symbol
+    if expr.head == :if 
+        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
+    end
+    
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
