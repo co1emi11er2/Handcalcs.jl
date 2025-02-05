@@ -72,8 +72,12 @@ macro handcalcs(expr, kwargs...)
     
     # If an if statement
     if expr.head == :if 
-        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
-        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
+        if !is_recursive
+            push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+            return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
+        else
+            return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
+        end            
     end
     
     # If multiple Expressions

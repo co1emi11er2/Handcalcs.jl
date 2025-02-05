@@ -25,7 +25,8 @@ macro handcalc(expr, kwargs...)
     expr = rmlines(expr)
     expr_og = copy(expr)
     if expr.head == :if
-        expr = parse_if!(expr)
+        kwargs = kwargs..., :(is_recursive = true)
+        expr = parse_if!(expr, kwargs)
         return esc(expr)
     end
     if @capture(expr, x_ = f_(fields__)) # Check if function call
@@ -230,7 +231,7 @@ end
 
 # ***************************************************
 # ***************************************************
-function parse_if!(expr)
+function parse_if!(expr, kwargs)
     count = 0
     cond_expr = :()
     for (i, arg) in enumerate(expr.args)
@@ -238,18 +239,18 @@ function parse_if!(expr)
             cond_expr = arg
         elseif i == 2 # in actual block of code
             expr.args[i] = :(@handcalcs begin
-                $cond_expr
-                $arg
-            end
+                $(unblock(cond_expr))
+                $(arg.args...)
+            end $(kwargs...)
             )
             continue
         elseif i == 3 # in else or ifelse statement
             if Meta.isexpr(arg, :elseif)
-                arg = parse_if!(arg)
+                arg = parse_if!(arg, kwargs)
             else
                 expr.args[i] = :(@handcalcs begin
-                    $arg
-                end
+                    $(arg.args...)
+                end $(kwargs...)
                 )
             end
         end
