@@ -24,6 +24,10 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
     expr = rmlines(expr)
     expr_og = copy(expr)
+    if expr.head == :if
+        expr = parse_if!(expr)
+        return esc(expr)
+    end
     if @capture(expr, x_ = f_(fields__)) # Check if function call
         if f ∉ math_syms && check_not_funcs(f, kwargs)
             if f == :(|>) && get(default_h_kwargs, :parse_pipe, true)  # Check if pipe and if parse_pipe
@@ -222,4 +226,33 @@ end
 
 function parse_not_func(value)
     value
+end
+
+# ***************************************************
+# ***************************************************
+function parse_if!(expr)
+    count = 0
+    cond_expr = :()
+    for (i, arg) in enumerate(expr.args)
+        if i == 1 # in conditional statement
+            cond_expr = arg
+        elseif i == 2 # in actual block of code
+            expr.args[i] = :(@handcalcs begin
+                $cond_expr
+                $arg
+            end
+            )
+            continue
+        elseif i == 3 # in else or ifelse statement
+            if Meta.isexpr(arg, :elseif)
+                arg = parse_if!(arg)
+            else
+                expr.args[i] = :(@handcalcs begin
+                    $arg
+                end
+                )
+            end
+        end
+    end
+    return expr
 end
