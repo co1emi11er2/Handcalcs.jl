@@ -239,6 +239,7 @@ function parse_if!(expr, kwargs)
             cond_expr = arg
         elseif i == 2 # in actual block of code
             expr.args[i] = :(@handcalcs begin
+                "Since:";
                 $(unblock(cond_expr))
                 $(arg.args...)
             end $(kwargs...)
