@@ -69,15 +69,11 @@ macro handcalcs(expr, kwargs...)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
         return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
-    
+
     # If an if statement
     if expr.head == :if 
-        if !is_recursive
-            push!(exprs, :(@handcalc $(expr) $(kwargs...)))
-            return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
-        else
-            return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
-        end            
+        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
     
     # If multiple Expressions
@@ -219,7 +215,11 @@ function process_multiline_latex(
                 multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * description * cleaned_expr
                 description = ""
             else
-                multi_latex *= (i ==1 ? "\n" : "&\n") * description * cleaned_expr 
+                if i == 2 && description != "" # beginning is if, do not add align (&)
+                    multi_latex *= "\n" * description * cleaned_expr 
+                else
+                    multi_latex *= (i ==1 ? "\n" : "&\n") * description * cleaned_expr 
+                end
                 description = ""
             end
             cols -= 1

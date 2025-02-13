@@ -231,25 +231,26 @@ end
 
 # ***************************************************
 # ***************************************************
-function parse_if!(expr, kwargs)
+function parse_if!(expr, kwargs, cond_expr=:())
     count = 0
-    cond_expr = :()
     for (i, arg) in enumerate(expr.args)
         if i == 1 # in conditional statement
-            cond_expr = arg
+            push!(cond_expr.args, unblock(arg))
         elseif i == 2 # in actual block of code
             expr.args[i] = :(@handcalcs begin
                 "Since:";
-                $(unblock(cond_expr))
+                $(unblock(last(cond_expr.args)))
                 $(arg.args...)
             end $(kwargs...)
             )
             continue
         elseif i == 3 # in else or ifelse statement
             if Meta.isexpr(arg, :elseif)
-                arg = parse_if!(arg, kwargs)
+                arg = parse_if!(arg, kwargs, cond_expr)
             else
                 expr.args[i] = :(@handcalcs begin
+                    "Since:";
+                    $(cond_expr.args...)
                     $(arg.args...)
                 end $(kwargs...)
                 )
