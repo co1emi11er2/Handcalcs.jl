@@ -24,8 +24,8 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
     expr = rmlines(expr)
     expr_og = copy(expr)
-    if expr.head == :if
-        kwargs = kwargs..., :(is_recursive = true)
+
+    if expr.head == :if && :(is_recursive = true) in kwargs
         expr = parse_if!(expr, kwargs)
         return esc(expr)
     end

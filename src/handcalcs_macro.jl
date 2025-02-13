@@ -71,8 +71,13 @@ macro handcalcs(expr, kwargs...)
     end
 
     # If an if statement
+    parse_ifs = :(parse_ifs = false) in h_kwargs ? false : get(default_h_kwargs, :parse_ifs, true)
     if expr.head == :if 
-        push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        if parse_ifs
+            push!(exprs, :(@handcalc $(expr) $(kwargs...) is_recursive = true))
+        else
+            push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        end
         return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
     
@@ -86,7 +91,11 @@ macro handcalcs(expr, kwargs...)
             end
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
-            push!(exprs, :(@handcalc $(arg) $(kwargs...)))
+            if arg.head == :if && parse_ifs
+                push!(exprs, :(@handcalc $(arg) $(kwargs...) is_recursive = true))
+            else
+                push!(exprs, :(@handcalc $(arg) $(kwargs...)))
+            end
         elseif typeof(arg) == Symbol # type symbol is a parameter that will be returned back
             push!(exprs, :(@latexdefine $(arg) $(kwargs...)))
 		else
