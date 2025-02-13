@@ -231,6 +231,20 @@ end
 
 # ***************************************************
 # ***************************************************
+function check_parse_ifs(kwargs)
+    not_funcs = find_not_funcs(kwargs)
+    not_funcs = typeof(not_funcs) == Symbol ? [not_funcs] : not_funcs
+    defaults = get(default_h_kwargs, :parse_ifs, false)
+    if defaults != []
+        push!(not_funcs, defaults...)
+    end
+    if Meta.isexpr(f, :.)
+        f_new = f.args[end].value
+        return f_new ∉ not_funcs
+    end
+    return f ∉ not_funcs
+end
+
 function parse_if!(expr, kwargs, cond_expr=:())
     count = 0
     for (i, arg) in enumerate(expr.args)
