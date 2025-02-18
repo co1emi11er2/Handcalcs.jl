@@ -141,7 +141,70 @@ Current Limitations for `@handcalcs`
 
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
 
-## Changing Default Settings:
+## Options for if statements
+
+If statements have two different formats in how they can be displayed. The default format is different than how Latexify would display the if statement. The reasoning was to show an if statement more like the way you would if you were performing a calculation by hand and to also integrate function unrolling. The default format (`parse_ifs=true`), only shows the branches of the if statement that pass the logic statements within the if statement. This is nice, because you only see the equations that are relevant to that specific problem. See the example below:
+
+```@example main
+@handcalcs begin
+x = 10
+if x > 5
+    Ix = calc_Ix(5, 15)
+else
+    Ix = calc_Ix(10, 15)
+end
+end
+```
+
+Nested if statements work as well. See below:
+
+```@example main
+@handcalcs begin
+x = 10
+y = 5
+if x > 5
+    if y < 3
+        Ix = calc_Ix(5, 15)
+    else
+        Ix = calc_Ix(3, 15)
+    end
+else
+    Ix = calc_Ix(10, 15)
+end
+end
+```
+
+The other format (`parse_ifs=false`) looks more like the Latexify format. However, nested ifs don't always work and function unrolling does not work. 
+
+```@example main
+@handcalcs begin
+x = 10
+y = 5
+if x > 5
+    Ix = calc_Ix(5, 15)
+else
+    Ix = calc_Ix(10, 15)
+end
+end parse_ifs=false
+```
+
+You can also write the if statement like so:
+
+```@example main
+@handcalcs begin
+x = 10
+y = 5
+Ix = if x > 5
+    calc_Ix(5, 15)
+else
+    calc_Ix(10, 15)
+end
+end
+```
+
+This way does not require you to write the `parse_ifs=false`, although that may change in future versions. If you prefer the Latexify method you can change the default settings. See next section for more info.
+
+## Changing Default Settings
 
 You can change the default settings using the `set_handcalcs` function *(similar to the `set_default` function in Latexify)*.
 
@@ -155,6 +218,7 @@ You can change the default settings using the `set_handcalcs` function *(similar
 - `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- `parse_ifs`: a boolean value (default=true) to unroll if statements. Function unrolling works and it only shows the parts of the if statement that were met.
 - `disable`: disable handcalcs rendering to run simulations and turn it back on when needed.
 
 ```julia

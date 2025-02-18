@@ -270,3 +270,68 @@ else
 end
 @test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 # ***************************************************
+
+# if parsing test
+# ***************************************************
+# ***************************************************
+x = 16
+y = 6
+expected = L"$\begin{aligned}
+\text{Since: }x > 15 &= 16 > 15 = true
+\\[10pt]
+\text{Since: }y > 5 &= 6 > 5 = true
+\\[10pt]
+z &= 15
+\end{aligned}$"
+calc = @handcalcs z = FunctionTestModule.foo(x, y)
+@test calc == expected
+
+y = 4
+expected = L"$\begin{aligned}
+\text{Since: }x > 15 &= 16 > 15 = true
+\\[10pt]
+\text{Since: }y > 5 &= 4 > 5 = false
+\\[10pt]
+z &= 10
+\end{aligned}$"
+calc = @handcalcs z = FunctionTestModule.foo(x, y)
+@test calc == expected
+
+x = 14
+expected = L"$\begin{aligned}
+\text{Since: }x > 10 &= 14 > 10 = true
+\\[10pt]
+z &= 10
+\end{aligned}$"
+calc = @handcalcs z = FunctionTestModule.foo(x, y)
+@test calc == expected
+
+x = 9
+expected = L"$\begin{aligned}
+\text{Since: }x > 15 &= 9 > 15 = false
+\\[10pt]
+x > 10 &= 9 > 10 = false
+\\[10pt]
+z &= 5
+\end{aligned}$"
+calc = @handcalcs z = FunctionTestModule.foo(x, y)
+@test calc == expected
+
+x = 6
+inch = u"inch"
+expected = L"$\begin{aligned}
+\text{Since: }x > 15 &= 6 > 15 = false
+\\[10pt]
+c &= a + b = 4\;\mathrm{inch} + 6\;\mathrm{inch} = 10\;\mathrm{inch}
+\\[10pt]
+d &= 6
+\end{aligned}$"
+calc = @handcalcs begin
+    if x > 15
+        c = 1inch
+    else
+        c = FunctionTestModule.add_inch(4inch, 6inch)
+        d = 6
+    end
+end
+@test calc == expected

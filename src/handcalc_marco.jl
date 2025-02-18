@@ -24,6 +24,11 @@ macro handcalc(expr, kwargs...)
     expr = unblock(expr)
     expr = rmlines(expr)
     expr_og = copy(expr)
+
+    if expr.head == :if && :(is_recursive = true) in kwargs
+        expr = parse_if!(expr, kwargs)
+        return esc(expr)
+    end
     if @capture(expr, x_ = f_(fields__)) # Check if function call
         if f ∉ math_syms && check_not_funcs(f, kwargs)
             if f == :(|>) && get(default_h_kwargs, :parse_pipe, true)  # Check if pipe and if parse_pipe
@@ -116,6 +121,10 @@ function _walk_expr(expr::Vector, math_syms)
             count = length(collect(PostOrderDFS(ex)))
             return Expr(:$, ex)
         end
+        if Meta.isexpr(ex, :(=))
+            count = 1
+            return ex
+        end
         if (ex isa Symbol) & (ex ∉ math_syms)
             count = 1
             return numeric_sub(ex)
@@ -140,6 +149,10 @@ function _walk_expr(expr::Expr, math_syms)
             return Expr(:$, ex)
         end
         if Meta.isexpr(ex, :kw) # interpolates field args
+            count = 1
+            return ex
+        end
+        if Meta.isexpr(ex, :(=))
             count = 1
             return ex
         end
@@ -214,4 +227,49 @@ end
 
 function parse_not_func(value)
     value
+end
+
+# ***************************************************
+# ***************************************************
+function check_parse_ifs(kwargs)
+    not_funcs = find_not_funcs(kwargs)
+    not_funcs = typeof(not_funcs) == Symbol ? [not_funcs] : not_funcs
+    defaults = get(default_h_kwargs, :parse_ifs, false)
+    if defaults != []
+        push!(not_funcs, defaults...)
+    end
+    if Meta.isexpr(f, :.)
+        f_new = f.args[end].value
+        return f_new ∉ not_funcs
+    end
+    return f ∉ not_funcs
+end
+
+function parse_if!(expr, kwargs, cond_expr=:())
+    count = 0
+    for (i, arg) in enumerate(expr.args)
+        if i == 1 # in conditional statement
+            push!(cond_expr.args, unblock(arg))
+        elseif i == 2 # in actual block of code
+            expr.args[i] = :(@handcalcs begin
+                "Since:";
+                $(unblock(last(cond_expr.args)))
+                $(arg.args...)
+            end $(kwargs...)
+            )
+            continue
+        elseif i == 3 # in else or ifelse statement
+            if Meta.isexpr(arg, :elseif)
+                arg = parse_if!(arg, kwargs, cond_expr)
+            else
+                expr.args[i] = :(@handcalcs begin
+                    "Since:";
+                    $(cond_expr.args...)
+                    $(arg.args...)
+                end $(kwargs...)
+                )
+            end
+        end
+    end
+    return expr
 end

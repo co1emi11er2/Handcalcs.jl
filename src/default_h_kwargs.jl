@@ -17,6 +17,7 @@ you call it multiple times, defaults will be added or replaced, but not reset.
 - `h_env`: choose between "aligned" (default), "align" and other LaTeX options
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- `parse_ifs`: a boolean value (default=true) to unroll if statements. Function unrolling works and it only shows the parts of the if statement that were met.
 - `disable`: disable handcalcs rendering to run simulations and turn it back on when needed.
 
 Example: 
@@ -53,6 +54,7 @@ Get a Dict with the user-specified default kwargs for handcalcs, set by `set_han
 - `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `not_funcs`: Name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
+- `parse_ifs`: a boolean value (default=true) to unroll if statements. Function unrolling works and it only shows the parts of the if statement that were met.
 - `disable`: disable handcalcs rendering to run simulations and turn it back on when needed.
 """
 function get_handcalcs end

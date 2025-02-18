@@ -69,14 +69,33 @@ macro handcalcs(expr, kwargs...)
         push!(exprs, :(@handcalc $(expr) $(kwargs...)))
         return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
     end
+
+    # If an if statement
+    parse_ifs = :(parse_ifs = false) in h_kwargs ? false : get(default_h_kwargs, :parse_ifs, true)
+    if expr.head == :if 
+        if parse_ifs
+            push!(exprs, :(@handcalc $(expr) $(kwargs...) is_recursive = true))
+        else
+            push!(exprs, :(@handcalc $(expr) $(kwargs...)))
+        end
+        return is_recursive ? _handcalcs_recursive(exprs) : _handcalcs(exprs, h_kwargs)
+    end
     
     # If multiple Expressions
     for arg in expr.args
         if typeof(arg) == String # type string will be converted to a comment
-            comment = latexstring("\\;\\text{  }(\\text{", arg, "})")
+            if last(strip(arg)) == ':' # want to put string in front of next expr arg
+                comment = latexstring("\\text{", strip(arg), " }")
+            else
+                comment = latexstring("\\;\\text{  }(\\text{", arg, "})")
+            end
             push!(exprs, comment)
 		elseif typeof(arg) == Expr # type expression will be latexified
-            push!(exprs, :(@handcalc $(arg) $(kwargs...)))
+            if arg.head == :if && parse_ifs
+                push!(exprs, :(@handcalc $(arg) $(kwargs...) is_recursive = true))
+            else
+                push!(exprs, :(@handcalc $(arg) $(kwargs...)))
+            end
         elseif typeof(arg) == Symbol # type symbol is a parameter that will be returned back
             push!(exprs, :(@latexdefine $(arg) $(kwargs...)))
 		else
@@ -190,18 +209,27 @@ function process_multiline_latex(
     )
     cols = len == :long ? 1 : cols
     exprs = collect(Leaves(exprs)) # This handles nested vectors when recursive
+    description = "" # This is used to insert a string description before equation
     cols_start = cols
     multi_latex = "\\begin{$h_env}"
     for (i, expr) in enumerate(exprs)
         if occursin("text{  }", expr)
             multi_latex *= expr[2:end-1] # remove the $ from end and beginning of string
+        elseif occursin(": }", expr)
+            description = expr[2:end-1] # remove the $ from end and beginning of string
         else
             cleaned_expr = clean_expr(expr, len, spa)
             if cols == 0 
                 cols = cols_start 
-                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * cleaned_expr
+                multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * description * cleaned_expr
+                description = ""
             else
-                multi_latex *= (i ==1 ? "\n" : "&\n") * cleaned_expr 
+                if i == 2 && description != "" # beginning is if, do not add align (&)
+                    multi_latex *= "\n" * description * cleaned_expr 
+                else
+                    multi_latex *= (i ==1 ? "\n" : "&\n") * description * cleaned_expr 
+                end
+                description = ""
             end
             cols -= 1
         end

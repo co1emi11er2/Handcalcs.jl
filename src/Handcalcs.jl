@@ -29,7 +29,7 @@ const math_syms = [
     :cumsum, :max, :min, :exp, :log,
     :log10, :√]
     
-const h_syms = [:cols, :spa, :h_env, :len, :color, :disable, :parse_pipe]
+const h_syms = [:cols, :spa, :h_env, :len, :color, :disable, :parse_pipe, :parse_ifs]
 
 """
     left_align_in_pluto()
