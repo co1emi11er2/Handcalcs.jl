@@ -29,6 +29,7 @@ macro handfunc(expr, kwargs...)
         found_module = $(esc(:(Handcalcs.@which $(expr.args[2])))).module
         found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
         if is_show_funcs_on($kwargs)
+            # println($(string(expr.args[2])), " = ", $eq)
             @show $eq
         end
         func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
