@@ -93,6 +93,13 @@ macro handcalcs(expr, kwargs...)
 		elseif typeof(arg) == Expr # type expression will be latexified
             if arg.head == :if && parse_ifs
                 push!(exprs, :(@handcalc $(arg) $(kwargs...) is_recursive = true))
+            elseif arg.head == :string
+                if arg.args[end] isa String && occursin(": ", arg.args[end])
+                    comment = :(latexstring("\\text{", strip($arg), " }"))
+                else
+                    comment = :(latexstring("\\;\\text{  }(\\text{", $arg, "})"))
+                end
+                push!(exprs, comment)
             else
                 push!(exprs, :(@handcalc $(arg) $(kwargs...)))
             end
