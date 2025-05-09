@@ -95,9 +95,9 @@ macro handcalcs(expr, kwargs...)
                 push!(exprs, :(@handcalc $(arg) $(kwargs...) is_recursive = true))
             elseif arg.head == :string
                 if arg.args[end] isa String && occursin(": ", arg.args[end])
-                    comment = :(latexstring("\\text{", strip($arg), " }"))
+                    comment = :($(latexstring)("\\text{", strip($arg), " }"))
                 else
-                    comment = :(latexstring("\\;\\text{  }(\\text{", $arg, "})"))
+                    comment = :($(latexstring)("\\;\\text{  }(\\text{", $arg, "})"))
                 end
                 push!(exprs, comment)
             else
