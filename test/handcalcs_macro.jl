@@ -335,3 +335,19 @@ calc = @handcalcs begin
     end
 end
 @test calc == expected
+# ***************************************************
+
+# string interpolation test
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+\text{Part 15: }b &= 2\;\text{  }(\text{hello 15})
+\end{aligned}$"
+
+a = 15
+calc = @handcalcs begin
+    "Part $a: "; b = 2; "hello $a"
+end
+
+@test calc == expected
+# ***************************************************
