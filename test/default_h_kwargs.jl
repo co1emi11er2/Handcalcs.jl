@@ -90,3 +90,35 @@ calc = @handcalcs begin
 end fmt = "%.4f"
 @test calc == expected
 reset_handcalcs()
+
+
+# use set_handcalcs for h_render
+# ***************************************************
+# ***************************************************
+
+# symbolic return
+set_handcalcs(h_render = :symbolic)
+expected = L"$\begin{aligned}
+c &= a + b = 15
+\end{aligned}$"
+
+a = 5
+b = 10
+
+calc = @handcalcs begin
+    c = a + b
+end
+@test calc == expected
+reset_handcalcs()
+
+# numeric return
+set_handcalcs(h_render = :numeric)
+expected = L"$\begin{aligned}
+c &= 5 + 10 = 15
+\end{aligned}$"
+
+calc = @handcalcs begin
+    c = a + b
+end h_render = :numeric
+@test calc == expected
+reset_handcalcs()
