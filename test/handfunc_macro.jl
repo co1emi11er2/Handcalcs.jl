@@ -200,7 +200,7 @@ c1, c2 &= \mathrm{TestHandcalcFunctions.SubA.sub}_{module\_func}\left( a, b \rig
 \end{aligned}$"
 
 calc = @handcalcs result = TestHandcalcFunctions.test_function_finder(5, 15) not_funcs = [:calc_Iy :sub_module_func] 
-@test calc == expected # for whatever reason the expected had addittional carriage returns (\r)
+@test calc == replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 # ***************************************************
 
 # Check piped functions not in scope
