@@ -17,6 +17,7 @@ TestHandcalcFunctions = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
 [compat]
 AbstractTrees = "0.4"
 CodeTracking = "1.3"
+IOCapture = "0.2.5"
 LaTeXStrings = "1.3"
 Latexify = "^0.16.6"
 MacroTools = "0.5"
@@ -28,11 +29,12 @@ UnitfulLatexify = "^1.6.4"
 julia = "1.10"
 
 [extras]
+IOCapture = "b5f81e59-6552-4d32-b1f0-c071b021bf89"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 TestHandcalcFunctions = "6ba57fb7-81df-4b24-8e8e-a3885b6fcae7"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 UnitfulLatexify = "45397f5d-5981-4c77-b2b3-fc36d6e9b728"
-Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 
 [targets]
-test = ["Test", "Unitful", "UnitfulLatexify", "TestHandcalcFunctions", "Revise"]
+test = ["Test", "Unitful", "UnitfulLatexify", "TestHandcalcFunctions", "Revise", "IOCapture"]
