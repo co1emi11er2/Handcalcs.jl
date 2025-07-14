@@ -40,8 +40,6 @@ macro handcalc(expr, kwargs...)
         end
     end
 
-    expr_post = expr.head == :(=) ? expr.args[2:end] : expr
-    expr_numeric = _walk_expr(expr_post, math_syms)
     params = _extractparam.(kwargs)
     post = :identity
     for param in params
@@ -54,12 +52,32 @@ macro handcalc(expr, kwargs...)
             break
         end
     end
-    return _handcalc(expr_og, expr, expr_numeric, post, kwargs)
+
+    # Check if the user wants a symbolic return, skip numeric calculations
+    default_render = get(default_h_kwargs, :h_render, :both)
+    if default_render == :symbolic  
+        return _handcalc_symbolic(expr_og, expr, post, kwargs)
+    end
+    if default_render == :equation  
+        return _handcalc_equation(expr_og, expr, kwargs)
+    end
+
+    # compute the numeric values of the expression
+    expr_post = expr.head == :(=) ? expr.args[2:end] : expr
+    expr_numeric = _walk_expr(expr_post, math_syms)
+
+    # Check if the user wants a numeric return, else return both
+    if default_render == :numeric
+        expr_numeric = Expr(:(=), expr.args[1], expr_numeric)
+        return _handcalc_numeric(expr_og, expr_numeric, post, kwargs)
+    else
+        return _handcalc_both(expr_og, expr, expr_numeric, post, kwargs)
+    end
 end
 
 # Handcalcs - Symbolic and Numeric return
 # ***************************************************
-function _handcalc(expr_og, expr, expr_numeric, post, kwargs)
+function _handcalc_both(expr_og, expr, expr_numeric, post, kwargs)
     esc(
         Expr(
             :call,
@@ -70,6 +88,55 @@ function _handcalc(expr_og, expr, expr_numeric, post, kwargs)
                 Expr(:call, :Expr,
                     QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
                     Expr(:call, post, _executable(expr_og)))), # defines variable
+        ),
+    )
+end
+
+# Handcalcs - equation only return
+# ***************************************************
+function _handcalc_equation(expr_og, expr, kwargs)
+    return esc(
+        Expr(
+            :block,
+            _executable(expr_og),
+            Expr(
+                :call,
+                :latexify,
+                Expr(:parameters, _extractparam.(kwargs)...),
+                Meta.quot(expr),
+            ),
+        ),
+    )
+end
+# ***************************************************
+
+# Handcalcs - Symbolic return
+# ***************************************************
+function _handcalc_symbolic(expr_og, expr, post, kwargs)
+    esc(
+        Expr(
+            :call,
+            :latexify,
+            Expr(:parameters, _extractparam.(kwargs)...),
+            Expr(:call, :Expr,
+                QuoteNode(:(=)), Meta.quot(expr), # symbolic portion
+                Expr(:call, post, _executable(expr_og))) # defines variable
+        ),
+    )
+end
+# ***************************************************
+
+# Handcalcs - Numeric return
+# ***************************************************
+function _handcalc_numeric(expr_og, expr_numeric, post, kwargs)
+    esc(
+        Expr(
+            :call,
+            :latexify,
+            Expr(:parameters, _extractparam.(kwargs)...),
+            Expr(:call, :Expr,
+                QuoteNode(:(=)), Meta.quot(expr_numeric), # numeric portion
+                Expr(:call, post, _executable(expr_og))) # defines variable
         ),
     )
 end

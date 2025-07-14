@@ -15,6 +15,7 @@ you call it multiple times, defaults will be added or replaced, but not reset.
 - `color`: change the color of the output (`:blue`, `:red`, etc)
 - `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `h_env`: choose between "aligned" (default), "align" and other LaTeX options
+- `h_render`: choose between "equation", symbolic", "numeric" and "both" (default)
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
 - `parse_ifs`: a boolean value (default=true) to unroll if statements. Function unrolling works and it only shows the parts of the if statement that were met.
@@ -51,6 +52,7 @@ Get a Dict with the user-specified default kwargs for handcalcs, set by `set_han
 - `spa`: sets the line spacing
 - `len`: can set to `:long` and it will split equation to multiple lines
 - `h_env`: Choose between "aligned" (default), "align" and other LaTeX options
+- `h_render`: choose between "equation", symbolic", "numeric" and "both" (default)
 - `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `not_funcs`: Name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.

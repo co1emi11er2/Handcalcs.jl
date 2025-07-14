@@ -215,6 +215,7 @@ You can change the default settings using the `set_handcalcs` function *(similar
 - `len`: can set to `:long` and it will split equation to multiple lines
 - `color`: change the color of the output (`:blue`, `:red`, etc)
 - `h_env`: choose between "aligned" (default), "align" and other LaTeX options
+- `h_render`: choose between "equation", symbolic", "numeric" and "both" (default)
 - `precision`: formats numbers to a max precision. Given `precision = 2`, `2.567` will show as `2.57`, while `2.5` would show as `2.5`
 - `not_funcs`: name the functions you do not want to "unroll" 
 - `parse_pipe`: a boolean value (default=true) to remove pipe from equation. This is intended for unitful equations.
@@ -278,6 +279,50 @@ end fmt = "%.2f"
 ```
 
 The `set_default` function is re-exported from the Latexify.jl package. See [here](https://korsbo.github.io/Latexify.jl/stable/#Setting-your-own-defaults) for more Latexify default settings.
+
+### Set Rendering Format
+
+Handcalcs provides a setting to include a different rendering format. The choices are between `equation`, `symbolic`, `numeric`, or `both` (default).
+
+See example below for an equation rendering:
+
+```@example main
+set_handcalcs(h_render=:equation)
+b = 5 # width
+h = 15 # height
+@handcalcs Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
+```
+
+Note: `I_x` is evaluated.
+
+```@example main
+@handcalcs I_x
+```
+
+See example below for a symbolic rendering:
+
+```@example main
+set_handcalcs(h_render=:symbolic)
+b = 5 # width
+h = 15 # height
+@handcalcs Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
+```
+
+See example below for a numeric rendering:
+
+```@example main
+set_handcalcs(h_render=:numeric)
+b = 5 # width
+h = 15 # height
+@handcalcs Ix = calc_Ix(b, h) # function is defined in TestHandcalcFunctions package
+```
+
+This is really meant to be a setting overall, but you can use the `set_handcalcs` function to turn the setting on, then use it again afterward to turn it back to the default.
+
+```@example main
+set_handcalcs(h_render=:both) # set handcalcs back to default
+```
+
 
 ## Using Unitful with UnitfulLatexify
 
