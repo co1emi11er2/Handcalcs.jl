@@ -141,6 +141,21 @@ Current Limitations for `@handcalcs`
 
 - I believe the function needs to be defined in another package. The @code_expr macro from CodeTracking.jl does not see functions in Main for some reason.
 
+### Debugging Function Unrolling
+
+It can be difficult to debug function unrolling when `Handcalcs` is unable to properly unroll a function. If you encounter an error, you can use the `show_funcs` keyword. This will print out all the functions `Handcalcs` stepped into. The last function printed should be where the error occured and it can give you a starting point on where to start digging in.
+
+Here is an example:
+
+```@example main
+@handcalcs begin
+I_x, I_y = TestHandcalcFunctions.calc_Is(5, 15)
+end show_funcs = true
+nothing # writing nothing here to show stdout per Documenter.jl
+```
+
+There was no error here, but you can see that `Handcalcs` stepped into `calc_Is`, then `calc_Ix`, and then `calc_Iy`.
+
 ## Options for if statements
 
 If statements have two different formats in how they can be displayed. The default format is different than how Latexify would display the if statement. The reasoning was to show an if statement more like the way you would if you were performing a calculation by hand and to also integrate function unrolling. The default format (`parse_ifs=true`), only shows the branches of the if statement that pass the logic statements within the if statement. This is nice, because you only see the equations that are relevant to that specific problem. See the example below:
