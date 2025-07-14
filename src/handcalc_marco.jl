@@ -54,8 +54,12 @@ macro handcalc(expr, kwargs...)
     end
 
     # Check if the user wants a symbolic return, skip numeric calculations
-    if get(default_h_kwargs, :h_render, :both) == :symbolic 
+    default_render = get(default_h_kwargs, :h_render, :both)
+    if default_render == :symbolic  
         return _handcalc_symbolic(expr_og, expr, post, kwargs)
+    end
+    if default_render == :equation  
+        return _handcalc_eq_only(expr_og, expr, post, kwargs)
     end
 
     # compute the numeric values of the expression
@@ -63,7 +67,7 @@ macro handcalc(expr, kwargs...)
     expr_numeric = _walk_expr(expr_post, math_syms)
 
     # Check if the user wants a numeric return, else return both
-    if get(default_h_kwargs, :h_render, :both) == :numeric
+    if default_render == :numeric
         expr_numeric = Expr(:(=), expr.args[1], expr_numeric)
         return _handcalc_numeric(expr_og, expr_numeric, post, kwargs)
     else
@@ -87,6 +91,24 @@ function _handcalc_both(expr_og, expr, expr_numeric, post, kwargs)
         ),
     )
 end
+
+# Handcalcs - equation only return
+# ***************************************************
+function _handcalc_eq_only(expr_og, expr, post, kwargs)
+    return esc(
+        Expr(
+            :block,
+            _executable(expr_og),
+            Expr(
+                :call,
+                :latexify,
+                Expr(:parameters, _extractparam.(kwargs)...),
+                Meta.quot(expr),
+            ),
+        ),
+    )
+end
+# ***************************************************
 
 # Handcalcs - Symbolic return
 # ***************************************************

@@ -96,6 +96,22 @@ reset_handcalcs()
 # ***************************************************
 # ***************************************************
 
+# equation only return
+set_handcalcs(h_render = :equation)
+expected = L"$\begin{aligned}
+c &= a + b
+\end{aligned}$"
+
+a = 5
+b = 10
+
+calc = @handcalcs begin
+    c = a + b
+end
+@test calc == expected
+@test c == 15
+reset_handcalcs()
+
 # symbolic return
 set_handcalcs(h_render = :symbolic)
 expected = L"$\begin{aligned}
