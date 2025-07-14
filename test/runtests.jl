@@ -3,6 +3,7 @@ using LaTeXStrings, Unitful, UnitfulLatexify
 using Test
 using TestHandcalcFunctions
 using Revise
+import IOCapture
 isdefined(Main, :Revise) ? Main.Revise.includet("FunctionTestModule.jl") : include("FunctionTestModule.jl")
 # using .TestFunctions
 

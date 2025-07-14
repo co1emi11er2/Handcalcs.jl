@@ -28,12 +28,20 @@ macro handfunc(expr, kwargs...)
     return quote
         found_module = $(esc(:(Handcalcs.@which $(expr.args[2])))).module
         found_func = $(esc(:(Handcalcs.@code_expr $(expr.args[2]))))
+        if is_show_funcs_on($kwargs)
+            println($(string(expr.args[2])), " = ", $eq)
+            # @show $eq # this was a bit faster, but worse for readability
+        end
         func_args = $(esc(:(Handcalcs.@func_vars $(expr.args[2]))))
         latex_eq = handfunc(found_module, found_func, func_args, $kwargs)
         latex = @eval #=found_module=# $(Expr(:$, :latex_eq))
         $var = $eq
         latex
     end
+end
+
+function is_show_funcs_on(kwargs)
+    :(show_funcs = true) in kwargs
 end
 
 macro func_vars(expr)

@@ -9,12 +9,13 @@ The RHS can be formatted or otherwise transformed by supplying a function as kwa
 Can also add comments to the end of equations. See example below.
 
 ## Kwargs
-- cols: sets the number of columns in the output
-- spa: sets the line spacing
-- len: can set to `:long` and it will split equation to multiple lines
-- color: change the color of the output (`:blue`, `:red`, etc)
-- h_env: choose between "aligned" (default), "align" and other LaTeX options
-- not_funcs: name the functions you do not want to "unroll" 
+- `cols`: sets the number of columns in the output
+- `spa`: sets the line spacing
+- `len`: can set to `:long` and it will split equation to multiple lines
+- `color`: change the color of the output (`:blue`, `:red`, etc)
+- `h_env`: choose between "aligned" (default), "align" and other LaTeX options
+- `not_funcs`: name the functions you do not want to "unroll" 
+- `show_funcs`: `true` or `false` (default), helps with debugging when getting error during function unrolling.
 
 # Examples
 ```julia-repl

@@ -351,3 +351,24 @@ end
 
 @test calc == expected
 # ***************************************************
+ 
+ 
+# show_funcs keyword
+# ***************************************************
+# ***************************************************
+expected = L"$\begin{aligned}
+Ix &= \frac{b \cdot h^{3}}{12} = \frac{5 \cdot 15^{3}}{12} = 1406.25
+\\[10pt]
+Iy &= \frac{h \cdot b^{expo}}{denominator} = \frac{15 \cdot 5^{3}}{12} = 156.25
+\end{aligned}$"
+
+stdout_expected = "calc_Is(5, 15) = (1406.25, 156.25)\ncalc_Ix(b, h) = 1406.25\ncalc_Iy(h, b) = 156.25\n"
+c = IOCapture.capture() do
+    calc = @handcalcs begin
+        I_s = calc_Is(5,15)
+    end show_funcs = true
+end
+
+@test c.output == stdout_expected
+@test c.value == expected
+# ***************************************************
