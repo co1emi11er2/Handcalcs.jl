@@ -59,7 +59,7 @@ macro handcalc(expr, kwargs...)
         return _handcalc_symbolic(expr_og, expr, post, kwargs)
     end
     if default_render == :equation  
-        return _handcalc_equation(expr_og, expr, post, kwargs)
+        return _handcalc_equation(expr_og, expr, kwargs)
     end
 
     # compute the numeric values of the expression
@@ -94,7 +94,7 @@ end
 
 # Handcalcs - equation only return
 # ***************************************************
-function _handcalc_equation(expr_og, expr, post, kwargs)
+function _handcalc_equation(expr_og, expr, kwargs)
     return esc(
         Expr(
             :block,
