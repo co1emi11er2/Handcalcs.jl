@@ -103,12 +103,10 @@ function _parse_dot(expr::Expr)
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
-    @show func_args
-    @show found_func_args = found_func.args[1]
+    found_func_args = found_func.args[1]
     found_kw_dict, found_pos_arr = parse_func_args(found_func_args, _extract_kw_args, _extract_arg)
     kw_dict, pos_arr = parse_func_args(func_args, _extract_kw_args, _extract_arg)
-    @show kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
-    @show pos_arr
+    kw_dict, pos_arr = _clean_args(kw_dict, pos_arr)
 
     _merge_args!(found_kw_dict, found_pos_arr, kw_dict, pos_arr)
     return found_kw_dict, found_pos_arr
@@ -174,26 +172,25 @@ end
 function _extract_arg(arg::Expr) 
     arr = []
     if arg.head == :kw # check if default function arguments (not kw (keyword))
-        append!(arr, [Any[arg.args[1] arg.args[2]]])
+        append!(arr, [Any[arg.args[1], arg.args[2]]])
         return arr
     elseif arg.head == :(.)
-        append!(arr, [Any[arg nothing]])
+        append!(arr, [Any[arg, nothing]])
         return arr
     elseif arg.head == :(::)
-        append!(arr, [Any[arg.args[1] nothing]])
+        append!(arr, [Any[arg.args[1], nothing]])
     else
-        append!(arr, [Any[arg nothing]])
+        append!(arr, [Any[arg, nothing]])
     end
 end
 
 function _extract_arg(arg) 
-    @show arg
-    arr = [Any[arg nothing]]
+    arr = [Any[arg, nothing]]
     return arr
 end
 
 function _extract_arg(arg::AbstractArray)
-    arr = [Any[arg nothing]]
+    arr = [Any[arg, nothing]]
     return arr
 end
 
