@@ -243,6 +243,8 @@ z &= x + y = \left[
 \end{array}
 \right]
 \end{aligned}$"
+calc = replace(calc, "\r" => "")
+expected = replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
 @test calc == expected
 # ***************************************************
 
