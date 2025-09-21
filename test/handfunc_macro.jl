@@ -217,3 +217,34 @@ c &= a + b = 5\;\mathrm{inch} + 6\;\mathrm{inch} = 11\;\mathrm{inch}
 @test calc2 == expected
 # ***************************************************
 
+# ***************************************************
+
+# Check dot operator will work inside function unrolling
+# ***************************************************
+# ***************************************************
+x = [1, 2]
+y = [3, 6]
+calc = @handcalcs z = FunctionTestModule.dot_operator(x, y)
+expected = L"$\begin{aligned}
+z &= x + y = \left[
+\begin{array}{c}
+1 \\
+2 \\
+\end{array}
+\right] + \left[
+\begin{array}{c}
+3 \\
+6 \\
+\end{array}
+\right] = \left[
+\begin{array}{c}
+4 \\
+8 \\
+\end{array}
+\right]
+\end{aligned}$"
+calc = replace(calc, "\r" => "")
+expected = replace(expected, "\r" => "") # for whatever reason the expected had addittional carriage returns (\r)
+@test calc == expected
+# ***************************************************
+

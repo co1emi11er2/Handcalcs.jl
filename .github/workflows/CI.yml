@@ -24,6 +24,7 @@ jobs:
           - 'nightly'
         os:
           - ubuntu-latest
+          - windows-latest
         arch:
           - x64
           - x86
@@ -45,7 +46,7 @@ jobs:
           files: lcov.info
       - uses: julia-actions/julia-uploadcoveralls@v1
         env:
-          COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
   docs:
     name: Documentation
     runs-on: ubuntu-latest

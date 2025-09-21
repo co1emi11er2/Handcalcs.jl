@@ -69,6 +69,8 @@ function _walk_func_body(expr::Expr, found_module)
     prewalk(expr) do x
         if @capture(x, f_(args__))
 
+            f = _parse_dot(f) # if symbol is :.+ then the dot needs to be parsed out
+            
             # if f is |>, need to make sure function after |> gets properly scoped
             if f == :(|>) 
                 x.args[3] = Meta.parse(found_module_string * "." * string(x.args[3]))
@@ -89,6 +91,15 @@ function _walk_func_body(expr::Expr, found_module)
             x
         end
     end
+end
+
+function _parse_dot(sym::Symbol)
+    str_sym = string(sym)
+    sym = str_sym[1] == '.' ? Symbol(str_sym[2:end]) : sym
+end
+
+function _parse_dot(expr::Expr)
+    return expr
 end
 
 function _initialize_kw_and_pos_args(found_func, func_args)
@@ -161,20 +172,25 @@ end
 function _extract_arg(arg::Expr) 
     arr = []
     if arg.head == :kw # check if default function arguments (not kw (keyword))
-        append!(arr, [Any[arg.args[1] arg.args[2]]])
+        append!(arr, [Any[arg.args[1], arg.args[2]]])
         return arr
     elseif arg.head == :(.)
-        append!(arr, [Any[arg nothing]])
+        append!(arr, [Any[arg, nothing]])
         return arr
     elseif arg.head == :(::)
-        append!(arr, [Any[arg.args[1] nothing]])
+        append!(arr, [Any[arg.args[1], nothing]])
     else
-        append!(arr, [Any[arg nothing]])
+        append!(arr, [Any[arg, nothing]])
     end
 end
 
 function _extract_arg(arg) 
-    arr = [Any[arg nothing]]
+    arr = [Any[arg, nothing]]
+    return arr
+end
+
+function _extract_arg(arg::AbstractArray)
+    arr = [Any[arg, nothing]]
     return arr
 end
 

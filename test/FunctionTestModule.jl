@@ -28,4 +28,8 @@ function foo(x, y)
     end
 end   
 
+function dot_operator(x, y)
+    z = x .+ y
+end
+
 end
