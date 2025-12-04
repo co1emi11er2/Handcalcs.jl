@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.13'
+          - 'pre'
           - '1.12'
           - '1.11'
           - '1.10'
