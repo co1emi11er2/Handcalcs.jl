@@ -138,10 +138,9 @@ function multiline_latex(exprs...; kwargs...)
     return process_multiline_latex(exprs...;h_kwargs...)
 end
 
-function clean_expr(expr, len, spa)
+function clean_expr(expr, len, spa, len_limit)
     expr = expr[2:end-1] # remove the $ from end and beginning of string
     expr = expr[end] == " " ? expr : expr * " " # add trailing space if there isn't one
-    
     # if format pattern
     pattern = r"\\begin\{cases\}(.*?)\\end\{cases\}"s 
     m = match(pattern, expr)
@@ -152,9 +151,9 @@ function clean_expr(expr, len, spa)
             new_m = replace(m.match, "=" => "==")
             expr = replace(expr, m.match => new_m)
         end
-
         expr = split(expr, " = ") |> unique |> x -> join(x, " = ")[1:end-1] # removes any redundant parts, and removes space at the end
         expr = replace(expr, " = "=>" &= ", count=1) # add alignment
+        len = length(expr) > len_limit ? :long : len
         expr = len == :long ? replace(expr, " = "=>"\n\\\\[$spa" *"pt]\n&= ", count=2) : expr
 
         # change "==" back to "="
@@ -167,6 +166,7 @@ function clean_expr(expr, len, spa)
 
     expr = split(expr, "=") |> unique |> x -> join(x, "=")[1:end-1] # removes any redundant parts, and removes space at the end
     expr = replace(expr, "="=>"&=", count=1) # add alignment
+    len = length(expr) > len_limit ? :long : len
     expr = len == :long ? replace(expr, " ="=>"\n\\\\[$spa" *"pt]\n&=", count=2) : expr
 end
 
@@ -213,6 +213,7 @@ function process_multiline_latex(
     h_env="aligned",
     len = :short, 
     color = :black,
+    len_limit = 1000,
     kwargs...
     )
     cols = len == :long ? 1 : cols
@@ -226,7 +227,7 @@ function process_multiline_latex(
         elseif occursin(": }", expr)
             description = expr[2:end-1] # remove the $ from end and beginning of string
         else
-            cleaned_expr = clean_expr(expr, len, spa)
+            cleaned_expr = clean_expr(expr, len, spa, len_limit)
             if cols == 0 
                 cols = cols_start 
                 multi_latex *= "\n" * (i ==1 ? "" : "\\\\[$spa" * "pt]\n") * description * cleaned_expr
