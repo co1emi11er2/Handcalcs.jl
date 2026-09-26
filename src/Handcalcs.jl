@@ -25,7 +25,9 @@ const math_syms = [
     :.*, :./, :.^, :.+, :.-, :.%,
     :<, :>, Symbol(==), :<=, :>=,
     :.<, :.>, :.==, :.<=, :.>=,
-    :sqrt, :sin, :cos, :tan, :sum, 
+    :sqrt, :sin, :cos, :tan, :sum,
+	:sind, :cosd, :tand, :asin, :acos,
+    :atan, :asind, :acosd, :atand,
     :cumsum, :max, :min, :exp, :log,
     :log10, :√]
     
